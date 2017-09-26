@@ -602,3 +602,52 @@ ALTER TABLE `staff`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+CREATE TABLE `messages` (
+  `mid` int(11) NOT NULL,
+  `mtype` varchar(10) NOT NULL,
+  `mailtype` varchar(10) NOT NULL,
+  `application_type` varchar(30) NOT NULL,
+  `mto` varchar(255) NOT NULL,
+  `cc` varchar(255) NOT NULL,
+  `bcc` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `processed` bit(1) NOT NULL DEFAULT b'0',
+  `processed_return` text NOT NULL,
+  `insert_dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`mid`, `mtype`, `mailtype`, `application_type`, `mto`, `cc`, `bcc`, `subject`, `message`, `processed`, `processed_return`, `insert_dt`) VALUES
+(2, 'sms', '', '', '', '', '', '', '', b'0', '', '2017-09-26 06:27:42'),
+(3, 'sms', '', 'issue-register', '9848829182', '', '', '', 'New Issue raised in "House Keeping" category - test', b'0', '', '2017-09-26 06:37:33'),
+(4, 'sms', '', 'issue-register', '9848829182', '', '', '', 'New Issue raised in "House Keeping" category - test', b'0', '', '2017-09-26 06:40:23'),
+(5, 'sms', '', 'issue-register', '7013165006', '', '', '', 'New Issue raised in "AC" category - its not working', b'0', '', '2017-09-26 06:52:33'),
+(6, 'sms', '', 'issue-register', '9848829182', '', '', '', 'New Issue raised in "House Keeping" category - test', b'0', '', '2017-09-26 07:08:15'),
+(7, 'sms', '', 'issue-register', '9848829182', '', '', '', 'New Issue raised in "House Keeping" category - test', b'0', '', '2017-09-26 07:22:50'),
+(8, 'sms', 'smstype', 'issue-register', '9848829182', 'cc', 'bcc', 'subject', 'New Issue raised in "House Keeping" category - test', b'0', '', '2017-09-26 07:26:37');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`mid`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `mid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;

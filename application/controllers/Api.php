@@ -32,6 +32,8 @@ class Api extends REST_Controller {
 		$this->load->model('api_model');
 		//$this->load->library('jwt');
 		$this->load->helpers('jwt');
+		$CI =   &get_instance();
+        $this->db2 = $this->load->database('db2', TRUE);   
 		 
 	}
 
@@ -92,8 +94,8 @@ class Api extends REST_Controller {
 				$token = JWT::decode($_SERVER['HTTP_TOKEN'], $this->config->item('jwt_key'));
 				  // echo 'after try block';
 				//echo  $token['id'].'JI';
-			  // if ($token->id) {
-				if ($token->id) {		
+			 //  if ($token->id) {
+				if ($token->reg_no) {		
 					switch($type) {
 						 
 						case 'getRole'					: $result= $this->api_model->getRole($params); break; 
@@ -112,8 +114,12 @@ class Api extends REST_Controller {
 						case 'getImagesbyId'			: $result = $this->api_model->getImagesbyId($params); break;
 						case 'getDatabyId_Domain'		: $result = $this->api_model->getDatabyId_Domain($params); break;	
 						case 'GETISSUELISTS'			: $result = $this->api_model->GETISSUELISTS($params); break;	
-						case 'getIssuesListbyStatus'	: $result=$this->api_model->getIssuesListbyStatus($params); break; 		
-					 
+						case 'getIssuesListbyStatus'	: $result=$this->api_model->getIssuesListbyStatus($params); break; 
+						case 'getDatabyId_Status'		: $result = $this->api_model->getDatabyId_Status($params); break;
+						case 'addDomain'				: $result = $this->api_model->addDomain($params,$params1); break;
+						case 'updateDomain'				: $result = $this->api_model->updateDomain($params,$params1); break;
+						case 'updateIncharge'			: $result = $this->api_model->updateIncharge($params,$params1); break;
+
 					}
 					
 				
@@ -173,8 +179,12 @@ class Api extends REST_Controller {
 	}
 
 	public function INSERTISSUE_post(){
-	 	$mobile= $this->db->query('select mobile from staff where reg_no="'.$this->post('reg_no').'" ')->row()->mobile;
-	  
+	 	$mobile1= $this->db->query('select  mobile from raghuerp_dbnew.staff where  reg_no="'.$this->post('reg_no').'" ')->row();
+	  	if($mobile1){
+	  		$mobile = $mobile1->mobile;
+	  	}else{
+	  		$mobile = '';
+	  	}
 		$data = array(
 			'domain' => $this->post('domain'),
 			'issue_desc' => $this->post('issue_desc'),
@@ -188,9 +198,6 @@ class Api extends REST_Controller {
 	}
  public function GETDETAILS_post()
  { 
-//  	$data = array(
-// 'reg_no' => $this->post('reg_no'),
-//  		);
  	$reg_no = $this->post('reg_no');
  
  	$this->getData('GETDETAILS',$reg_no);
@@ -268,7 +275,7 @@ public function updateissues_post(){
 public function insert_docs_post( ){
 	//echo $this->post('length');
 		// echo sizeof($_FILES["uploads"]["name"]);
-			$data['reg_no']=$this->post('reg_no');
+			$data['reg_no']=$this->post('date');
 			$data['insert_id']=$this->post('id');
 		  for($i=0;$i<$this->post('length');$i++){
 		 	$name= $_FILES["uploads"]["name"][$i] ;
@@ -278,7 +285,7 @@ public function insert_docs_post( ){
 			$ftpe = pathinfo($_FILES["uploads"]["name"][$i] ,PATHINFO_EXTENSION);
 
 			move_uploaded_file($_FILES["uploads"]["tmp_name"][$i] , "uploads/".$name);
-			 $this->db->insert('images',$data);		
+			 $this->db->insert('blls',$data);		
 		 }
 		 
 		  //$this->db->insert('images',$data);		
@@ -353,10 +360,112 @@ public function update_docs_post( ){
 	}
 	public function getIssuesListbyStatus_post(){
 		$data = array(
-			// 'category' => $this->post('category'),
+			'category' => $this->post('category'),
 			'status' => $this->post('status'));
 
 		$this->getData('getIssuesListbyStatus',$data);
 	}
+
+   public function getDatabyId_Status_post()
+ 	{ 
+		  $data = array(
+		  	'category' => $this->post('category'),
+		  	'status' => $this->post('status'),  
+			'reg_no' => $this->post('reg_no') 
+			);
+		   $this->getData('getDatabyId_Status',$data);
+
+  	}
+
+
+  // 	public function addDomain_post()
+ 	// { 
+		//   $data = array(
+		//   	'domain' => $this->post('domain'),
+		//   	'domain_title' => $this->post('domain_title'),  
+		// 	'domain_info' => $this->post('domain_info'),
+		// 	'domain_admin' => $this->post('domain_admin')
+		// 	);
+		//    $this->getData('addDomain',$data);
+
+  // 	}
+
+  	public function addDomain_post(){
+           $domain=array();
+          
+          foreach($this->post('domain_admin')as $da){
+            $domain[]=$da;
+          
+           }
+      
+       $arr_str  = implode(",",$domain);
+      
+        $data = array(
+            'domain' => $this->post('domain'),
+            'domain_title' => $this->post('domain_title'),
+            'domain_info' => $this->post('domain_info') ,
+            'domain_admin' => $arr_str
+            );
+     $this->getData('addDomain',$data,$domain);
+    }
+
+    // public function updateDomain_post(){
+    // 	$domains_admins =  array();
+    // 	$domains= $this->post('domain_admin');
+    // 	$domains_admins = (explode(",",$domains));
+     
+    // 	$data = array(
+    //         'domain' => $this->post('domain'),
+    //         'domain_title' => $this->post('domain_title'),
+    //         'domain_info' => $this->post('domain_info'),
+    //         'domain_admin' => $this->post('domain_admin')
+    //         );
+    //  $this->getData('updateDomain',$data,$domains_admins);
+    
+            
+    // }
+
+     public function updateDomain_post(){
+    	  $domain=array();
+          
+          foreach($this->post('domain_admin')as $da){
+            $domain[]=$da;
+          
+           }
+      
+       $arr_str  = implode(",",$domain);
+      
+        $data = array(
+            'domain' => $this->post('domain'),
+            'domain_title' => $this->post('domain_title'),
+            'domain_info' => $this->post('domain_info') ,
+            'domain_admin' => $arr_str
+            );
+     $this->getData('updateDomain',$data,$domain);
+    
+            
+    }
+
+
+    public function updateIncharge_post(){
+    	  $domain=array();
+          
+          foreach($this->post('domain_admin')as $da){
+            $domain[]=$da;
+          
+                 }
+      
+       $arr_str  = implode(",",$domain);
+     // echo $arr_str;
+        $data = array(
+            'domain' => $this->post('domain'),
+            //'domain_title' => $this->post('domain_title'),
+           	// 'domain_info' => $this->post('domain_info') ,
+            'domain_admin' => $arr_str
+            );
+     $this->getData('updateIncharge',$data,$domain);
+    
+    }
+
 
 }
