@@ -94,8 +94,8 @@ class Api extends REST_Controller {
 				$token = JWT::decode($_SERVER['HTTP_TOKEN'], $this->config->item('jwt_key'));
 				  // echo 'after try block';
 				//echo  $token['id'].'JI';
-			 //  if ($token->id) {
-				if ($token->reg_no) {		
+			   // if ($token->id) {
+				 if ($token->reg_no) {		
 					switch($type) {
 						 
 						case 'getRole'					: $result= $this->api_model->getRole($params); break; 
@@ -179,7 +179,7 @@ class Api extends REST_Controller {
 	}
 
 	public function INSERTISSUE_post(){
-	 	$mobile1= $this->db->query('select  mobile from raghuerp_dbnew.staff where  reg_no="'.$this->post('reg_no').'" ')->row();
+	 	$mobile1= $this->db->query('select mobile from raghuerp_dbnew.staff where  reg_no="'.$this->post('reg_no').'" ')->row();
 	  	if($mobile1){
 	  		$mobile = $mobile1->mobile;
 	  	}else{
@@ -275,7 +275,7 @@ public function updateissues_post(){
 public function insert_docs_post( ){
 	//echo $this->post('length');
 		// echo sizeof($_FILES["uploads"]["name"]);
-			$data['reg_no']=$this->post('date');
+			$data['reg_no']=$this->post('reg_no');
 			$data['insert_id']=$this->post('id');
 		  for($i=0;$i<$this->post('length');$i++){
 		 	$name= $_FILES["uploads"]["name"][$i] ;
@@ -285,7 +285,7 @@ public function insert_docs_post( ){
 			$ftpe = pathinfo($_FILES["uploads"]["name"][$i] ,PATHINFO_EXTENSION);
 
 			move_uploaded_file($_FILES["uploads"]["tmp_name"][$i] , "uploads/".$name);
-			 $this->db->insert('blls',$data);		
+			 $this->db->insert('images',$data);		
 		 }
 		 
 		  //$this->db->insert('images',$data);		
@@ -466,6 +466,5 @@ public function update_docs_post( ){
      $this->getData('updateIncharge',$data,$domain);
     
     }
-
 
 }
