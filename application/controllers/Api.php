@@ -119,6 +119,17 @@ class Api extends REST_Controller {
 						case 'addDomain'				: $result = $this->api_model->addDomain($params,$params1); break;
 						case 'updateDomain'				: $result = $this->api_model->updateDomain($params,$params1); break;
 						case 'updateIncharge'			: $result = $this->api_model->updateIncharge($params,$params1); break;
+						/////ionic  app
+
+					case  'getIssueapp' : $result = $this->api_model->getIssueapp($params,$params1); break;
+					case 'insertData' : $result = $this->api_model->insertData($params,$params1);
+					break;
+					case 'getIssuesListofadmin' : $result = $this->api_model->getIssuesListofadmin($params,$params1);
+					break;
+			        case 'getIssuesListofuser' : $result = $this->api_model->getIssuesListofuser($params,$params1);
+			        break;
+			        case 'deleteIssueofuser' : $result = $this->api_model->deleteIssueofuser($params,$params1);
+			        break;
 
 					}
 					
@@ -466,5 +477,49 @@ public function update_docs_post( ){
      $this->getData('updateIncharge',$data,$domain);
     
     }
+//////////////////////mobile app queries
+
+public function get_issue_post() {
+		$did = $this->post('did');
+
+		$this->getData('getIssueapp',$did);
+	}	
+
+	public function insert_data_post() {
+		$data = $this->post('issue');
+
+		// $result = $this->api_model->insertData($data);
+		$this->getData('insertData',$data);
+	}
+
+	public function issues_list_post() {
+		$reg_no = $this->post('reg_no');
+		$type = $this->post('type');
+		$role = $this->post('role');
+		$data = array('reg_no' => $reg_no, 'type' => $type, 'role' => $role);
+
+		// $result = $this->api_model->getIssuesList($data);
+		$this->getData('getIssuesListofadmin',$data);
+	}
+
+
+	public  function getissuesforuser_post()
+	{
+		$reg_no = $this->post('reg_no');
+		$type = $this->post('type');
+          $data = array('reg_no' => $reg_no, 'type' => $type);
+		$this->getData('getIssuesListofuser',$data);
+	}
+
+	public function delete_issue_post() {
+		$did = $this->post('did');
+		$mobile = $this->post('mobile');
+		$status = $this->post('status');
+
+		$data = array('did' => $did, 'mobile' => $mobile, 'status' => $status);
+
+		 $this->getData('deleteIssueofuser',$data);
+	}	
+    
 
 }
