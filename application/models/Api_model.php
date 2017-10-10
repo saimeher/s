@@ -258,18 +258,67 @@ public function DELETEISSUE($params){
         return false;
     }
 }
-public function UPDATEISSUE($params)
-{
-    $results = $this->db->query('update data set status= "'.$params['status'].'", priority =  "'.$params['priority'].'", repaired_on =  "'.$params['repaired_on'].'", repaired_by =  "'.$params['repaired_by'].'", date_of_resolution =  "'.$params['date_of_resolution'].'", notes =  "'.$params['notes'].'" where did =  "'.$params['did'].'"');
-$data=$results;
-   if($data){
-        return $data;
-    }else{
-        return false;
+// public function UPDATEISSUE($params)
+// {
+//     $results = $this->db->query('update data set status= "'.$params['status'].'", priority =  "'.$params['priority'].'", repaired_on =  "'.$params['repaired_on'].'", repaired_by =  "'.$params['repaired_by'].'", date_of_resolution =  "'.$params['date_of_resolution'].'", notes =  "'.$params['notes'].'" where did =  "'.$params['did'].'"');
+// $data=$results;
+//    if($data){
+//         return $data;
+//     }else{
+//         return false;
+//     }
+
+// }
+ public function UPDATEISSUE($params) {    
+        $type = $params['status'];
+        $where = '';
+    //      switch($type) {
+    //         case 'assigned':
+    //             $where = $this->db->query('update data set status= "'.$params['status'].'", priority =  "'.$params['priority'].'", assigned_on =  "'.$params['assigned_on'].'", repaired_by =  "'.$params['repaired_by'].'", assignedtext =  "'.$params['assignedtext'].'" where did =  "'.$params['did'].'"');
+    //             break;
+    //         case 'onhold':
+    //             $where = $this->db->query('update data set status= "'.$params['status'].'", priority =  "'.$params['priority'].'", onholdtext=  "'.$params['onholdtext'].'" where did =  "'.$params['did'].'"');
+    //             break;
+    //         case 'in_progress':
+    //             $where = " and (status = 'resolution_in_progress') ";
+    //             break;                                
+    //     }
+    //     if($where){
+    //      return array("success" => true, "data1" => $where);
+    //     }else
+    //     {
+    //        return array("success" => false);
+    //     }
+      // }
+         switch($type) {
+
+            case 'assigned':
+                $where = " status= '".$params['status']."', priority =  '".$params['priority']."', assigned_on =  '".$params['assigned_on']."', repaired_by =  '".$params['repaired_by']."', assignedtext =  '".$params['assignedtext']."' ";
+                break;
+            case 'onhold':
+                $where =" status = '".$params['status']."', priority =  '".$params['priority']."', onholdtext=  '".$params['onholdtext']."'";
+                break;
+            case 'cannot_be_resolved':
+               $where =" status = '".$params['status']."', priority =  '".$params['priority']."', cannottext=  '".$params['cannottext']."'";
+                break; 
+           case 'verified_resolved':
+               $where =" status = '".$params['status']."', priority =  '".$params['priority']."', date_of_resolution=  '".$params['date_of_resolution']."',notes ='".$params['notes']."'";
+                break;                               
+        }
+
+            
+          $sql = "update data set $where where did = '".$params['did']."'";
+
+         $result = $this->db->query($sql);
+  
+        if($result){
+         return array("success" => true, "data1" => $result);
+        }else
+        {
+           return array("success" => false);
+        }
     }
-
-}
-
+   
 public function modifyIssue($params){
 
      $results = $this->db->query('update data set domain= "'.$params['domain'].'", issue_desc =  "'.$params['issue_desc'].'", location =  "'.$params['location'].'", problem =  "'.$params['problem'].'"  where did =  "'.$params['did'].'"');
@@ -313,7 +362,7 @@ public function getAllIssues(){
 public function updateissues($params)
 {
     $results = $this->db->query('update data set  domain =  "'.$params['domain'].'", issue_desc =  "'.$params['issue_desc'].'", location =  "'.$params['location'].'", problem =  "'.$params['problem'].'" where did =  "'.$params['did'].'"');
-$data=$results;
+    $data=$results;
    if($data){
         return $data;
     }else{
@@ -844,6 +893,15 @@ public function updateIncharge($params,$param1){
             return (array("success" => true));
         }
     }
+
+
+   public function  GETISSUESINPROGRESS($reg_no){
+    $sql = "select * from data where repaired_by = '$reg_no' limit 1";
+
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return array("success" => true, "data" => $result);
+    } 
     ////////////queries for ionic app
 
    public function getIssueapp($did) {
@@ -873,6 +931,7 @@ public function updateIncharge($params,$param1){
         $notes = $data['notes'];
         $role = $data['role'];
         $image = $data['image'];
+        $role1 = $data['role1'];
         $deletedImages = $data['deletedImages'];
 
         $previous_status = '';
@@ -881,7 +940,7 @@ public function updateIncharge($params,$param1){
 
         if ($did > 0) {
             $admin_fields = '';
-            if ($role == 'stf') {
+            if ($role1 == 'stf') {
                 $admin_fields = " ,priority = '$priority', repaired_on = '$repaired_on', repaired_by = '$repaired_by', date_of_resolution = '$date_of_resolution', notes = '$notes', status = '$status' ";
             }
             $sql = "update data set domain = '$domain', issue_desc = '$issue_desc', location = '$location', problem = '$problem', image = '$image' $admin_fields where did = $did";

@@ -119,6 +119,8 @@ class Api extends REST_Controller {
 						case 'addDomain'				: $result = $this->api_model->addDomain($params,$params1); break;
 						case 'updateDomain'				: $result = $this->api_model->updateDomain($params,$params1); break;
 						case 'updateIncharge'			: $result = $this->api_model->updateIncharge($params,$params1); break;
+						case 'GETISSUESINPROGRESS' : $result  = $this->api_model->GETISSUESINPROGRESS($params,$params1);
+						break;
 						/////ionic  app
 
 					case  'getIssueapp' : $result = $this->api_model->getIssueapp($params,$params1); break;
@@ -222,16 +224,39 @@ public function getDomainsbyId_post(){
 
 public function UPDATEISSUE_post()
 {
+	
+	// echo strtotime($this->post('repaired_on'));
+	// echo strtotime($this->post('date_of_resolution'));
+
+	// $statutemp= $this->post('status');
+	// switch ($statutemp) {
+	// 	case 'pending': $start= null;
+	// 		# code...
+	// 		break;
+		
+	// 	default:
+	// 		# code...
+	// 		break;
+	// }
+
 		$time=  strtotime($this->post('repaired_on'));
 		$start = date('Y-m-d H:i:s', $time);
 		//$data['from_date'] =$start;
 	  	$time1=  strtotime($this->post('date_of_resolution'));
 		$start1 = date('Y-m-d H:i:s', $time1);
+
+		$time2=  strtotime($this->post('assigned_on'));
+		$start2 = date('Y-m-d H:i:s', $time2);
+		
 	$data = array(
 		'status' =>$this->post('status'),
 		'priority' =>$this->post('priority'),
 		'repaired_on' =>  $start ,
-		'repaired_by' => $this->post('repaired_by'),
+		'repaired_by' => $this->post('assigned_to'),
+		'assignedtext' => $this->post('assignedtext'),
+		'assigned_on' => $start2,
+		'onholdtext' => $this->post('onholdtext'),
+		'cannottext' => $this->post('cannottext'),
 		'date_of_resolution'=>$start1,
 		'notes' =>$this->post('notes'),
 		'did' => $this->post('did')
@@ -477,6 +502,13 @@ public function update_docs_post( ){
      $this->getData('updateIncharge',$data,$domain);
     
     }
+
+    public function  GETISSUESINPROGRESS_post()
+    {
+$reg_no = $this->post('reg_no');
+
+		$this->getData('GETISSUESINPROGRESS',$reg_no);
+    }
 //////////////////////mobile app queries
 
 public function get_issue_post() {
@@ -520,6 +552,8 @@ public function get_issue_post() {
 
 		 $this->getData('deleteIssueofuser',$data);
 	}	
+
+
     
 
 }
