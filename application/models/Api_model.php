@@ -313,7 +313,8 @@ public function DELETEISSUE($params){
   
         if($result){
          return array("success" => true, "data1" => $result);
-        }else
+        }
+        else
         {
            return array("success" => false);
         }
@@ -896,17 +897,90 @@ public function updateIncharge($params,$param1){
 
 
    public function  GETISSUESINPROGRESS($reg_no){
-    $sql = "select * from data where repaired_by = '$reg_no' limit 1";
-
+    // $sql = "select * from data where repaired_by = '$reg_no' order by did desc";
+       $sql = "SELECT i.img_name,datediff(d.assigned_on,d.repaired_on) as days, datediff(d.assigned_on,curdate()) as day,datediff(d.insert_dt,d.date_of_resolution) as da, d.* FROM data d LEFT JOIN images i on  i.insert_id=d.did   where repaired_by ='$reg_no' ORDER BY d.did DESC";
         $query = $this->db->query($sql);
         $result = $query->result();
         return array("success" => true, "data" => $result);
     } 
+
+
+
+    public function RESOLUTIONINPROGRESS($param)
+    {
+      $st = $this->db->query("select resolutionstarttime from data where did = '".$param['did']."' limit 1")->row();
+      $res = $st->resolutionstarttime;
+      if($res == '')
+      {
+        $d =$this->db->query("update data set resolutionstarttime = '".$param['resolutionstarttime']."' where did = '".$param['did']."'");
+
+      }
+
+      $type = $param['status'];
+
+
+      if($type == 'resolution_in_progress'){
+
+          $results = $this->db->query("update data set status= '".$param['status']."', expected_resolution_date =  '".$param['expected_resolution_date']."', resolutiontext =  '".$param['resolutiontext']."' where did =  '".$param['did']."'"); 
+        $data=$results;
+         if($data){
+              return $data;
+          }else{
+              return false;
+          }
+      }
+       if($type == 'onhold'){
+          $results = $this->db->query("update data set status= '".$param['status']."', onholddate =  '".$param['onholddate']."', onholdtext =  '".$param['onholdtext']."' where did =  '".$param['did']."'");
+
+      $data=$results;
+         if($data){
+              return $data;
+          }else{
+              return false;
+          }
+        
+      }
+       if($type == 'cannot_be_resolved'){
+          $results = $this->db->query("update data set status= '".$param['status']."', cannot_be_resolveddate =  '".$param['cannot_be_resolveddate']."', cannottext =  '".$param['cannottext']."' where did =  '".$param['did']."'");
+
+      $data=$results;
+         if($data){
+              return $data;
+          }else{
+              return false;
+          }
+      }
+      if($type == 'closed'){
+          $results = $this->db->query("update data set status= '".$param['status']."', repaired_on =  '".$param['repaired_on']."', repairedtext =  '".$param['repairedtext']."' where did =  '".$param['did']."'");
+
+      $data=$results;
+         if($data){
+              return $data;
+          }else{
+              return false;
+          }
+      }
+
+
+    }
+
+    public function RESOLUTIONCLOSED($params)
+    {
+          $results = $this->db->query("update data set status= 'closed' , repaired_on =  '".$params['repaired_on']."', repairedtext =  '".$params['repairedtext']."' where did =  '".$params['did']."'");
+        $data=$results;
+         if($data){
+              return $data;
+          }else{
+              return false;
+          }
+
+    }
+
     ////////////queries for ionic app
 
-   public function getIssueapp($did) {
-        // $sql = 'select * from data where did = "'.$params['$did'].'" limit 1';
-    $sql = "select * from data where did = '$did' limit 1";
+   public function getIssueapp($params) {
+        $sql = 'select * from data where did = "'.$params['did'].'" limit 1';
+    // $sql = "select * from data where did = '$did' limit 1";
 
         $query = $this->db->query($sql);
         $result = $query->result();

@@ -121,6 +121,10 @@ class Api extends REST_Controller {
 						case 'updateIncharge'			: $result = $this->api_model->updateIncharge($params,$params1); break;
 						case 'GETISSUESINPROGRESS' : $result  = $this->api_model->GETISSUESINPROGRESS($params,$params1);
 						break;
+						case'RESOLUTIONINPROGRESS' : $result = $this->api_model->RESOLUTIONINPROGRESS($params);
+						break;
+						case'RESOLUTIONCLOSED' : $result = $this->api_model->RESOLUTIONCLOSED($params);
+						break;
 						/////ionic  app
 
 					case  'getIssueapp' : $result = $this->api_model->getIssueapp($params,$params1); break;
@@ -224,45 +228,39 @@ public function getDomainsbyId_post(){
 
 public function UPDATEISSUE_post()
 {
+	$re = $this->post('assigned_to');
+	$st = $this->post('status');
 	
-	// echo strtotime($this->post('repaired_on'));
-	// echo strtotime($this->post('date_of_resolution'));
+	
+        $dt = new DateTime();
+        $start1 =  $dt->format('Y-m-d H:i:s');
+        $start2 =  $dt->format('Y-m-d H:i:s');
 
-	// $statutemp= $this->post('status');
-	// switch ($statutemp) {
-	// 	case 'pending': $start= null;
-	// 		# code...
-	// 		break;
-		
-	// 	default:
-	// 		# code...
-	// 		break;
-	// }
-
-		$time=  strtotime($this->post('repaired_on'));
-		$start = date('Y-m-d H:i:s', $time);
-		//$data['from_date'] =$start;
-	  	$time1=  strtotime($this->post('date_of_resolution'));
-		$start1 = date('Y-m-d H:i:s', $time1);
-
-		$time2=  strtotime($this->post('assigned_on'));
-		$start2 = date('Y-m-d H:i:s', $time2);
-		
-	$data = array(
-		'status' =>$this->post('status'),
-		'priority' =>$this->post('priority'),
-		'repaired_on' =>  $start ,
-		'repaired_by' => $this->post('assigned_to'),
-		'assignedtext' => $this->post('assignedtext'),
-		'assigned_on' => $start2,
-		'onholdtext' => $this->post('onholdtext'),
-		'cannottext' => $this->post('cannottext'),
-		'date_of_resolution'=>$start1,
-		'notes' =>$this->post('notes'),
-		'did' => $this->post('did')
+        if($st == 'assigned' && $re == ''){
+        	$array = array("success" => false);
+        	 $this->response($array,200);
+        		
+        	}
+        	else
+        	{
+        		 $data = array(
+				'status' =>$this->post('status'),
+				'priority' =>$this->post('priority'),
+				'repaired_by' => $this->post('assigned_to'),
+				'assignedtext' => $this->post('assignedtext'),
+				'assigned_on' => $start2,
+				'onholdtext' => $this->post('onholdtext'),
+				'cannottext' => $this->post('cannottext'),
+				'date_of_resolution'=>$start1,
+				'notes' =>$this->post('notes'),
+				'did' => $this->post('did')
 		);
 	 $this->getData('UPDATEISSUE',$data);
+        	}
+	   
 }
+
+
 public function DELETEISSUE_post()
 {
 	 
@@ -287,6 +285,7 @@ public function getissue_post()
  	$this->getData('getissue',$reg_no);
 
 }
+
 
 // for admin
 public function getAllIssues_get(){
@@ -505,16 +504,63 @@ public function update_docs_post( ){
 
     public function  GETISSUESINPROGRESS_post()
     {
-$reg_no = $this->post('reg_no');
+
+       $reg_no = $this->post('reg_no');
 
 		$this->getData('GETISSUESINPROGRESS',$reg_no);
     }
+
+
+    public function RESOLUTIONINPROGRESS_post() 
+  	 {
+  	 	$t=$this->post('expected_resolution_date');
+  	 	// $time=  strtotime($t);
+		$start =  $t.' '. date('H:i:s');
+
+
+		$dt = new DateTime();
+        $start1 =  $dt->format('Y-m-d H:i:s');
+ 
+		$data = array(
+			'status' => $this->post('status'),
+			'expected_resolution_date' =>  $start,
+			'resolutiontext' =>$this->post('resolutiontext'),
+			'did' => $this->post('did'),
+			'cannottext' => $this->post('cannottext'),
+			'cannot_be_resolveddate' => $start1,
+			'onholdtext' => $this->post('onholdtext'),
+			'onholddate' => $start1,
+			'repaired_on' => $start1,
+			'repairedtext' => $this->post('repairedtext'),
+			'resolutionstarttime' => $start1,
+			);
+		 $this->getData('RESOLUTIONINPROGRESS',$data);
+    }
+    public function RESOLUTIONCLOSED_post() 
+  	 {
+  // 	 	$t1=$this->post('repaired_on');
+  // 	 	// $time=  strtotime($t);
+		// $start1 =  $t1.' '. date('H:i:s');
+
+    	$dt = new DateTime();
+        $start1 =  $dt->format('Y-m-d H:i:s');
+ 
+		$data = array(
+			'repaired_on' =>  $start1,
+			'repairedtext' =>$this->post('repairedtext'),
+			'did' => $this->post('did')
+			);
+		 $this->getData('RESOLUTIONCLOSED',$data);
+    }
+
 //////////////////////mobile app queries
 
 public function get_issue_post() {
 		$did = $this->post('did');
+		$data = array('did' => $did);
 
-		$this->getData('getIssueapp',$did);
+
+		$this->getData('getIssueapp',$data);
 	}	
 
 	public function insert_data_post() {
