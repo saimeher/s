@@ -598,8 +598,4 @@ public function get_issue_post() {
 
 		 $this->getData('deleteIssueofuser',$data);
 	}	
-
-
-    
-
 }

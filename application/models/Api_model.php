@@ -272,24 +272,31 @@ public function DELETEISSUE($params){
  public function UPDATEISSUE($params) {    
         $type = $params['status'];
         $where = '';
-    //      switch($type) {
-    //         case 'assigned':
-    //             $where = $this->db->query('update data set status= "'.$params['status'].'", priority =  "'.$params['priority'].'", assigned_on =  "'.$params['assigned_on'].'", repaired_by =  "'.$params['repaired_by'].'", assignedtext =  "'.$params['assignedtext'].'" where did =  "'.$params['did'].'"');
-    //             break;
-    //         case 'onhold':
-    //             $where = $this->db->query('update data set status= "'.$params['status'].'", priority =  "'.$params['priority'].'", onholdtext=  "'.$params['onholdtext'].'" where did =  "'.$params['did'].'"');
-    //             break;
-    //         case 'in_progress':
-    //             $where = " and (status = 'resolution_in_progress') ";
-    //             break;                                
-    //     }
-    //     if($where){
-    //      return array("success" => true, "data1" => $where);
-    //     }else
-    //     {
-    //        return array("success" => false);
-    //     }
-      // }
+
+        $result2 =$this->db->query("select * from data where did = '".$params['did']."' ")->row();
+            $num = $result2->mobile;
+            $reg_no1 = $result2->reg_no;
+           $issue_desc = $result2->issue_desc;
+           $repaired_by = $result2->repaired_by;
+           $raised_by = $result2->raised_by;
+           $location = $result2->location;
+           $domain = $result2->domain;
+           $issue_desc = $result2->issue_desc;
+
+            // echo $reg_no1;
+
+
+           $result4 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no1' limit 1 ")->row();
+            $email1 = $result4->email;
+            $to1 =$email1;
+           
+
+
+       
+            
+            // echo $num1;
+
+
          switch($type) {
 
             case 'assigned':
@@ -312,7 +319,42 @@ public function DELETEISSUE($params){
          $result = $this->db->query($sql);
   
         if($result){
-         return array("success" => true, "data1" => $result);
+          if($type == 'verified_resolved' || $type == 'cannot_be_resolved' )
+          {
+            
+             $to = $num;
+                $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $params['status'] . '"';
+
+           $sms['message'] = $message;
+          $sms['to'] =$to;   
+          $result3=$this->sendSMS($sms);
+           $sms['to1'] =$to1;  
+            $sms['cc'] ='';  
+            $result3=$this->sendEmail($sms);
+           return array("success" => true, "data1" => $result);
+          }
+          if($type == 'assigned')
+          {
+              $result1 = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$params['repaired_by']."' limit 1")->row();
+            $num1 = $result1->mobile;
+            $num2 = $result1->email;
+                $to = $num1;
+                // $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $params['status'] . '"';
+                $message = '' . $domain . ' Issue at '. $location .' - ' . trim(substr($issue_desc, 0, 76)) .  ' - Raised by - ' . $raised_by . '('. $num .')';  
+
+           $sms1['message'] = $message;
+          $sms1['to'] =$to;   
+          $result4=$this->sendSMS($sms1);
+            $sms1['to1'] = $num2;  
+            $sms1['cc'] ='';  
+            $result3=$this->sendEmail($sms1);
+           return array("success" => true, "data1" => $result);
+          }
+          else
+          {
+            return array("success" => true, "data1" => $result);
+          }
+         // return array("success" => true, "data1" => $result);
         }
         else
         {
@@ -332,7 +374,8 @@ public function modifyIssue($params){
 
 public function getissue($params){
     //$result = $this->db->query('SELECT  * FROM data where reg_no="'.$params.'" ORDER BY did DESC')->result();
-        $result = $this->db->query('SELECT  i.id,i.img_name,datediff(d.insert_dt,d.date_of_resolution) as days, datediff(d.insert_dt,curdate()) as day, d.* FROM data d   LEFT JOIN images i on  i.insert_id=d.did and d.reg_no="'.$params.'" where  d.reg_no="'.$params.'" and d.status !="user_deleted" GROUP by did ORDER BY insert_dt desc')->result();
+        // $result = $this->db->query('SELECT  i.id,i.img_name,datediff(d.insert_dt,d.date_of_resolution) as days, datediff(d.insert_dt,curdate()) as day, d.* FROM data d   LEFT JOIN images i on  i.insert_id=d.did and d.reg_no="'.$params.'" where  d.reg_no="'.$params.'" and d.status !="user_deleted" GROUP by did ORDER BY insert_dt desc')->result();
+  $result = $this->db->query('SELECT  i.id,i.img_name,datediff(d.insert_dt,d.date_of_resolution) as days, datediff(d.insert_dt,curdate()) as day, d.* FROM data d   LEFT JOIN images i on  i.insert_id=d.did and d.reg_no="'.$params.'" where  d.reg_no="'.$params.'"  GROUP by did ORDER BY insert_dt desc')->result();
     if($result){
         return $result;
     }else{
@@ -752,7 +795,85 @@ public function updateIncharge($params,$param1){
       }   
 }
 
-  // public function INSERTISSUE($params){
+  public function INSERTISSUE($params){
+    $this->db->insert('data',$params);
+    $did= $this->db->insert_id();
+    if($did)
+    {
+      $result =$this->db->query("select * from data where did = '$did' limit 1")->row();
+      $domain=$result->domain;
+      $issue_desc = $result->issue_desc;
+      $raised_by = $result->raised_by;
+      $number = $result->mobile;
+      $status = $result->status;
+      $location = $result->location;
+      $result4 = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$params['reg_no']."' limit 1" )->row();
+       $to2=$result4->email;
+      // $adminMobileSql = "select domain_admin from domains where domain = '$domain' limit 1"; 
+      //       $queryadmin = $this->db->query($adminMobileSql);
+       $resultadmin = $this->db->query("select domain_admin from domains where domain = '$domain' limit 1")->row()->domain_admin;
+
+       $mobi = explode(",",$resultadmin);
+      
+            // $resultadmin = $queryadmin->result();
+
+       for($i=0;$i<sizeof($mobi);$i++)
+     {
+       $sq = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$mobi[$i]."'")->row();
+           // $admin_mobile = $resultadmin;
+
+        $admin_mobile = $sq->mobile;
+        $admin_email = $sq->email;
+                $to1 = $admin_email; 
+                $to = $admin_mobile;
+                switch($domain) {
+                    case 'electrical': $domain = 'Electrical'; break;
+                    case 'civil': $domain = 'Civil'; break;
+                    case 'water_supply': $domain = 'Water Supply'; break;
+                    case 'sanitation': $domain = 'Sanitation'; break;
+                    case 'carpentary': $domain = 'Carpentary'; break;
+                    case 'ac': $domain = 'AC'; break;
+                    case 'transportation': $domain = 'Transportation'; break;
+                    case 'infrastructure': $domain = 'Infrastructure'; break;
+                    case 'house_keeping': $domain = 'House Keeping'; break;
+                    case 'misc': $domain = 'Misc'; break; 
+                }
+
+                // $message = 'New Issue raised in "' . $domain . '" category - ' . trim(substr($issue_desc, 0, 76)) . '   raised by - "' . $raised_by . '"'; 
+                 $message = '' . $domain . ' Issue at '. $location .' - ' . trim(substr($issue_desc, 0, 76)) .  ' - Raised by - ' . $raised_by . '('. $number .')';  
+                $message1 = 'Your Request has been raised  in  domain - "' . $domain . '"';
+                 // $message2 =
+                 //  '<html><head>
+                 //  <link href="' . $domain . '/assets/global/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
+                 //  <link href="' . $domain . '/assets/global/css/components.css" rel="stylesheet" id="style_components" type="text/css" />
+                 //  </head><body>' . $message . '</body></html>';
+
+
+                $sms['message'] = $message;
+                // $sms['message2'] = $message2;
+                $sms['to'] =$to;   
+                $result1=$this->sendSMS($sms);
+                $sms['to1'] = $to1;
+                $sms['cc'] ='';
+                $result2 = $this->sendEmail($sms);
+
+                 } 
+                 $sms1['message']= $message1;
+                 $sms1['to'] = $number;
+                 $result1= $this->sendSMS($sms1);
+                 $sms1['cc'] ='';
+                 $sms1['to1'] = $to2;
+                $result2 = $this->sendEmail($sms1);
+                 return $did;
+    }
+    else
+    {
+      return 'error';
+    }
+    
+  }
+
+  //  public function INSERTISSUE($params){
   //   $this->db->insert('data',$params);
   //   $did= $this->db->insert_id();
   //   if($did)
@@ -769,16 +890,16 @@ public function updateIncharge($params,$param1){
   //     //       $queryadmin = $this->db->query($adminMobileSql);
   //      $resultadmin = $this->db->query("select domain_admin from domains where domain = '$domain' limit 1")->row()->domain_admin;
 
-  //      $mobi = explode(",",$resultadmin);
+  //       $mobi = explode(",",$resultadmin);
       
   //           // $resultadmin = $queryadmin->result();
 
   //      for($i=0;$i<sizeof($mobi);$i++)
-  //    {
-  //      $sq = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$mobi[$i]."'")->row();
+  //      {
+       
   //          // $admin_mobile = $resultadmin;
 
-  //       $admin_mobile = $sq->mobile;
+  //       $admin_mobile = $mobi[$i];
 
     
   //               $to = $admin_mobile;
@@ -802,13 +923,15 @@ public function updateIncharge($params,$param1){
   //               $sms['message'] = $message;
   //               $sms['to'] =$to;   
   //               $result1=$this->sendSMS($sms);
-  //                } 
+  //           } 
+
   //                $sms1['message']= $message1;
   //                $sms1['to'] = $number;
   //                $result1= $this->sendSMS($sms1);
 
 
-  //               return $result1;
+  //               // return $result1;
+  //                return $did;
   //   }
   //   else
   //   {
@@ -816,78 +939,11 @@ public function updateIncharge($params,$param1){
   //   }
     
   // }
-
-   public function INSERTISSUE($params){
-    $this->db->insert('data',$params);
-    $did= $this->db->insert_id();
-    if($did)
-    {
-      $result =$this->db->query("select * from data where did = '$did' limit 1")->row();
-      $domain=$result->domain;
-      $issue_desc = $result->issue_desc;
-      $raised_by = $result->raised_by;
-      $number = $result->mobile;
-      $status = $result->status;
-      $location = $result->location;
-
-      // $adminMobileSql = "select domain_admin from domains where domain = '$domain' limit 1"; 
-      //       $queryadmin = $this->db->query($adminMobileSql);
-       $resultadmin = $this->db->query("select domain_admin from domains where domain = '$domain' limit 1")->row()->domain_admin;
-
-        $mobi = explode(",",$resultadmin);
-      
-            // $resultadmin = $queryadmin->result();
-
-       for($i=0;$i<sizeof($mobi);$i++)
-       {
-       
-           // $admin_mobile = $resultadmin;
-
-        $admin_mobile = $mobi[$i];
-
-    
-                $to = $admin_mobile;
-                switch($domain) {
-                    case 'electrical': $domain = 'Electrical'; break;
-                    case 'civil': $domain = 'Civil'; break;
-                    case 'water_supply': $domain = 'Water Supply'; break;
-                    case 'sanitation': $domain = 'Sanitation'; break;
-                    case 'carpentary': $domain = 'Carpentary'; break;
-                    case 'ac': $domain = 'AC'; break;
-                    case 'transportation': $domain = 'Transportation'; break;
-                    case 'infrastructure': $domain = 'Infrastructure'; break;
-                    case 'house_keeping': $domain = 'House Keeping'; break;
-                    case 'misc': $domain = 'Misc'; break; 
-                }
-
-                // $message = 'New Issue raised in "' . $domain . '" category - ' . trim(substr($issue_desc, 0, 76)) . '   raised by - "' . $raised_by . '"'; 
-                 $message = '' . $domain . ' Issue at '. $location .' - ' . trim(substr($issue_desc, 0, 76)) .  ' - Raised by - ' . $raised_by . '('. $number .')';  
-                $message1 = 'Your Request has been raised  in  domain - "' . $domain . '"';
-
-                $sms['message'] = $message;
-                $sms['to'] =$to;   
-                $result1=$this->sendSMS($sms);
-            } 
-
-                 $sms1['message']= $message1;
-                 $sms1['to'] = $number;
-                 $result1= $this->sendSMS($sms1);
-
-
-                // return $result1;
-                 return $did;
-    }
-    else
-    {
-      return 'error';
-    }
-    
-  }
      public function sendSMS($params)
        {
         $to = $params['to'];
         $message = $params['message'];
-       $apptype='issue-register'; // eg LeaveSystem or ..
+        $apptype='issue-register';
         $sql = "insert into raghuerp_dbnew.messages(mtype, mto,mailtype,cc,bcc,subject, message,application_type) values('sms', '$to','smstype','cc','bcc','subject', '$message','$apptype')";
         if ($this->db->query($sql))
         {
@@ -895,9 +951,24 @@ public function updateIncharge($params,$param1){
         }
     }
 
+    public function sendEmail($params)
+    {
+        $to = $params['to1'];
+        $cc = $params['cc'];
+        $subject ='Issue Register'; 
+        $type = 'html';// Leave Status or ..
+        $message = $params['message'];  // html or ..
+       $apptype='Issue Register'; // eg LeaveSystem or ..
+        $sql = "insert into raghuerp_dbnew.messages(mtype, mailtype, mto, cc, subject, message,application_type) values('mail', '$type', '$to', '$cc', '$subject', '$message','$apptype')";
+        if ($this->db->query($sql)) {
+            return (array("success" => true));
+        }
+    }
+    
+
+
 
    public function  GETISSUESINPROGRESS($reg_no){
-    // $sql = "select * from data where repaired_by = '$reg_no' order by did desc";
        $sql = "SELECT i.img_name,datediff(d.assigned_on,d.repaired_on) as days, datediff(d.assigned_on,curdate()) as day,datediff(d.insert_dt,d.date_of_resolution) as da, d.* FROM data d LEFT JOIN images i on  i.insert_id=d.did   where repaired_by ='$reg_no' ORDER BY d.did DESC";
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -924,6 +995,21 @@ public function updateIncharge($params,$param1){
           $results = $this->db->query("update data set status= '".$param['status']."', expected_resolution_date =  '".$param['expected_resolution_date']."', resolutiontext =  '".$param['resolutiontext']."' where did =  '".$param['did']."'"); 
         $data=$results;
          if($data){
+           $result =$this->db->query("select * from data where did = '".$param['did']."' limit 1")->row();
+           $num = $result->mobile;
+           $reg_no = $result->reg_no;
+           $issue_desc = $result->issue_desc;
+            $result5 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no' limit 1")->row();
+             $to1 = $result5->email;              
+             $to = $num;
+                $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $param['status'] . '"';
+
+           $sms['message'] = $message;
+          $sms['to'] =$to;   
+          $result1=$this->sendSMS($sms);
+            $sms['to1'] = $to1;
+          $sms['cc'] ='';   
+          $result1=$this->sendEmail($sms);
               return $data;
           }else{
               return false;
@@ -945,6 +1031,22 @@ public function updateIncharge($params,$param1){
 
       $data=$results;
          if($data){
+           $result =$this->db->query("select * from data where did = '".$param['did']."' limit 1")->row();
+           $num = $result->mobile;
+           $reg_no = $result->reg_no;
+           $issue_desc = $result->issue_desc;
+           $result5 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no' limit 1")->row();
+             $to1 = $result5->email;       
+             $to = $num;
+                $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $param['status'] . '"';
+
+           $sms['message'] = $message;
+          $sms['to'] =$to;   
+          $result1=$this->sendSMS($sms);
+           $sms['to1'] = $to1;
+          $sms['cc'] ='';   
+          $result1=$this->sendEmail($sms);
+
               return $data;
           }else{
               return false;
@@ -1111,14 +1213,23 @@ public function updateIncharge($params,$param1){
 
         switch($type) {
             case 'pending':
-                $where = " and (status != 'resolution_in_progress' and status != 'verified_resolved' and status != 'cannot_be_resolved' and status != 'user_resolved' and status != 'user_deleted') ";
+                $where = " and (status = 'pending') ";
                 break;
-            case 'closed':
-                $where = " and (status = 'verified_resolved' or status = 'user_resolved' or status = 'user_deleted' or status = 'cannot_be_resolved') ";
+           case 'closed':
+                $where = " and (status = 'closed') ";
                 break;
             case 'in_progress':
                 $where = " and (status = 'resolution_in_progress') ";
-                break;                                
+                break;    
+           case 'user_deleted':
+                 $where = " and (status = 'user_deleted') ";
+                break;                              
+               case 'verified_resolved':
+               $where = " and (status = 'verified_resolved')";
+               break;
+               case 'cannot_be_resolved':
+               $where = "and (status ='cannot_be_resolved')";
+               break;                     
         }
 
            $sql = " (select did, issue_desc, data.domain from data inner join domains on domains.domain = data.domain where FIND_IN_SET('$reg_no', domain_admin) $where order by data.domain asc, data.insert_dt desc)";
@@ -1126,8 +1237,6 @@ public function updateIncharge($params,$param1){
 
         $query = $this->db->query($sql);
         $result = $query->result();
-        //  $query1 = $this->db->query($sql1);
-        // $result1 = $query1->result();
         return array("success" => true, "data" => $result);
     }
 
@@ -1139,18 +1248,30 @@ public function updateIncharge($params,$param1){
 
         switch($type) {
             case 'pending':
-                $where = " and (status != 'resolution_in_progress' and status != 'verified_resolved' and status != 'cannot_be_resolved' and status != 'user_resolved' and status != 'user_deleted') ";
+                $where = " and (status = 'pending') ";
                 break;
             case 'closed':
-                $where = " and (status = 'verified_resolved' or status = 'user_resolved' or status = 'user_deleted' or status = 'cannot_be_resolved') ";
+                $where = " and (status = 'closed') ";
                 break;
             case 'in_progress':
                 $where = " and (status = 'resolution_in_progress') ";
-                break;                                
+                break;    
+           case 'user_deleted':
+                 $where = " and (status = 'user_deleted') ";
+                break;                              
+               case 'verified_resolved':
+               $where = " and (status = 'verified_resolved')";
+               break;
+               case 'cannot_be_resolved':
+               $where = "and (status ='cannot_be_resolved')";
+               break;
+            
+
+
         }
 
             
-          $sql = "(select did, issue_desc, domain from data where reg_no = '$reg_no' $where order by domain asc, insert_dt desc)";
+          $sql = "(select * from data where reg_no = '$reg_no' $where order by domain asc, insert_dt desc)";
         
 
         $query = $this->db->query($sql);
@@ -1171,8 +1292,6 @@ public function updateIncharge($params,$param1){
             return array("success"=>false, "error"=>"Couldn't delete Issue");
         }
     }
-
-
 
 }
 ?>
