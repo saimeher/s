@@ -289,11 +289,6 @@ public function DELETEISSUE($params){
            $result4 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no1' limit 1 ")->row();
             $email1 = $result4->email;
             $to1 =$email1;
-           
-
-
-       
-            
             // echo $num1;
 
 
@@ -842,15 +837,7 @@ public function updateIncharge($params,$param1){
                 // $message = 'New Issue raised in "' . $domain . '" category - ' . trim(substr($issue_desc, 0, 76)) . '   raised by - "' . $raised_by . '"'; 
                  $message = '' . $domain . ' Issue at '. $location .' - ' . trim(substr($issue_desc, 0, 76)) .  ' - Raised by - ' . $raised_by . '('. $number .')';  
                 $message1 = 'Your Request has been raised  in  domain - "' . $domain . '"';
-                 // $message2 =
-                 //  '<html><head>
-                 //  <link href="' . $domain . '/assets/global/bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
-                 //  <link href="' . $domain . '/assets/global/css/components.css" rel="stylesheet" id="style_components" type="text/css" />
-                 //  </head><body>' . $message . '</body></html>';
-
-
                 $sms['message'] = $message;
-                // $sms['message2'] = $message2;
                 $sms['to'] =$to;   
                 $result1=$this->sendSMS($sms);
                 $sms['to1'] = $to1;
@@ -1215,6 +1202,12 @@ public function updateIncharge($params,$param1){
             case 'pending':
                 $where = " and (status = 'pending') ";
                 break;
+                 case 'onhold':
+                $where = " and (status = 'onhold') ";
+                break;
+                 case 'assigned':
+                $where = " and (status = 'assigned') ";
+                break;
            case 'closed':
                 $where = " and (status = 'closed') ";
                 break;
@@ -1250,6 +1243,13 @@ public function updateIncharge($params,$param1){
             case 'pending':
                 $where = " and (status = 'pending') ";
                 break;
+             case 'onhold':
+            $where = " and (status = 'onhold') ";
+            break;
+             case 'assigned':
+            $where = " and (status = 'assigned') ";
+            break;
+
             case 'closed':
                 $where = " and (status = 'closed') ";
                 break;
@@ -1291,6 +1291,41 @@ public function updateIncharge($params,$param1){
         } else {
             return array("success"=>false, "error"=>"Couldn't delete Issue");
         }
+    }
+    public function Toresolutionprogress($data)
+    {
+       $reg_no = $data['reg_no'];     
+        $type = $data['type'];
+        $where = '';
+
+        switch($type) {
+            case 'assigned':
+                $where = " and (status = 'assigned') ";
+                break;
+            case 'onhold':
+                $where = " and (status = 'onhold') ";
+                break;
+            case 'in_progress':
+                $where = " and (status = 'resolution_in_progress') ";
+                break;    
+           case 'user_deleted':
+                 $where = " and (status = 'user_deleted') ";
+                break;                              
+               case 'verified_resolved':
+               $where = " and (status = 'verified_resolved')";
+               break;
+               case 'cannot_be_resolved':
+               $where = "and (status ='cannot_be_resolved')";
+               break;
+
+        }
+            
+          $sql = "(SELECT i.img_name,datediff(d.assigned_on,d.repaired_on) as days, datediff(d.assigned_on,curdate()) as day,datediff(d.insert_dt,d.date_of_resolution) as da, d.* FROM data d LEFT JOIN images i on  i.insert_id=d.did   where repaired_by ='$reg_no' $where   ORDER BY d.did DESC)";
+        
+
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return array("success" => true, "data1" => $result);
     }
 
 }

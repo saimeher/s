@@ -136,6 +136,7 @@ class Api extends REST_Controller {
 			        break;
 			        case 'deleteIssueofuser' : $result = $this->api_model->deleteIssueofuser($params,$params1);
 			        break;
+			        case 'Toresolutionprogress' : $result = $this->api_model->Toresolutionprogress($params);
 
 					}
 					
@@ -597,5 +598,12 @@ public function get_issue_post() {
 		$data = array('did' => $did, 'mobile' => $mobile, 'status' => $status);
 
 		 $this->getData('deleteIssueofuser',$data);
+	}
+	public function Toresolutionprogress_post()
+	{
+		$reg_no = $this->post('reg_no');
+		$type = $this->post('type');
+          $data = array('reg_no' => $reg_no, 'type' => $type);
+		$this->getData('Toresolutionprogress',$data);
 	}	
 }
