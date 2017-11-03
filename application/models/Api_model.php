@@ -81,7 +81,7 @@ public function getCategories(){
     }
 }
 
-public function getIssuesListbyCategory($domain){
+    public function getIssuesListbyCategory($domain){
     $result=$this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.* FROM data d LEFT JOIN images i on  i.insert_id=d.did where d.domain="'.$domain.'"  GROUP by d.did ORDER BY d.insert_dt DESC')->result();
 
     $result1 = $this->db->query('SELECT status,COUNT(status) as tot,(SELECT COUNT(status) from data WHERE domain="'.$domain.'" )as t from data WHERE domain="'.$domain.'"    GROUP by status')->result();
@@ -228,6 +228,9 @@ public function GETDETAILS($param1='')
 
     $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param1.'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param1.'", d.domain_admin) and data.status="verified_resolved"  order by data.insert_dt DESC')->result();
+
+
+    $result4 = $this->db->query('SELECT status,COUNT(status) as tot, (SELECT COUNT(status) from data where repaired_by ="'.$param1.'" )as t  from data where repaired_by="'.$param1.'"  GROUP by status')->result();
        if ($result2) {
         $result2=$result2;
       }
@@ -235,7 +238,7 @@ WHERE   FIND_IN_SET("'.$param1.'", d.domain_admin) and data.status="verified_res
         $result2='NoAvgData';
       }
   if($result){
-        return array("data"=>$result , "data1"=>$result1,"data2"=>$result2);
+        return array("data"=>$result , "data1"=>$result1,"data2"=>$result2 ,"data4" => $result4);
     }else{
         return array("data1"=>'NoData',"data2"=>'NoAvgData');
     }
@@ -295,17 +298,28 @@ public function DELETEISSUE($params){
          switch($type) {
 
             case 'assigned':
-                $where = " status= '".$params['status']."', priority =  '".$params['priority']."', assigned_on =  '".$params['assigned_on']."', repaired_by =  '".$params['repaired_by']."', assignedtext =  '".$params['assignedtext']."' ";
+                $where = " status= '".$params['status']."', priority =  '".$params['priority']."', assigned_on =  '".$params['assigned_on']."', repaired_by =  '".$params['repaired_by']."',  repaired_name =  '".$params['repaired_name']."',assignedtext =  '".$params['assignedtext']."' ";
                 break;
             case 'onhold':
                 $where =" status = '".$params['status']."', priority =  '".$params['priority']."', onholdtext=  '".$params['onholdtext']."'";
                 break;
             case 'cannot_be_resolved':
-               $where =" status = '".$params['status']."', priority =  '".$params['priority']."', cannottext=  '".$params['cannottext']."'";
+               $where =" status = '".$params['status']."', priority =  '".$params['priority']."', cannottext=  '".$params['cannottext']."',cannot_be_resolveddate='".$params['cannot_be_resolveddate']."'";
                 break; 
            case 'verified_resolved':
                $where =" status = '".$params['status']."', priority =  '".$params['priority']."', date_of_resolution=  '".$params['date_of_resolution']."',notes ='".$params['notes']."'";
-                break;                               
+                break;              
+                case 'resolution_in_progress':
+               $where =" status = '".$params['status']."', priority =  '".$params['priority']."', expected_resolution_date  =  '".$params['expected_resolution_date']."',resolutiontext =  '".$params['resolutiontext']."'";
+
+               $st = $this->db->query("select resolutionstarttime from data where did = '".$params['did']."' limit 1")->row();
+           $res = $st->resolutionstarttime;
+            if($res == '')
+              {
+                $d =$this->db->query("update data set resolutionstarttime = '".$params['resolutionstarttime']."' where did = '".$params['did']."'");
+
+              }
+                break;                    
         }
 
             
@@ -345,6 +359,27 @@ public function DELETEISSUE($params){
             $result3=$this->sendEmail($sms1);
            return array("success" => true, "data1" => $result);
           }
+
+          if($type == 'resolution_in_progress'){
+
+           $result =$this->db->query("select * from data where did = '".$params['did']."' limit 1")->row();
+           $num = $result->mobile;
+           $reg_no = $result->reg_no;
+           $issue_desc = $result->issue_desc;
+            $result5 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no' limit 1")->row();
+             $to1 = $result5->email;              
+             $to = $num;
+                $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $params['status'] . '"';
+
+           $sms['message'] = $message;
+          $sms['to'] =$to;   
+          $result1=$this->sendSMS($sms);
+            $sms['to1'] = $to1;
+          $sms['cc'] ='';   
+          $result1=$this->sendEmail($sms);
+           return array("success" => true, "data1" => $result);
+          
+      }
           else
           {
             return array("success" => true, "data1" => $result);
@@ -407,7 +442,6 @@ public function updateissues($params)
     }else{
         return false;
     }
-
 }
 
 public function getImagesbyId($params=''){
@@ -937,6 +971,30 @@ public function updateIncharge($params,$param1){
             return (array("success" => true));
         }
     }
+    //send sms via issue register project
+  //   function sendSMS($params)
+  // {
+  //   $to = $params['to'];
+  //  $msg = $params['message'];
+  //   $URL = "http://login.smsmoon.com/API/sms.php";
+  //   $post_fields = array(
+  //       'username' => 'raghuedu',
+  //       'password' => 'abcd.1234',
+  //       'from' => 'RAGHUT',
+  //       'to' => $to,
+  //       'msg' => $msg,
+  //       'type' => '1',
+  //       'dnd_check' => '0'
+  //   );
+
+  //   $ch = curl_init();
+
+  //   curl_setopt($ch, CURLOPT_URL, $URL);
+  //   curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+  //   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+  //   curl_exec($ch);
+  //   }
 
     public function sendEmail($params)
     {
@@ -1265,9 +1323,6 @@ public function updateIncharge($params,$param1){
                case 'cannot_be_resolved':
                $where = "and (status ='cannot_be_resolved')";
                break;
-            
-
-
         }
 
             
@@ -1316,6 +1371,9 @@ public function updateIncharge($params,$param1){
                break;
                case 'cannot_be_resolved':
                $where = "and (status ='cannot_be_resolved')";
+               break;
+               case 'closed':
+               $where = " and (status ='closed')";
                break;
 
         }

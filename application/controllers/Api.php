@@ -231,7 +231,7 @@ public function UPDATEISSUE_post()
 {
 	$re = $this->post('assigned_to');
 	$st = $this->post('status');
-	
+	$da = $this->post('expected_resolution_date');
 	
         $dt = new DateTime();
         $start1 =  $dt->format('Y-m-d H:i:s');
@@ -240,7 +240,11 @@ public function UPDATEISSUE_post()
         if($st == 'assigned' && $re == ''){
         	$array = array("success" => false);
         	 $this->response($array,200);
-        		
+        	}
+        	if($st == 'resolution_in_progress' &&  $da == '')
+        	{
+        		$array = array("success" => false);
+        	 $this->response($array,200);
         	}
         	else
         	{
@@ -248,13 +252,18 @@ public function UPDATEISSUE_post()
 				'status' =>$this->post('status'),
 				'priority' =>$this->post('priority'),
 				'repaired_by' => $this->post('assigned_to'),
+				'repaired_name' => $this->post('repaired_name'),
 				'assignedtext' => $this->post('assignedtext'),
 				'assigned_on' => $start2,
 				'onholdtext' => $this->post('onholdtext'),
 				'cannottext' => $this->post('cannottext'),
+				'cannot_be_resolveddate' =>$start1,
+				'resolutiontext' => $this->post('resolutiontext'),
+				'expected_resolution_date' => $this->post('expected_resolution_date'),
 				'date_of_resolution'=>$start1,
 				'notes' =>$this->post('notes'),
-				'did' => $this->post('did')
+				'did' => $this->post('did'),
+				'resolutionstarttime' => $start1,
 		);
 	 $this->getData('UPDATEISSUE',$data);
         	}
@@ -515,13 +524,18 @@ public function update_docs_post( ){
     public function RESOLUTIONINPROGRESS_post() 
   	 {
   	 	$t=$this->post('expected_resolution_date');
+  	 	$st=$this->post('status');
   	 	// $time=  strtotime($t);
 		$start =  $t.' '. date('H:i:s');
 
 
 		$dt = new DateTime();
         $start1 =  $dt->format('Y-m-d H:i:s');
- 
+        if($st == 'resolution_in_progress' &&  $t == '')
+        	{
+        	 $this->response(false,200);
+        	}
+ 		else{
 		$data = array(
 			'status' => $this->post('status'),
 			'expected_resolution_date' =>  $start,
@@ -537,13 +551,14 @@ public function update_docs_post( ){
 			);
 		 $this->getData('RESOLUTIONINPROGRESS',$data);
     }
+  }
     public function RESOLUTIONCLOSED_post() 
   	 {
   // 	 	$t1=$this->post('repaired_on');
   // 	 	// $time=  strtotime($t);
 		// $start1 =  $t1.' '. date('H:i:s');
 
-    	$dt = new DateTime();
+    	$dt = new  DateTime();
         $start1 =  $dt->format('Y-m-d H:i:s');
  
 		$data = array(
