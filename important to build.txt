@@ -1,0 +1,37 @@
+  2  D:\issueregister-ui\platforms\android\build\outputs\apk>keytool -genkey -v -keys
+tore my-release-key.keystore -alias alias_name -keyalg RSA -keysize 2048 -validi
+ty 10000
+
+
+
+
+3   D:\issueregister-ui\platforms\android\build\outputs\apk>jarsigner -verbose -siga
+lg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore android-release
+-unsigned.apk alias_name
+
+
+D:\issueregister-ui\platforms\android\build\outputs\apk>C:\Users\Res\AppData\Loc
+al\Android\sdk\build-tools\27.0.0\zipalign -v 4 android-release-unsigned.apk ada
+r.apk
+
+
+
+D:\issueregister-ui\platforms\android\build\outputs\apk>C:\Users\Res\AppData\Loc
+al\Android\sdk\build-tools\27.0.0\zipalign -v 4 android-release-unsigned.apk ada
+r.apk
+
+D:\issueregister-ui\platforms\android\build\outputs\apk>C:\Users\Res\AppData\Loc
+al\Android\sdk\build-tools\26.0.1\zipalign -v 4 android-release-unsigned.apk ada
+r.apk
+
+
+ 1 D:\issueregister-ui\platforms\android\build\outputs\apk>ionic cordova run androi
+d --prod --release        
+
+
+
+C:\Users\Res\AppData\Local\Android\sdk\platform-tools>
+
+
+
+https://github.com/hughred22/YouTube-Video-Listing-Ionic-Mobile-App/wiki/Preparing-for-Release-and-Publishing-Your-Ionic-App -> important steps for building
