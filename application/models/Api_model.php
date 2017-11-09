@@ -1386,5 +1386,15 @@ public function updateIncharge($params,$param1){
         return array("success" => true, "data1" => $result);
     }
 
+    public function deleteimages($params)
+    {
+         $result = $this->db->query('Delete from images where id = "'.$params['id'].'"');
+    if($result){
+        return $result;
+    }else{
+        return false;
+    }
+    }
+
 }
 ?>

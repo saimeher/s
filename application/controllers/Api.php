@@ -137,7 +137,9 @@ class Api extends REST_Controller {
 			        case 'deleteIssueofuser' : $result = $this->api_model->deleteIssueofuser($params,$params1);
 			        break;
 			        case 'Toresolutionprogress' : $result = $this->api_model->Toresolutionprogress($params);
-
+			        break;
+			        case 'deleteimages' : $result = $this->api_model->deleteimages($params);
+                    break;
 					}
 					
 				
@@ -317,7 +319,27 @@ public function updateissues_post(){
      $this->getData('updateissues',$data);
 	}
 
-public function insert_docs_post( ){
+// public function insert_docs_post( ){
+// 	//echo $this->post('length');
+// 		// echo sizeof($_FILES["uploads"]["name"]);
+// 			$data['reg_no']=$this->post('reg_no');
+// 			$data['insert_id']=$this->post('id');
+// 		  for($i=0;$i<$this->post('length');$i++){
+// 		 	$name= $_FILES["uploads"]["name"][$i] ;
+// 		  	$data['img_name'] = $name;
+// 			$type= $_FILES["uploads"]["type"][$i] ;
+// 			$data['img_type'] = $type;
+// 			$ftpe = pathinfo($_FILES["uploads"]["name"][$i] ,PATHINFO_EXTENSION);
+
+// 			move_uploaded_file($_FILES["uploads"]["tmp_name"][$i] , "uploads/".$name);
+// 			 $this->db->insert('images',$data);		
+// 		 }
+		 
+// 		  //$this->db->insert('images',$data);		
+
+// 		// return $this->response($file_name,200); 
+// 	}
+	public function insert_docs_post( ){
 	//echo $this->post('length');
 		// echo sizeof($_FILES["uploads"]["name"]);
 			$data['reg_no']=$this->post('reg_no');
@@ -360,7 +382,6 @@ public function updateImage_post(){
 	    $Img= $imagesdata->img_name;
 		// $result= $this->api_model->getRole($reg_no);
 		//echo base_url()."uploads/".$Img; 
-		 
 		$res= unlink("./uploads/".$Img);
 		 
 	}
@@ -369,7 +390,7 @@ public function update_docs_post( ){
  
 			//Unlinking here
 			$id=$this->post('id');
-			$imagesdata = $this->db->query('select *from images where id="'.$id.'"')->row();
+			$imagesdata = $this->db->query('select * from images where id="'.$id.'"')->row();
 	    	$Img= $imagesdata->img_name;
 			$res= unlink("./uploads/".$Img);
 
@@ -621,4 +642,24 @@ public function get_issue_post() {
           $data = array('reg_no' => $reg_no, 'type' => $type);
 		$this->getData('Toresolutionprogress',$data);
 	}	
+
+	public function deleteimages_post()
+	{
+		// $data = $this->post('image');
+     $image_name = $this->post('img_name');
+     $id=$this->post('id');
+	    	$Img= $image_name;
+			$res= unlink("./uploads/".$Img);
+			$data = array('id' => $id, 'img_name' => $image_name);
+
+			if($res)
+			{
+               $this->getData('deleteimages',$data);
+			}
+			else
+			{
+				 $this->response(false,200);
+			}
+		  // $image_name = $data['image_name'];
+	}
 }
