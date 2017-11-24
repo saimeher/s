@@ -1,0 +1,144 @@
+<div id="wrapper">
+    <!-- begin TOP NAVIGATION -->
+    <app-header></app-header>
+    <!-- end TOP NAVIGATION -->
+
+    <!-- begin SIDE NAVIGATION -->
+    <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+    <!-- end SIDE NAVIGATION -->
+
+    <!-- begin MAIN PAGE CONTENT -->
+    <div id="page-wrapper">
+
+        <div class="spl-content">
+
+            <!-- begin PAGE TITLE ROW -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-title">
+                        <h1>
+                            Daily <small>Attendance</small>
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li><i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Daily Attendance</a>
+                            </li>
+                            <!--<li class="active">Blank Page</li>-->
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <!-- end PAGE TITLE ROW -->
+
+            <div class="row" *ngIf="role && (role == 'admin' || role == 'management' || role == 'attendance')">
+                <div class="col-lg-2">
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="model"></my-date-picker>
+                </div>
+                
+                    <div class="col-lg-8">
+                      <table class="table table-bordered t-padding">
+                        <thead>
+                          <tr class="t-padding">
+                            
+                            <td colspan="2" style="text-align: center; background-color: #eee" class="t-padding"><strong>  No compilance </strong></td>
+                            <td colspan="3" style="text-align: center; background-color: #eee" class="t-padding"><strong>In compilance </strong></td>  
+                        </tr>
+                        </thead>
+                        <thead class="t-padding">
+                          <tr class="t-padding">
+                            <th style="text-align: center;" class="t-padding">Late In</th>
+                            <th style="text-align: center;" class="t-padding">Early Out</th>
+                            <th style="text-align: center;" class="t-padding">No issues</th>
+                          </tr>
+                        </thead>
+                        <tbody  class="t-padding">
+          
+                          <tr  class="t-padding">
+                            <!-- <td  style="text-align: center; font-weight: bold; color: #1b45e6;">{{ad.minimum}}</td> -->
+                            <td *ngIf="count1 == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;"  class="t-padding">0</td>
+                            <td *ngIf="count1 != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="button"  (click)=view1()  class="t-padding">{{count1}} </td>
+          
+                            <!-- <td style="text-align: center; font-weight: bold; color: #1b45e6;">{{ad.average}}</td> -->
+                            <!-- <td *ngIf="ad.average != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;"  class="t-padding">{{ad.average}}</td> -->
+                            <td *ngIf="count2 == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;"  class="t-padding">0</td>
+                            <td *ngIf="count2 != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="button" (click)=view2()  class="t-padding">{{count2}}</td>
+                            <!-- <a *ngIf="count2 != '0'" class="button" (click)=view2()>view</a> -->
+                            <!-- <td style="text-align: center; font-weight: bold; color: #1b45e6;">{{ad.maximum}}</td> -->
+                            <!--   <td *ngIf="ad.maximum != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;"  class="t-padding">{{ad.maximum}}</td> -->
+                            <td *ngIf="count2 == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;"  class="t-padding">0</td>
+                            <td *ngIf="count2 != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="button" (click)=view3()  class="t-padding">{{count3}} </td>
+                            <!-- <td  style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;"  class="t-padding">0</td> -->
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+
+
+                <div class="col-lg-12" *ngIf="collegdepts">
+                    <div class="portlet portlet-green" *ngFor="let cdt of collegdepts">
+                        <div class="portlet-heading">
+                            <div class="portlet-title">
+                                <h4>Department of <b>{{cdt.department_name}}</b>, {{cdt.college_name}}</h4>
+                            </div>
+                            <div class="portlet-widgets">
+                                Date: <b>{{model.date.day}}/{{model.date.month}}/{{model.date.year}}</b>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-responsive table-hover table-bordered ">
+                                    <thead>
+                                        <tr>
+                                            <th width="100">Employee ID</th>
+                                            <th width="220">Employee Name</th>
+                                            <th width="150">Designation</th>
+                                            <th width="100">Mobile</th>
+                                            <th width="100">In Time</th>
+                                            <th width="100">Out Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody *ngFor="let att of attendance[cdt.id]">
+                                        <tr *ngIf="att.in_time < '09:00 AM' && att.out_time > '03:30 PM'" class="back" >
+                                                <td>{{att.reg_no}}</td>
+                                                <td>{{att.name}}</td>
+                                                <td>{{att.designation}}</td>
+                                                <td>{{att.mobile}}</td>
+                                                <td>{{att.in_time}}</td>
+                                                <td>{{att.out_time}}</td>
+                                        </tr>
+
+                                        <tr *ngIf="att.in_time > '09:00 AM' && att.out_time == null" class="back1" >
+                                            <td>{{att.reg_no}}</td>
+                                            <td>{{att.name}}</td>
+                                            <td>{{att.designation}}</td>
+                                            <td>{{att.mobile}}</td>
+                                            <td>{{att.in_time}}</td>
+                                            <td>{{att.out_time}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.portlet -->
+                </div>
+            </div>
+
+            <div class="row" *ngIf="role && (role != 'admin' && role != 'management' && role != 'attendance')">
+                <div class="col-lg-12">
+                    <h4>Coming Soon...!</h4>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- /.page-content -->
+
+    </div>
+    <!-- /#page-wrapper -->
+    <!-- end MAIN PAGE CONTENT -->
+
+</div>

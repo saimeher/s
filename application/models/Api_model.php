@@ -33,9 +33,16 @@ public function loginCheck($username, $password)
   public function getRole($param1='')
     {
          
-         // $result=$this->db->query('select *from roles where reg_no="'.$param1.'"')->row();
+      // $result=$this->db->query('SELECT * FROM roles where reg_no="'.$param1.'" group by role ')->result();
        // $result= $this->db->query('select reg_no,role,concat(GROUP_CONCAT(domain), ",") as domain_admin from roles where reg_no = "'.$param1.'"')->row();
+     //to work in both appa nd web 
        $result= $this->db->query('select * ,concat(GROUP_CONCAT(domain), ",") as domain_admin from roles where reg_no = "'.$param1.'"')->row();
+       //to get role in commas 
+      // $result= $this->db->query('select * ,concat(GROUP_CONCAT(domain), ",") as domain_admin, GROUP_CONCAT(DISTINCT(role),"") as domain2 from roles where reg_no = "'.$param1.'"')->row();
+          //echo $result['reg_no'].''.$result[0]['reg_no'].'dssd';
+         // print_r($result[0]->reg_no);
+          
+         
         if($result->reg_no != '')
         {
           return  array("data"=>$result); 
@@ -220,13 +227,13 @@ public function GETDETAILS($param1='')
 {
 
 
-     $result = $this->db->query('select i.img_name,d.domain_admin,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param1.'"
-      JOIN data            ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did       WHERE   FIND_IN_SET("'.$param1.'", d.domain_admin) GROUP BY data.did ORDER BY data.did DESC')->result();
+     $result = $this->db->query('select i.img_name,d.domain_admin,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param1.'"
+      JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did       WHERE   FIND_IN_SET("'.$param1.'", d.domain_admin) GROUP BY data.did ORDER BY data.did DESC')->result();
 
    
-     $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param1.'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param1.'", d.domain_admin)  ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param1.'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param1.'", d.domain_admin)   GROUP by status')->result();
+     $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param1.'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param1.'", d.domain_admin)  ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param1.'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param1.'", d.domain_admin)   GROUP by status')->result();
 
-    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param1.'" JOIN data ON data.domain = d.domain 
+    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param1.'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param1.'", d.domain_admin) and data.status="verified_resolved"  order by data.insert_dt DESC')->result();
 
 
@@ -289,7 +296,7 @@ public function DELETEISSUE($params){
             // echo $reg_no1;
 
 
-           $result4 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no1' limit 1 ")->row();
+           $result4 =$this->db->query("select * from raghuerp_db.staff where reg_no = '$reg_no1' limit 1 ")->row();
             $email1 = $result4->email;
             $to1 =$email1;
             // echo $num1;
@@ -334,17 +341,17 @@ public function DELETEISSUE($params){
              $to = $num;
                 $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $params['status'] . '"';
 
-           $sms['message'] = $message;
+          $sms['message'] = $message;
           $sms['to'] =$to;   
           $result3=$this->sendSMS($sms);
-           $sms['to1'] =$to1;  
-            $sms['cc'] ='';  
-            $result3=$this->sendEmail($sms);
+          $sms['to1'] =$to1;  
+          $sms['cc'] ='';  
+          $result3=$this->sendEmail($sms);
            return array("success" => true, "data1" => $result);
           }
           if($type == 'assigned')
           {
-              $result1 = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$params['repaired_by']."' limit 1")->row();
+              $result1 = $this->db->query("select * from raghuerp_db.staff where reg_no = '".$params['repaired_by']."' limit 1")->row();
             $num1 = $result1->mobile;
             $num2 = $result1->email;
                 $to = $num1;
@@ -366,7 +373,7 @@ public function DELETEISSUE($params){
            $num = $result->mobile;
            $reg_no = $result->reg_no;
            $issue_desc = $result->issue_desc;
-            $result5 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no' limit 1")->row();
+            $result5 =$this->db->query("select * from raghuerp_db.staff where reg_no = '$reg_no' limit 1")->row();
              $to1 = $result5->email;              
              $to = $num;
                 $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $params['status'] . '"';
@@ -457,7 +464,7 @@ $data=$results;
 public function getDatabyId_Domain($param1='')
 {
         // if($param1['domain']!='all'){
-            $result = $this->db->query('select i.img_name,d.domain_admin,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param1['reg_no'].'"
+            $result = $this->db->query('select i.img_name,d.domain_admin,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param1['reg_no'].'"
 JOIN data 
     ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
 WHERE  d.domain = "'.$param1['domain'].'" and FIND_IN_SET("'.$param1['reg_no'].'", d.domain_admin) GROUP BY data.did ORDER BY data.did DESC')->result();
@@ -474,7 +481,7 @@ WHERE  d.domain = "'.$param1['domain'].'" and FIND_IN_SET("'.$param1['reg_no'].'
 
 
 // }
-     $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param1['reg_no'].'" JOIN data ON data.domain = d.domain 
+     $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param1['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param1['reg_no'].'", d.domain_admin) and data.status="verified_resolved" and data.domain="'.$param1['domain'].'"  order by data.insert_dt DESC')->result();
        if ($result2) {
         $result2=$result2;
@@ -493,12 +500,12 @@ WHERE   FIND_IN_SET("'.$param1['reg_no'].'", d.domain_admin) and data.status="ve
 public function GETISSUELISTS($param){
 
 if($param['status']!='all' && $param['category']=='all'){
-    $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+    $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  and  data.status ="'.$param['status'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.domain as status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'"  and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.domain order by data.insert_dt DESC')->result();
+    $result1 = $this->db->query('SELECT data.domain as status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'"  and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.domain order by data.insert_dt DESC')->result();
     
     
-      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved"    and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY)     order by data.insert_dt DESC')->result();
       if ($result2) {
         $result2=$result2;
@@ -509,11 +516,11 @@ WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="ver
 }
 else if ($param['status']=='all' && $param['category']=='all') {
  // echo '2ND CONDTION';
-  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)   and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)    and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and   data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.status order by data.insert_dt DESC')->result();
+    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)    and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and   data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.status order by data.insert_dt DESC')->result();
     // $result2='NoAvgData';
-    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved"    and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY)     order by data.insert_dt DESC')->result();
       if ($result2) {
         $result2=$result2;
@@ -523,12 +530,12 @@ WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="ver
       } 
 }
 else if ($param['status']!='all' && $param['category']!='all') {
- $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+ $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)   and  data.domain ="'.$param['category'].'" and  data.status ="'.$param['status'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  and  data.domain ="'.$param['category'].'" and data.status="'.$param['status'].'"  and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.domain="'.$param['category'].'" and data.status="'.$param['status'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.status order by data.insert_dt DESC')->result();
+    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  and  data.domain ="'.$param['category'].'" and data.status="'.$param['status'].'"  and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.domain="'.$param['category'].'" and data.status="'.$param['status'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.status order by data.insert_dt DESC')->result();
         
     // if($param['status']=='verified_resolved'){
-      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved" and data.domain="'.$param['category'].'"   and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY)     order by data.insert_dt DESC')->result();
       if ($result2) {
         $result2=$result2;
@@ -539,10 +546,10 @@ WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="ver
       
 }
 else{
-  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'"  and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.status order by data.insert_dt DESC')->result();
-    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'" and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY) GROUP by data.status order by data.insert_dt DESC')->result();
+    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved" and data.domain="'.$param['category'].'"   and data.insert_dt BETWEEN "'.$param['from_date'].'" and  DATE_ADD("'.$param['to_date'].'", INTERVAL 1 DAY)     order by data.insert_dt DESC')->result();
       if ($result2) {
         $result2=$result2;
@@ -644,12 +651,12 @@ else if($param['status']!='all' && $param['category']=='all'){
  public function getDatabyId_Status($param){
   
      if($param['status']!='all' && $param['category']=='all'){
-    $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+    $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  and  data.status ="'.$param['status'].'"  GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.domain as status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'"  ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'"  GROUP by data.domain order by data.insert_dt DESC')->result();
+    $result1 = $this->db->query('SELECT data.domain as status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'"  ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="'.$param['status'].'"  GROUP by data.domain order by data.insert_dt DESC')->result();
     
     // if($param['status']=='verified_resolved'){
-      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
       WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved" order by data.insert_dt DESC')->result();
       if ($result2) {
         $result2=$result2;
@@ -660,10 +667,10 @@ else if($param['status']!='all' && $param['category']=='all'){
 }
 else if ($param['status']=='all' && $param['category']=='all') {
  // echo '2ND CONDTION';
-  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  GROUP by data.status order by data.insert_dt DESC')->result();
-    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  GROUP by data.status order by data.insert_dt DESC')->result();
+    $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved" order by data.insert_dt DESC')->result();
     if ($result2) {
         $result2=$result2;
@@ -675,12 +682,12 @@ WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="ver
 
 }
 else if ($param['status']!='all' && $param['category']!='all') {
- $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+ $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)   and  data.domain ="'.$param['category'].'" and  data.status ="'.$param['status'].'" GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  and  data.domain ="'.$param['category'].'" and data.status="'.$param['status'].'"   ) as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.domain="'.$param['category'].'" and data.status="'.$param['status'].'"  GROUP by data.status order by data.insert_dt DESC')->result();
+    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin)  and  data.domain ="'.$param['category'].'" and data.status="'.$param['status'].'"   ) as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.domain="'.$param['category'].'" and data.status="'.$param['status'].'"  GROUP by data.status order by data.insert_dt DESC')->result();
         
     
-      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+      $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved" and data.domain="'.$param['category'].'"  order by data.insert_dt DESC')->result();
        if ($result2) {
         $result2=$result2;
@@ -691,11 +698,11 @@ WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="ver
       
 }
 else{
-  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
+  $result = $this->db->query('SELECT i.img_name,datediff(insert_dt,date_of_resolution) as days, datediff(insert_dt,curdate()) as day, d.domain_admin, data.* from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain LEFT JOIN images i on  i.insert_id=data.did
               WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'"  GROUP by data.did order by data.insert_dt DESC')->result();
-    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_dbnew.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.domain= "'.$param['category'].'") as t from domains d inner join raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'"  GROUP by data.status order by data.insert_dt DESC')->result();
+    $result1 = $this->db->query('SELECT data.status,COUNT(data.status) as tot,(SELECT COUNT(data.status) from domains d inner join raghuerp_db.staff r ON r.reg_no ="'.$param['reg_no'].'"  join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.domain= "'.$param['category'].'") as t from domains d inner join raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" join data ON data.domain = d.domain WHERE FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and  data.domain ="'.$param['category'].'"  GROUP by data.status order by data.insert_dt DESC')->result();
    // $result2='NoAvgData';
-     $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_dbnew.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
+     $result2 = $this->db->query('SELECT  floor(avg(datediff(date_of_resolution,insert_dt))) as average,min(datediff(date_of_resolution,insert_dt)) as minimum, max(datediff(date_of_resolution,insert_dt)) as maximum   from domains d INNER JOIN  raghuerp_db.staff r ON r.reg_no = "'.$param['reg_no'].'" JOIN data ON data.domain = d.domain 
 WHERE   FIND_IN_SET("'.$param['reg_no'].'", d.domain_admin) and data.status="verified_resolved" and data.domain="'.$param['category'].'"  order by data.insert_dt DESC')->result();
        if ($result2) {
         $result2=$result2;
@@ -836,7 +843,7 @@ public function updateIncharge($params,$param1){
       $number = $result->mobile;
       $status = $result->status;
       $location = $result->location;
-      $result4 = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$params['reg_no']."' limit 1" )->row();
+      $result4 = $this->db->query("select * from raghuerp_db.staff where reg_no = '".$params['reg_no']."' limit 1" )->row();
        $to2=$result4->email;
       // $adminMobileSql = "select domain_admin from domains where domain = '$domain' limit 1"; 
       //       $queryadmin = $this->db->query($adminMobileSql);
@@ -848,7 +855,7 @@ public function updateIncharge($params,$param1){
 
        for($i=0;$i<sizeof($mobi);$i++)
      {
-       $sq = $this->db->query("select * from raghuerp_dbnew.staff where reg_no = '".$mobi[$i]."'")->row();
+       $sq = $this->db->query("select * from raghuerp_db.staff where reg_no = '".$mobi[$i]."'")->row();
            // $admin_mobile = $resultadmin;
 
         $admin_mobile = $sq->mobile;
@@ -960,41 +967,41 @@ public function updateIncharge($params,$param1){
   //   }
     
   // }
-     public function sendSMS($params)
-       {
-        $to = $params['to'];
-        $message = $params['message'];
-        $apptype='issue-register';
-        $sql = "insert into raghuerp_dbnew.messages(mtype, mto,mailtype,cc,bcc,subject, message,application_type) values('sms', '$to','smstype','cc','bcc','subject', '$message','$apptype')";
-        if ($this->db->query($sql))
-        {
-            return (array("success" => true));
-        }
-    }
+    //  public function sendSMS($params)
+    //    {
+    //     $to = $params['to'];
+    //     $message = $params['message'];
+    //     $apptype='issue-register';
+    //     $sql = "insert into raghuerp_db.messages(mtype, mto,mailtype,cc,bcc,subject, message,application_type) values('sms', '$to','smstype','cc','bcc','subject', '$message','$apptype')";
+    //     if ($this->db->query($sql))
+    //     {
+    //         return (array("success" => true));
+    //     }
+    // }
     //send sms via issue register project
-  //   function sendSMS($params)
-  // {
-  //   $to = $params['to'];
-  //  $msg = $params['message'];
-  //   $URL = "http://login.smsmoon.com/API/sms.php";
-  //   $post_fields = array(
-  //       'username' => 'raghuedu',
-  //       'password' => 'abcd.1234',
-  //       'from' => 'RAGHUT',
-  //       'to' => $to,
-  //       'msg' => $msg,
-  //       'type' => '1',
-  //       'dnd_check' => '0'
-  //   );
+    function sendSMS($params)
+  {
+    $to = $params['to'];
+   $msg = $params['message'];
+    $URL = "http://login.smsmoon.com/API/sms.php";
+    $post_fields = array(
+        'username' => 'raghuedu',
+        'password' => 'abcd.1234',
+        'from' => 'RAGHUT',
+        'to' => $to,
+        'msg' => $msg,
+        'type' => '1',
+        'dnd_check' => '0'
+    );
 
-  //   $ch = curl_init();
+    $ch = curl_init();
 
-  //   curl_setopt($ch, CURLOPT_URL, $URL);
-  //   curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-  //   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_URL, $URL);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-  //   curl_exec($ch);
-  //   }
+    curl_exec($ch);
+    }
 
     public function sendEmail($params)
     {
@@ -1004,15 +1011,12 @@ public function updateIncharge($params,$param1){
         $type = 'html';// Leave Status or ..
         $message = $params['message'];  // html or ..
        $apptype='Issue Register'; // eg LeaveSystem or ..
-        $sql = "insert into raghuerp_dbnew.messages(mtype, mailtype, mto, cc, subject, message,application_type) values('mail', '$type', '$to', '$cc', '$subject', '$message','$apptype')";
+        $sql = "insert into raghuerp_db.messages(mtype, mailtype, mto, cc, subject, message,application_type) values('mail', '$type', '$to', '$cc', '$subject', '$message','$apptype')";
         if ($this->db->query($sql)) {
             return (array("success" => true));
         }
     }
     
-
-
-
    public function  GETISSUESINPROGRESS($reg_no){
        $sql = "SELECT i.img_name,datediff(d.assigned_on,d.repaired_on) as days, datediff(d.assigned_on,curdate()) as day,datediff(d.insert_dt,d.date_of_resolution) as da, d.* FROM data d LEFT JOIN images i on  i.insert_id=d.did   where repaired_by ='$reg_no' ORDER BY d.did DESC";
         $query = $this->db->query($sql);
@@ -1044,7 +1048,7 @@ public function updateIncharge($params,$param1){
            $num = $result->mobile;
            $reg_no = $result->reg_no;
            $issue_desc = $result->issue_desc;
-            $result5 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no' limit 1")->row();
+            $result5 =$this->db->query("select * from raghuerp_db.staff where reg_no = '$reg_no' limit 1")->row();
              $to1 = $result5->email;              
              $to = $num;
                 $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $param['status'] . '"';
@@ -1080,7 +1084,7 @@ public function updateIncharge($params,$param1){
            $num = $result->mobile;
            $reg_no = $result->reg_no;
            $issue_desc = $result->issue_desc;
-           $result5 =$this->db->query("select * from raghuerp_dbnew.staff where reg_no = '$reg_no' limit 1")->row();
+           $result5 =$this->db->query("select * from raghuerp_db.staff where reg_no = '$reg_no' limit 1")->row();
              $to1 = $result5->email;       
              $to = $num;
                 $message = 'Status of issue "' . trim(substr($issue_desc, 0, 76)). '" changed to "' . $param['status'] . '"';
@@ -1386,15 +1390,91 @@ public function updateIncharge($params,$param1){
         return array("success" => true, "data1" => $result);
     }
 
-    public function deleteimages($params)
+      public function deleteimages($params)
+      {
+           $result = $this->db->query('Delete from images where id = "'.$params['id'].'"');
+      if($result){
+          return $result;
+      }else{
+          return false;
+      }
+      }
+      public function REQUEST($params)
+      {
+           $result = $this->db->insert('purchaser_request',$params);
+           if($result){
+          return $result;
+      }else{
+          return false;
+      }
+    }
+    public function getrequest($params)
     {
-         $result = $this->db->query('Delete from images where id = "'.$params['id'].'"');
-    if($result){
-        return $result;
-    }else{
+       $result=$this->db->query('select * from purchaser_request  where reg_no = "'.$params.'"')->result();
+    if($result)
+        {
+          return $result;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function getrequestforadmin()
+    {
+         $result=$this->db->query('select * from purchaser_request order by rid desc')->result();
+    if($result)
+        {
+          return $result;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public function accepted($params)
+    {
+      $type = $params['type'];
+      if($type == 'accept')
+      {
+        $res = $this->db->query('update purchaser_request set status = 1,accepted_notes = "'.$params['accepted_notes'].'" where rid ="'.$params['rid'].'"');
+
+      }
+      if($type == 'reject')
+      {
+     $res = $this->db->query('update purchaser_request set status = 0,notes = "'.$params['notes'].'" where rid ="'.$params['rid'].'"');
+      }
+      if($res)
+      {
+        return $res;
+      }
+      else
+      {
         return false;
+      }
+    }
+    public function updaterequest($params)
+    {
+        $this->db->where('rid',$params['rid']);
+    $result = $this->db->update('purchaser_request',$params);
+    if($result)
+    {
+      return $result;
+    }
+    else
+    {
+      return false;
     }
     }
+    public function deleterequest($params)
+      {
+           $result = $this->db->query('Delete from purchaser_request where rid = "'.$params.'"');
+      if($result){
+          return $result;
+      }else{
+          return false;
+      }
+      }
 
 }
 ?>

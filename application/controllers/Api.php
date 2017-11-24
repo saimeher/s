@@ -125,6 +125,20 @@ class Api extends REST_Controller {
 						break;
 						case'RESOLUTIONCLOSED' : $result = $this->api_model->RESOLUTIONCLOSED($params);
 						break;
+
+						case 'REQUEST': $result = $this->api_model->REQUEST($params);
+						break;
+
+						case 'getrequest' :$result = $this->api_model->getrequest($params);
+						break; 
+						case 'getrequestforadmin' : $result = $this->api_model->getrequestforadmin($params);
+						break;
+						case 'accepted' :$result = $this->api_model->accepted($params);
+						break;
+						case 'updaterequest' :$result = $this->api_model->updaterequest($params);
+						break;
+						case 'deleterequest': $result = $this->api_model->deleterequest($params);
+						break;
 						/////ionic  app
 
 					case  'getIssueapp' : $result = $this->api_model->getIssueapp($params,$params1); break;
@@ -199,7 +213,7 @@ class Api extends REST_Controller {
 	}
 
 	public function INSERTISSUE_post(){
-	 	$mobile1= $this->db->query('select mobile from raghuerp_dbnew.staff where  reg_no="'.$this->post('reg_no').'" ')->row();
+	 	$mobile1= $this->db->query('select mobile from raghuerp_db.staff where  reg_no="'.$this->post('reg_no').'" ')->row();
 	  	if($mobile1){
 	  		$mobile = $mobile1->mobile;
 	  	}else{
@@ -662,4 +676,64 @@ public function get_issue_post() {
 			}
 		  // $image_name = $data['image_name'];
 	}
+
+
+
+	///purchaser requset
+       public function 	REQUEST_post()
+       {
+       		$data = array(
+			'details_of_request' => $this->post('details_of_request'),
+			'specifications' =>$this->post('specifications'),
+			'quantity' => $this->post('quantity'),
+			'price' => $this->post('price'),
+			'benefits' => $this->post('benefits'),
+			'issues' => $this->post('issues'),
+			'details' => $this->post('details'),
+			'reg_no' =>  $this->post('reg_no'),
+			'raised_name' => $this->post('raised_name')
+			);
+		 $this->getData('REQUEST',$data);
+       }
+
+       public function GETREQUEST_post()
+       {
+       	$reg_no = $this->post('reg_no');
+       	$this->getData('getrequest',$reg_no);
+       }
+
+       public function GETREQUESTFORADMIN_get()
+       {
+       	$this->getData('getrequestforadmin');
+       }
+       public function ACCEPTED_post()
+       {
+       	$data = array(
+        'rid'=> $this->post('rid'),
+        'type' => $this->post('type'),
+        'notes' => $this->post('notes'),
+        'accepted_notes' => $this->post('accepted_notes')
+
+       	);
+       	 $this->getData('accepted',$data);
+       }
+       public function  updaterequest_post()
+       {
+       	$data = array(
+			'details_of_request' => $this->post('details_of_request'),
+			'specifications' =>$this->post('specifications'),
+			'quantity' => $this->post('quantity'),
+			'price' => $this->post('price'),
+			'benefits' => $this->post('benefits'),
+			'issues' => $this->post('issues'),
+			'details' => $this->post('details'),
+			'rid' =>  $this->post('rid')
+			);
+		 $this->getData('updaterequest',$data);
+       }
+       public function DELETEREQUEST_post()
+       {
+       	$rid = $this->post('rid');
+       	$this->getData('deleterequest',$rid);
+       }
 }

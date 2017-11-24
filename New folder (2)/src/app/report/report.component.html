@@ -1,0 +1,92 @@
+<div id="wrapper">
+    <!-- begin TOP NAVIGATION -->
+    <app-header></app-header>
+    <!-- end TOP NAVIGATION -->
+
+    <!-- begin SIDE NAVIGATION -->
+    <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+    <!-- end SIDE NAVIGATION -->
+
+    <!-- begin MAIN PAGE CONTENT -->
+    <div id="page-wrapper">
+
+        <div class="spl-content">
+
+            <!-- begin PAGE TITLE ROW -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-title">
+                        <h1>
+                            Monthly <small>Attendance</small>
+                        </h1>
+                        <ol class="breadcrumb">
+                            <li><i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Daily Attendance</a>
+                            </li>
+                            <!--<li class="active">Blank Page</li>-->
+                        </ol>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <!-- end PAGE TITLE ROW -->
+
+            <div class="row" *ngIf="role && (role == 'admin' || role == 'management' || role == 'attendance')">
+                <div class="col-lg-2">
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'sdt')" [(ngModel)]="sdtmodel"></my-date-picker>
+                </div>
+                <div class="col-lg-2">
+                        <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'edt')" [(ngModel)]="edtmodel"></my-date-picker>
+                    </div>
+                <div class="col-lg-12" *ngIf="collegdepts">
+                    <div class="portlet portlet-green" *ngFor="let cdt of collegdepts">
+                        <div class="portlet-heading">
+                            <div class="portlet-title">
+                                <h4>Department of <b>{{cdt.department_name}}</b>, {{cdt.college_name}}</h4>
+                            </div>
+                            <div class="portlet-widgets">
+                                Date: from <b>{{sdtmodel.date.day}}/{{sdtmodel.date.month}}/{{sdtmodel.date.year}} </b>
+                                    to:  <b>{{edtmodel.date.day}}/{{edtmodel.date.month}}/{{edtmodel.date.year}} </b>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-responsive table-hover table-bordered table-striped" *ngFor="let stt of idsdata[cdt.id]">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="5">{{stt}} ({{sdtmodel.date.day}}/{{sdtmodel.date.month}}/{{sdtmodel.date.year}} - {{edtmodel.date.day}}/{{edtmodel.date.month}}/{{edtmodel.date.year}}) <span class="pull-right">{{cdt.college_name}} - {{cdt.department_name}}</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let fdt of mondata[cdt.id][stt]">
+                                            <td width="20%">{{fdt.name}}</td>
+                                            <td width="20%">{{fdt.date}}</td>
+                                            <td width="20%">{{fdt.weekday}}</td>
+                                            <td width="20%">{{fdt.morning}}</td>
+                                            <td width="20%">{{fdt.evening}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.portlet -->
+                </div>
+            </div>
+
+            <div class="row" *ngIf="role && (role != 'admin' && role != 'management' && role != 'attendance')">
+                <div class="col-lg-12">
+                    <h4>Coming Soon...!</h4>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- /.page-content -->
+
+    </div>
+    <!-- /#page-wrapper -->
+    <!-- end MAIN PAGE CONTENT -->
+
+</div>
