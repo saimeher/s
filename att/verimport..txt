@@ -1,0 +1,46 @@
+SELECT  s.reg_no,s.reg_no, s.firstname as name, s.designation, c.college, d.department, s.mobile,(select ttime from attendance a2 where tdate='2017-11-15' and a2.reg_no=a.reg_no and type='IN') as in_time,
+(select ttime from attendance a2 where tdate='2017-11-15' and a2.reg_no = a.reg_no and type='OUT') as out_time   from raghuerp_db.staff s inner join  
+ attendance a on s.reg_no = a.reg_no  
+left join raghuerp_db.colleges c on c.id = s.college 
+left join raghuerp_db.departments d on d.id = s.department
+where s.status = 1 and  a.tdate ="2017-11-15" order by s.college asc, s.department asc, s.reg_no asc
+
+
+
+
+
+SELECT   s.reg_no, s.firstname as name, s.designation, c.college, d.department, s.mobile,(select ttime from attendance a2 where tdate='2017-11-15' and a2.reg_no=a.reg_no and type='IN') as in_time,
+(select ttime from attendance a2 where tdate='2017-11-15' and a2.reg_no = a.reg_no and type='OUT') as out_time  
+from raghuerp_db.staff s 
+left join attendance a on s.reg_no = a.reg_no  
+left join raghuerp_db.colleges c on c.id = s.college 
+left join raghuerp_db.departments d on d.id = s.department
+where s.status = 1 and  a.tdate ="2017-11-15" group by s.reg_no order by s.college asc, s.department asc, s.reg_no asc
+
+//query for simple output
+SELECT   s.reg_no, s.firstname as name, s.designation, c.college, d.department, s.mobile,(select ttime from attendance a2 where tdate='2017-11-15' and a2.reg_no=s.reg_no and type='IN') as in_time,
+(select ttime from attendance a2 where tdate='2017-11-15' and a2.reg_no = s.reg_no and type='OUT') as out_time  
+from raghuerp_db.staff s
+left join raghuerp_db.colleges c on c.id = s.college 
+left join raghuerp_db.departments d on d.id = s.department
+where s.status = 1   order by s.college asc, s.department asc, s.reg_no asc
+
+
+
+
+
+
+
+
+
+select s.reg_no, s.firstname as name, s.designation, c.college, d.department, s.mobile, date_format(ain.ttime, '%h:%i %p') as in_time,date_format(ain.ttime, '%H:%i') as itime, date_format(aout.ttime, '%h:%i %p') as out_time,date_format(aout.ttime, '%H:%i') as otime from raghuerp_db.staff s 
+left join raghuerp_biometric.attendance ain on trim(ain.reg_no) = trim(s.reg_no) and ain.type='IN' and ain.tdate = '2017-11-15'  
+left join raghuerp_biometric.attendance aout on trim(aout.reg_no) = trim(s.reg_no) and aout.type='OUT' and aout.tdate = '2017-11-15'
+left join raghuerp_db.colleges c on c.id = s.college 
+left join raghuerp_db.departments d on d.id = s.department 
+where s.status = 1 order by s.college asc, s.department asc, s.reg_no asc
+
+
+
+select c.college,d.department ,d.college,d.id ,c.id,y.year,y.id from raghuerp_db.colleges c inner join raghuerp_db.departments d on c.id = d.college
+inner join raghuerp_db.year y on y.department = d.id inner join raghuerp_biometric c on c.year_id = where c.id = 1

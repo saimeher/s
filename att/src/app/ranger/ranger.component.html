@@ -1,0 +1,630 @@
+<div id="wrapper">
+    <!-- begin TOP NAVIGATION -->
+    <app-header id="myprntbtn"></app-header>
+    <!-- end TOP NAVIGATION -->
+
+    <!-- begin SIDE NAVIGATION -->
+    <app-sidemenu [page]="_apiService.page" id="myprntbtn"></app-sidemenu>
+    <!-- end SIDE NAVIGATION -->
+
+    <!-- begin MAIN PAGE CONTENT -->
+    <div id="page-wrapper">
+
+        <div class="spl-content">
+
+            <!-- begin PAGE TITLE ROW -->
+            <div class="row" id="myprntbtn">
+                <div class="col-lg-12">
+                    <div class="page-title">
+                        <h4>Attendance Report
+                            <button *ngIf="pdf" type="button" id="myprntbtn" (click)="print()" class="btn btn-success pull-right">Print</button>
+                        </h4>
+
+                        <!-- <ol class="breadcrumb">
+                            <li>
+                                <i class="fa fa-dashboard"></i>
+                                <a [routerLink]="['/dashboard']">Daily Attendance</a>
+                            </li>
+                        </ol> -->
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <!-- end PAGE TITLE ROW -->
+            <!-- [(ngModel)]="model" -->
+            <!-- {{college}} -->
+            <!-- <tr *ngIf="college == 'REC'" >shfdguuidj</tr> -->
+
+            <!-- <div *ngIf="hidden == 'true'">
+                <img border="0" id="myPrntbtn1" *ngIf="hidden=='true' && college == 'REC'" src="assets/img/REC.png" width="1050" style="height: 100px">
+                <img border="0" id="myPrntbtn1" *ngIf="hidden=='true' && college  == 'RIT'" src="assets/img/RIT.png" class="img-responsive">
+                <img border="0" id="myPrntbtn1" *ngIf="hidden=='true' && college == 'RCP'" src="assets/img/RCP.jpg" width="1050" style="height: 100px">
+            </div> -->
+         
+                <table  *ngIf="hidden == 'true'" class="responsive" class="table mhr" header-class="'text-center'" style="width:100%; ">
+                        <td width="25%" colspan="9" style="text-align: center;">
+                            <img border="0"  *ngIf="hidden=='true' && college == 'REC'" src="assets/img/REC.png" width="1090" style="height: 150px">
+                            <img border="0"  *ngIf="hidden=='true' && college == 'RIT'" src="assets/img/RIT.png" class="img-responsive">
+                            <img border="0"  *ngIf="hidden=='true' && college  == 'RCP'" src="assets/img/RCP.jpg" width="1090" style="height: 150px">
+                        </td>
+                </table>
+
+            <button *ngIf="back1" (click)="back()" class="btn btn-primary btn-square pull-right" style="margin-right: 5px;"> Back </button>&nbsp;
+            <div class="row" #test *ngIf="role && (role == 'admin' || role == 'management' || role == 'attendance')">
+                <form class="form-horizontal" [formGroup]="days_form">
+
+                    <div class="col-md-2">
+                        <label>From Date </label>
+                        <my-date-picker [options]="myDatePickerOptions" placeholder="DD-MMM-YYYY" name="fdate" #start formControlName="fdate" (dateChanged)="onDateChanged1($event)"></my-date-picker>
+                    </div>
+                    <div class="col-md-2">
+                        <label>To Date </label>
+                        <my-date-picker [options]="myDatePickerOptions2" placeholder="DD-MMM-YYYY" name="tdate" formControlName="tdate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Select </label>
+                        <angular2-multiselect [(ngModel)]="showusers" formControlName="selectid" [data]="dropdownList" class="form-control" [settings]="dropdownSettings"
+                            (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)" (onSelectAll)="onSelectAll($event)"
+                            (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+                    </div>
+                    <div class="col-md-2" *ngIf="id == 'all' || id == all">
+                        <label>Select College</label>
+                        <select class="form-control" formControlName="college" name="college">
+                            <option value="">--Select--</option>
+                            <option *ngFor="let user of dat" value="{{user.college}}">{{user.college}}</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-1">
+                        <button type="submit" id="myprntbtn" class="btn btn-default btn-square" (click)="gettablecalender()" style="margin-top: 18px; margin-right: 5px;">Submit</button>
+                    </div>
+
+                    <div *ngIf="true2" class="col-md-2">
+                        <label>Working Days</label>
+                        <td *ngIf="work == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 21px;" class="t-padding">0</td>
+                        <td *ngIf="work != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 21px;" class="t-padding">{{work}}</td>
+                    </div>
+                </form>
+                <div class="clearfix"></div>
+            </div>
+
+            <!-- for late commers -->
+            <div *ngIf="show" class="col-sm-4">
+                <table class="table table-bordered t-padding">
+                    <tr class="t-padding">
+                        <th style="text-align: center;" class="t-padding">Late In</th>
+                        <th style="text-align: center;" class="t-padding">Early Out</th>
+                    </tr>
+                    <tbody>
+
+                        <tr>
+                            <td *ngIf="count1 == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px; cursor:pointer;"
+                                class="t-padding">0</td>
+                            <td *ngIf="count1 != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px; cursor:pointer;"
+                                class="button" (click)=view1() class="t-padding">{{count1}} </td>
+
+                            <td *ngIf="count2 == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px; cursor:pointer;"
+                                class="t-padding">0</td>
+                            <td *ngIf="count2 != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px; cursor:pointer;"
+                                class="button" (click)=view2() class="t-padding">{{count2}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
+            <!-- <div class="col-lg-12" *ngIf="collegdepts">
+                    <div class="portlet portlet-green" *ngFor="let cdt of collegdepts">
+                        <div class="portlet-heading">
+                            <div class="portlet-title">
+                                <h4>Department of
+                                    <b>{{cdt.department_name}}</b>, {{cdt.college_name}}</h4>
+                            </div>
+                            <div class="portlet-widgets">
+                                <div class="btn-group">
+                                    <button type="button" id="myprntbtn" (click)="print()" style="margin-right:5px" class="btn btn-xs btn-primary btn-square">Export to PDF</button>
+
+                                    <button type="button" id="myprntbtn" style="margin-right:5px" (click)="export('csv',[cdt])" class="btn btn-xs btn-default btn-square">
+                                        <i class="fa fa-file-excel-o"></i> Export to Excel
+                                    </button>
+                                </div>
+                                Date: from
+                                <b>{{model.date.day}}/{{model.date.month}}/{{model.date.year}} </b> to:
+                                <b>{{model1.date.day}}/{{model1.date.month}}/{{model1.date.year}} </b>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                            <div id="table_wrapper">
+                                <div class="table-responsive">
+
+                                    <table id="dailyReportKWH" class="table table-condensed table-responsive table-hover table-bordered table-striped" *ngFor="let stt of idsdata[cdt.id]">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="5">{{stt}} ({{model.date.day}}/{{model.date.month}}/{{model.date.year}} - {{model1.date.day}}/{{model1.date.month}}/{{model1.date.year}})
+                                                    <span class="pull-right">{{cdt.college_name}} - {{cdt.department_name}}</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            <tr *ngFor="let fdt of mondata[cdt.id][stt]">
+                                                <td width="20%">{{fdt.name}}</td>
+                                                <td width="20%">{{fdt.date}}</td>
+                                                <td width="20%">{{fdt.weekday}}</td>
+                                                <td width="20%">{{fdt.morning}}</td>
+                                                <td width="20%">{{fdt.evening}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> -->
+
+            <div *ngIf="allbycollege" class="row">
+                <div class="col-md-12 tabel_overflow">
+                    <table class="table table-bordered table-green" [mfData]="data | dataFilter:filterQuery" #mf="mfDataTable" [(mfSortBy)]="sortBy"
+                        [(mfSortOrder)]="sortOrder">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <mfDefaultSorter by="">#</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="name">Name</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="department">Department</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="workeddays">Worked days</mfDefaultSorter>
+                                </th>
+                                <!-- <th>
+                                        <mfDefaultSorter by="dtaa1">Approved Leaves</mfDefaultSorter>
+                                    </th> -->
+                                <th nowrap>
+                                    <mfDefaultSorter by="singlepunch"># Single punch days</mfDefaultSorter>
+                                </th>
+                                <th nowrap>
+                                    <mfDefaultSorter by="nopunch"># No punch days</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="hours">Average Duration</mfDefaultSorter>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fdt of mf.data;">
+                                <td>{{data.indexOf(fdt) + 1}}</td>
+                                <!-- <td>{{fdt.name}}
+                                    <span _ngcontent-c4="" id="myprntbtn" class="label label-success label-sm pull-right text-uppercase" (click)="getdata(fdt)">v</span>
+                                </td> -->
+                                <td>
+                                    <a style="cursor:pointer;" (click)="getdata(fdt)">{{fdt.name}}</a>
+                                </td>
+                                <td>{{fdt.department}}</td>
+
+                                <td *ngIf="fdt.workeddays ==null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">0</td>
+                                <td *ngIf="fdt.workeddays !=null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">{{fdt.workeddays}}</td>
+
+                                <!-- <td  style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding"{{dtaa1}}</td> -->
+                                <!-- <td  style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">{{fdt.leaves}}</td> -->
+                                <td *ngIf="fdt.singlepunch == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">0</td>
+                                <td *ngIf="fdt.singlepunch != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">{{fdt.singlepunch}}</td>
+                                <td *ngIf="fdt.nopunch == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">0</td>
+                                <td *ngIf="fdt.nopunch!= null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">{{fdt.nopunch}}</td>
+                                <td *ngIf="fdt.count == '0'" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">0</td>
+                                <td *ngIf="fdt.count  != '0'" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 16px;" class="t-padding">{{fdt.hours}}H {{fdt.minutes}}M</td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="mf.data.length == 0">
+                            <tr rowspan="2">
+                                <td colspan="12">
+                                    <h4 *ngIf="mf.data.length == 0" class="text-center"> No Data found</h4>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <!-- <tfoot style="border: 0px solid">
+                                [mfRowsOnPage]="rowsOnPage"
+                                <tr style="border: 0px solid">
+                                    <td colspan="12" style="border: 0px solid">
+                                        <mfBootstrapPaginator [rowsOnPageSet]="[30,50,rowscount]"></mfBootstrapPaginator>
+                                    </td>
+                                </tr>
+                            </tfoot> -->
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+
+
+
+            <div *ngIf="show1" class="col-lg-4">
+                <table class="table table-bordered t-padding">
+                    <tr class="t-padding">
+                        <th style="text-align: center;" class="t-padding">Working Days</th>
+                        <th style="text-align: center;" class="t-padding">Worked Days</th>
+                        <th style="text-align: center;" class="t-padding">Leaves</th>
+                        <th style="text-align: center;" class="t-padding">Miss punch</th>
+                        <th style="text-align: center;" class="t-padding">No punches</th>
+                        <th style="text-align: center;" class="t-padding">Average</th>
+
+                    </tr>
+                    <tbody>
+                        <tr>
+                            <td *ngIf="work ==null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">0</td>
+                            <td *ngIf="work !=null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{work}}</td>
+
+
+                            <td *ngIf="worked ==null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">0</td>
+                            <td *ngIf="worked !=null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{worked}}</td>
+
+                            <td style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">0</td>
+                            <td *ngIf="count3 == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{count3}}</td>
+                            <td *ngIf="count3 != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{count3}}</td>
+                            <td *ngIf="miss == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">0</td>
+                            <td *ngIf="miss!= null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{miss}}</td>
+                            <td *ngIf="hr == 'NaN'" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">0</td>
+                            <td *ngIf="hr != 'NaN'" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{hr}}hr.{{avg4}}min</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            <!-- for single employee -->
+            <br />
+            <div class="row" *ngIf="display">
+                <div class="col-lg-12">
+                    <div class="portlet portlet-green">
+                        <div class="clearfix"></div>
+                        <div class="portlet-body">
+                            <div id="table_wrapper">
+                                <div class="table-responsive">
+
+                                    <table class="table table-bordered table-green">
+                                        <thead>
+                                            <tr>
+                                                <th>Name </th>
+                                                <th>College</th>
+                                                <th>Department</th>
+                                                <th style="color:black;background-color: #FFBF00;"># Late In days</th>
+                                                <th style="color:black;background-color: #FFBF00;"># Early Out days</th>
+                                                <th>Worked Days</th>
+                                                <th style="color:black;background-color: rgb(255,238,192);"># Single Punch days</th>
+                                                <th style="color:black;background-color: #ffa4a4;"># No Punch days</th>
+                                                <th>Average Duration Worked</th>
+                                                <!-- <th>Approved Leaves</th> -->
+                                            </tr>
+                                        </thead>
+                                        <tbody *ngIf="table1 == false">
+                                            <tr>
+                                                <td>
+                                                    <a (click)="alldata()" style="cursor:pointer;">{{name}}</a>
+                                                </td>
+                                                <td>{{co}}</td>
+                                                <td>{{college}}</td>
+                                                <td style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">{{lastin}}</td>
+                                                <td style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">{{lateout}}</td>
+
+                                                <td *ngIf="worked ==null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">0</td>
+                                                <td *ngIf="worked !=null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">{{worked}}</td>
+                                                <td *ngIf="count3 == null" style="text-align: center; font-weight: bold;  color:#1b45e6;font-size: 15px;" class="t-padding">0</td>
+                                                <td *ngIf="count3 != null" style="text-align: center; font-weight: bold; color:#1b45e6; font-size: 15px;" class="t-padding">{{count3}}</td>
+                                                <td *ngIf="miss == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">0</td>
+                                                <td *ngIf="miss!= null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">{{miss}}</td>
+
+                                                <td *ngIf="hr == 'NaN'" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">0</td>
+                                                <td *ngIf="hr != 'NaN'" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 15px;" class="t-padding">{{hr}}H {{avg4}}M</td>
+
+                                                <!-- <td *ngIf="dtaa == null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">0</td>
+                                                <td *ngIf="dtaa != null" style="text-align: center; font-weight: bold; color: #1b45e6; font-size: 17px;" class="t-padding">{{dtaa}}</td> -->
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="table1">
+                                            <tr rowspan="2">
+                                                <td colspan="12">
+                                                    <h4 *ngIf="table1" class="text-center"> No Data found</h4>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.portlet -->
+            </div>
+
+
+            <div *ngIf="view4" class="row">
+                <div class="col-md-12 tabel_overflow">
+                    <table class="table table-bordered table-green" [mfData]="no | dataFilter:filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                        [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <mfDefaultSorter by="">#</mfDefaultSorter>
+                                </th>
+                                <th style="text-align: center;">
+                                    <mfDefaultSorter by="tdate">Date</mfDefaultSorter>
+                                </th>
+                                <th style="text-align: center;">
+                                    <mfDefaultSorter by="wday">Week day</mfDefaultSorter>
+                                </th>
+                                <th style="text-align: center;">
+                                    <mfDefaultSorter by="morning">Morning Punch</mfDefaultSorter>
+                                </th>
+                                <th style="text-align: center;">
+                                    <mfDefaultSorter by="evening">Evening Punch</mfDefaultSorter>
+                                </th>
+                                <th style="text-align: center;">
+                                    <mfDefaultSorter by="difference">Duration</mfDefaultSorter>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <!-- <tbody>
+                            <tr *ngFor="let fdt of mf.data;">
+                                <td>{{data.indexOf(fdt) + 1}}</td>
+                                <td>{{fdt.tdate}}</td>
+                                <td>{{fdt.wday}}</td>
+                                <td>{{fdt.morning}}</td>
+                                <td>{{fdt.evening}}</td>
+                                <td>{{fdt.difference}}</td>
+
+                            </tr>
+                        </tbody> -->
+                        <tbody *ngFor="let fdt of mf.data">
+                            <tr *ngIf="fdt.it <= '09:00:00' && fdt.ot >= '16:00:00'" class="back">
+                                <td style="text-align: center;">{{no.indexOf(fdt) + 1}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'dd-MMM-yyyy'}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'EEEE'}}</td>
+                                <td style="text-align: center;">{{fdt.it}}</td>
+                                <td style="text-align: center;">{{fdt.ot}}</td>
+                                <td style="text-align: center;">{{fdt.difference1}}</td>
+                            </tr>
+
+                            <tr *ngIf="fdt.it >= '09:01:00' || fdt.ot <= '15:59:00'" class="back1">
+                                <td style="text-align: center;">{{no.indexOf(fdt) + 1}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'dd-MMM-yyyy'}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'EEEE'}}</td>
+                                <td style="text-align: center;">{{fdt.it}}</td>
+                                <td style="text-align: center;">{{fdt.ot}}</td>
+                                <td style="text-align: center;">{{fdt.difference1}}</td>
+                            </tr>
+                            <tr *ngIf="(fdt.it  == null  && fdt.ot >= '16:00:00')  ||  (fdt.it <= '09:00:00' && fdt.ot == null)" class="back3">
+                                <td style="text-align: center;">{{no.indexOf(fdt) + 1}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'dd-MMM-yyyy'}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'EEEE'}}</td>
+                                <td style="text-align: center;">{{fdt.it}}</td>
+                                <td style="text-align: center;">{{fdt.ot}}</td>
+                                <td style="text-align: center;">{{fdt.difference1}}</td>
+                            </tr>
+                            <tr *ngIf="fdt.it == null && fdt.ot == null" class="back4">
+                                <td style="text-align: center;">{{no.indexOf(fdt) + 1}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'dd-MMM-yyyy'}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'EEEE'}}</td>
+                                <td style="text-align: center;">{{fdt.it}}</td>
+                                <td style="text-align: center;">{{fdt.ot}}</td>
+                                <td style="text-align: center;">{{fdt.difference1}}</td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="mf.data.length == 0">
+                            <tr rowspan="2">
+                                <td colspan="12">
+                                    <h4 *ngIf="mf.data.length == 0" class="text-center"> No Data found</h4>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot style="border: 0px solid">
+                            <tr style="border: 0px solid">
+                                <td colspan="12" style="border: 0px solid">
+                                    <mfBootstrapPaginator [rowsOnPageSet]="[15,30,45]"></mfBootstrapPaginator>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+            <!-- <div class="col-lg-12" *ngIf="view">
+                    <div class="portlet portlet-green" *ngFor="let cdt of collegdepts1">
+                        <div class="portlet-heading">
+                            <div class="portlet-title">
+                                <h4>Department of
+                                    <b>{{cdt.department_name}}</b>, {{cdt.college_name}}</h4>
+                            </div>
+                            <div class="portlet-widgets">
+                                <div class="btn-group">
+                                    <button type="button" id="myprntbtn" (click)="print()" style="margin-right:5px" class="btn btn-xs btn-primary btn-square">Export to PDF</button>
+
+                                    <button type="button" id="myprntbtn" style="margin-right:5px" (click)="export('csv',[cdt])" class="btn btn-xs btn-default btn-square">
+                                        <i class="fa fa-file-excel-o"></i> Export to Excel
+                                    </button>
+                                </div>
+                                Date: from
+                                <b>{{model.date.day}}/{{model.date.month}}/{{model.date.year}} </b> to:
+                                <b>{{model1.date.day}}/{{model1.date.month}}/{{model1.date.year}} </b>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                            <div id="table_wrapper">
+                                <div class="table-responsive">
+
+                                    <table class="table table-condensed table-responsive table-hover table-bordered table-striped" *ngFor="let stt of idsdata1[cdt.id]">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="5">{{stt}} ({{model.date.day}}/{{model.date.month}}/{{model.date.year}} - {{model1.date.day}}/{{model1.date.month}}/{{model1.date.year}})
+                                                    <span class="pull-right">{{cdt.college_name}} - {{cdt.department_name}}</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                            <tbody>
+
+                                            <tr *ngFor="let fdt of mondata1[cdt.id][stt]">
+                                                <td width="20%">{{fdt.name}}</td>
+                                                <td width="20%">{{fdt.date}}</td>
+                                                <td width="20%">{{fdt.weekday}}</td>
+                                                <td width="20%">{{fdt.morning}}</td>
+                                                <td width="20%">{{fdt.evening}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+
+            <div *ngIf="view" class="row">
+                <div class="col-md-12 tabel_overflow">
+                    <table class="table table-bordered table-green" [mfData]="data2 | dataFilter:filterQuery" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                        [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <mfDefaultSorter by="">#</mfDefaultSorter>
+                                </th>
+                                <th >
+                                    <mfDefaultSorter by="reg_no">Reg No</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="name">Name</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="department">Department</mfDefaultSorter>
+                                </th>
+
+                                <th >
+                                    <mfDefaultSorter by="tdate">Date</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="wday">Week day</mfDefaultSorter>
+                                </th>
+                                <th>
+                                    <mfDefaultSorter by="morning">Time</mfDefaultSorter>
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let fdt of mf.data; let k=index;">
+                                <td>{{data2.indexOf(fdt) + 1}}</td>
+                                <td>{{fdt.reg_no}}</td>
+                                <td >{{fdt.name}}</td>
+                                <td >{{fdt.department}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'dd-MMM-yyyy'}}</td>
+                                <td style="text-align: center;">{{fdt.tdate | date: 'EEEE'}}</td>
+                                <td style="text-align: center;">{{fdt.morning}}</td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="mf.data.length == 0">
+                            <tr rowspan="2">
+                                <td colspan="12">
+                                    <h4 *ngIf="mf.data.length == 0" class="text-center"> No Data found</h4>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot style="border: 0px solid">
+                            <tr style="border: 0px solid">
+                                <td colspan="12" style="border: 0px solid">
+                                    <mfBootstrapPaginator [rowsOnPageSet]="[15,30,45,rowscount1]"></mfBootstrapPaginator>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+
+            <!-- </div> -->
+            <!-- 
+            <div class="row" *ngIf="role && (role != 'admin' && role != 'management' && role != 'attendance')">
+                <div class="col-lg-12">
+                    <h4>Coming Soon...!</h4>
+                </div>
+            </div> -->
+
+
+        </div>
+        <!-- /.page-content -->
+
+        <!-- /#page-wrapper -->
+        <!-- end MAIN PAGE CONTENT -->
+
+    </div>
+</div>
+
+
+
+<!-- <div class="col-lg-12" *ngIf="collegdepts">
+    <div class="portlet portlet-green" *ngFor="let cdt of collegdepts">
+        <div class="portlet-heading">
+            <div class="portlet-title">
+                <h4>Department of
+                    <b>{{cdt.department_name}}</b>, {{cdt.college_name}}</h4>
+            </div>
+            <div class="portlet-widgets">
+                <div class="btn-group">
+                    <button type="button" id="myprntbtn" (click)="print()" style="margin-right:5px" class="btn btn-xs btn-primary btn-square">Export to PDF</button>
+
+                    <button type="button" id="myprntbtn" style="margin-right:5px" (click)="export('csv',[cdt])" class="btn btn-xs btn-default btn-square">
+                        <i class="fa fa-file-excel-o"></i> Export to Excel
+                    </button>
+                </div>
+                Date: from
+                <b>{{model.date.day}}/{{model.date.month}}/{{model.date.year}} </b> to:
+                <b>{{model1.date.day}}/{{model1.date.month}}/{{model1.date.year}} </b>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="portlet-body">
+            <div id="table_wrapper">
+                <div class="table-responsive">
+
+                    <table id="dailyReportKWH" class="table table-condensed table-responsive table-hover table-bordered table-striped" *ngFor="let stt of idsdata[cdt.id]">
+                        <thead>
+                            <tr>
+                                <th colspan="5">{{stt}} ({{model.date.day}}/{{model.date.month}}/{{model.date.year}} - {{model1.date.day}}/{{model1.date.month}}/{{model1.date.year}})
+                                    <span class="pull-right">{{cdt.college_name}} - {{cdt.department_name}}</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr *ngFor="let fdt of mondata[cdt.id][stt]">
+                                <td width="20%">{{fdt.name}}</td>
+                                <td width="20%">{{fdt.date}}</td>
+                                <td width="20%">{{fdt.weekday}}</td>
+                                <td width="20%">{{fdt.morning}}</td>
+                                <td width="20%">{{fdt.evening}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

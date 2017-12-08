@@ -1,0 +1,21 @@
+.circle-tile-content {
+    padding-top: 10px;
+}
+a{
+    cursor:pointer
+    }
+    .back{
+        background: rgb(167, 253, 197);
+    }
+    .back1{
+        background:#FFBF00;
+    }
+    .back2{
+        background:rgb(241, 111, 59);
+    }
+    .back3{
+        background:rgb(255, 238, 192);
+    }
+    .back4{
+        background:#ffa4a4;
+    }

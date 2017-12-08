@@ -1,0 +1,254 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+
+    <div class="spl-content">
+
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <h1>
+              Month Wise Attendance <small>Management</small>
+            </h1>
+            <ol class="breadcrumb">
+              <li><i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Dashboard</a>
+              </li>
+              <li class="active">Month Wise</li>
+            </ol>
+          </div>
+        </div>
+        <!-- /.col-lg-12 -->
+      </div>
+      <!-- /.row -->
+      <!-- end PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="col-lg-3">
+            <label>From Date </label>
+            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged1($event)" [(ngModel)]="model"></my-date-picker>
+          </div>
+          <div class="col-lg-3">
+            <label>To Date </label>
+            <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" [(ngModel)]="model1"></my-date-picker>
+          </div>
+          <!-- <div class="col-lg-3">
+            <button class="btn btn-square btn-green" (click)="refresh()" style="margin-top:23px;">Clear</button>
+          </div> -->
+        </div>
+      </div>
+      <br/>
+      <br/>
+      <div class="row">
+        <div class="col-lg-12 col-md-offset-5" *ngIf="collegdepts == '' && loading1 == true && this.count > 29">
+
+          <i class="fa fa-exclamation-triangle fa-3x fa-fw"></i>
+          <span class="">Please choose date between 1 to 29 Intervals</span>
+        </div>
+        <div class="col-lg-12 col-md-offset-5" *ngIf="collegdepts == '' && loading == true && this.count <= 29">
+
+          <i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>
+          <span class="">Loading...please wait</span>
+        </div>
+        <div class="col-lg-12 " *ngIf="collegdepts">
+          <div class="portlet portlet-green" *ngFor="let cdt of collegdepts">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>Department of <b>{{cdt.department_name}}</b>, {{cdt.college_name}}</h4>
+              </div>
+              <div class="portlet-widgets">
+                <div class="btn-group">
+                  <button type="button" style="margin-right:50px;" class="btn btn-default btn-xs btn-square dropdown-toggle" data-toggle="dropdown">Export
+                      <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li>
+                      <a style="cursor:pointer" class="btn btn-white" (click)="export('csv',cdt,this.attendance[cdt.id])">
+                            <i class="fa fa-file-excel-o"></i> Export to Excel </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="table-responsive">
+                <table class="table table-condensed table-responsive table-hover table-bordered table-striped table-green">
+                  <thead>
+                    <tr>
+                      <th>Employee ID</th>
+                      <th>Employee Name</th>
+                      <th *ngFor="let item of newdates" colspan="3">{{item |date:'fullDate'}}
+                        <tr>
+                          <th>In</th>
+                          <th>Out</th>
+                          <th>Duration</th>
+                        </tr>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let att of attendance[cdt.id]">
+                      <td>{{att.reg_no}}</td>
+                      <td>{{att.name}}</td>
+                      <td *ngIf="this.count >= 1">{{att.in_time_1 }}</td>
+                      <td *ngIf="this.count >= 1">{{att.out_time_1}}</td>
+                      <td *ngIf="this.count >= 1">{{att.work_tm_1}}</td>
+                      <td *ngIf="this.count >= 2">{{att.in_time_2}}</td>
+                      <td *ngIf="this.count >= 2">{{att.out_time_2}}</td>
+                      <td *ngIf="this.count >= 2">{{att.work_tm_2 }}</td>
+                      <td *ngIf="this.count >= 3">{{att.in_time_3}}</td>
+                      <td *ngIf="this.count >= 3">{{att.out_time_3}}</td>
+                      <td *ngIf="this.count >= 3">{{att.work_tm_3 }}</td>
+                      <td *ngIf="this.count >= 4">{{att.in_time_4}}</td>
+                      <td *ngIf="this.count >= 4">{{att.out_time_4}}</td>
+                      <td *ngIf="this.count >= 4">{{att.work_tm_4 }}</td>
+                      <td *ngIf="this.count >= 5">{{att.in_time_5}}</td>
+                      <td *ngIf="this.count >= 5">{{att.out_time_5}}</td>
+                      <td *ngIf="this.count >= 5">{{att.work_tm_5 }}</td>
+                      <td *ngIf="this.count >= 6">{{att.in_time_6}}</td>
+                      <td *ngIf="this.count >= 6">{{att.out_time_6}}</td>
+                      <td *ngIf="this.count >= 6">{{att.work_tm_6 }}</td>
+                      <td *ngIf="this.count >= 7">{{att.in_time_7}}</td>
+                      <td *ngIf="this.count >= 7">{{att.out_time_7}}</td>
+                      <td *ngIf="this.count >= 7">{{att.work_tm_7 }}</td>
+                      <td *ngIf="this.count >= 8">{{att.in_time_8}}</td>
+                      <td *ngIf="this.count >= 8">{{att.out_time_8}}</td>
+                      <td *ngIf="this.count >= 8">{{att.work_tm_8 }}</td>
+                      <td *ngIf="this.count >= 9">{{att.in_time_9}}</td>
+                      <td *ngIf="this.count >= 9">{{att.out_time_9}}</td>
+                      <td *ngIf="this.count >= 9">{{att.work_tm_9 }}</td>
+                      <td *ngIf="this.count >= 10">{{att.in_time_10}}</td>
+                      <td *ngIf="this.count >= 10">{{att.out_time_10}}</td>
+                      <td *ngIf="this.count >= 10">{{att.work_tm_10 }}</td>
+                      <td *ngIf="this.count >= 11">{{att.in_time_11}}</td>
+                      <td *ngIf="this.count >= 11">{{att.out_time_11}}</td>
+                      <td *ngIf="this.count >= 11">{{att.work_tm_11 }}</td>
+                      <td *ngIf="this.count >= 12">{{att.in_time_12}}</td>
+                      <td *ngIf="this.count >= 12">{{att.out_time_12}}</td>
+                      <td *ngIf="this.count >= 12">{{att.work_tm_12 }}</td>
+                      <td *ngIf="this.count >= 13">{{att.in_time_13}}</td>
+                      <td *ngIf="this.count >= 13">{{att.out_time_13}}</td>
+                      <td *ngIf="this.count >= 13">{{att.work_tm_13 }}</td>
+                      <td *ngIf="this.count >= 14">{{att.in_time_14}}</td>
+                      <td *ngIf="this.count >= 14">{{att.out_time_14}}</td>
+                      <td *ngIf="this.count >= 14">{{att.work_tm_14 }}</td>
+                      <td *ngIf="this.count >= 15">{{att.in_time_15}}</td>
+                      <td *ngIf="this.count >= 15">{{att.out_time_15}}</td>
+                      <td *ngIf="this.count >= 15">{{att.work_tm_15 }}</td>
+                      <td *ngIf="this.count >= 16">{{att.in_time_16}}</td>
+                      <td *ngIf="this.count >= 16">{{att.out_time_16}}</td>
+                      <td *ngIf="this.count >= 16">{{att.work_tm_16 }}</td>
+                      <td *ngIf="this.count >= 17">{{att.in_time_17}}</td>
+                      <td *ngIf="this.count >= 17">{{att.out_time_17}}</td>
+                      <td *ngIf="this.count >= 17">{{att.work_tm_17 }}</td>
+                      <td *ngIf="this.count >= 18">{{att.in_time_18}}</td>
+                      <td *ngIf="this.count >= 18">{{att.out_time_18}}</td>
+                      <td *ngIf="this.count >= 18">{{att.work_tm_18 }}</td>
+                      <td *ngIf="this.count >= 19">{{att.in_time_19}}</td>
+                      <td *ngIf="this.count >= 19">{{att.out_time_19}}</td>
+                      <td *ngIf="this.count >= 19">{{att.work_tm_19 }}</td>
+                      <td *ngIf="this.count >= 20">{{att.in_time_20}}</td>
+                      <td *ngIf="this.count >= 20">{{att.out_time_20}}</td>
+                      <td *ngIf="this.count >= 20">{{att.work_tm_20 }}</td>
+                      <td *ngIf="this.count >= 21">{{att.in_time_21}}</td>
+                      <td *ngIf="this.count >= 21">{{att.out_time_21}}</td>
+                      <td *ngIf="this.count >= 21">{{att.work_tm_21 }}</td>
+                      <td *ngIf="this.count >= 22">{{att.in_time_22}}</td>
+                      <td *ngIf="this.count >= 22">{{att.out_time_22}}</td>
+                      <td *ngIf="this.count >= 22">{{att.work_tm_22 }}</td>
+                      <td *ngIf="this.count >= 23">{{att.in_time_23}}</td>
+                      <td *ngIf="this.count >= 23">{{att.out_time_23}}</td>
+                      <td *ngIf="this.count >= 23">{{att.work_tm_23 }}</td>
+                      <td *ngIf="this.count >= 24">{{att.in_time_24}}</td>
+                      <td *ngIf="this.count >= 24">{{att.out_time_24}}</td>
+                      <td *ngIf="this.count >= 24">{{att.work_tm_24 }}</td>
+                      <td *ngIf="this.count >= 25">{{att.in_time_25}}</td>
+                      <td *ngIf="this.count >= 25">{{att.out_time_25}}</td>
+                      <td *ngIf="this.count >= 25">{{att.work_tm_25 }}</td>
+                      <td *ngIf="this.count >= 26">{{att.in_time_26}}</td>
+                      <td *ngIf="this.count >= 26">{{att.out_time_26}}</td>
+                      <td *ngIf="this.count >= 26">{{att.work_tm_26 }}</td>
+                      <td *ngIf="this.count >= 27">{{att.in_time_27}}</td>
+                      <td *ngIf="this.count >= 27">{{att.out_time_27}}</td>
+                      <td *ngIf="this.count >= 27">{{att.work_tm_27 }}</td>
+                      <td *ngIf="this.count >= 28">{{att.in_time_28}}</td>
+                      <td *ngIf="this.count >= 28">{{att.out_time_28}}</td>
+                      <td *ngIf="this.count >= 28">{{att.work_tm_28 }}</td>
+                      <td *ngIf="this.count >= 29">{{att.in_time_29}}</td>
+                      <td *ngIf="this.count >= 29">{{att.out_time_29}}</td>
+                      <td *ngIf="this.count >= 29">{{att.work_tm_29 }}</td>
+                      <td *ngIf="this.count >= 30">{{att.in_time_30}}</td>
+                      <td *ngIf="this.count >= 30">{{att.out_time_30}}</td>
+                      <td *ngIf="this.count >= 30">{{att.work_tm_30 }}</td>
+                      <td *ngIf="this.count >= 31">{{att.in_time_31}}</td>
+                      <td *ngIf="this.count >= 31">{{att.out_time_31}}</td>
+                      <td *ngIf="this.count >= 31">{{att.work_tm_31 }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-lg-12 ">
+          <div class="portlet portlet-green">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>Department of </h4>
+              </div>
+              <div class="portlet-widgets">
+                <div class="btn-group">
+                  <button type="button" style="margin-right:50px;" class="btn btn-default btn-xs btn-square dropdown-toggle" data-toggle="dropdown">Export
+                        <span class="caret"></span>
+                    </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li>
+                      <a style="cursor:pointer" (click)="export('csv')">
+                              <i class="fa fa-file-excel-o"></i> Export to Excel </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="table-responsive">
+                <table class="table table-condensed table-responsive table-hover table-bordered table-striped table-green">
+                  <thead>
+                    <tr>
+                      <th nowrap>Employee ID</th>
+                      <th nowrap>Employee Name</th>
+                      <th *ngFor="let item of newdates" nowrap>{{item |date:'fullDate'}}
+                          <tr>
+                              <th>In</th>
+                              <th>Out</th>
+                              <th>Duration</th>
+                            </tr>
+                      </th>
+                    </tr>
+                  </thead>
+                  
+
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+      <!-- /.page-content -->
+    </div>
+    <!-- /#page-wrapper -->
+    <!-- end MAIN PAGE CONTENT -->
+
+  </div>
