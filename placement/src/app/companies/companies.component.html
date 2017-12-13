@@ -1,0 +1,1972 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+    <div class="spl-content">
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <!-- <ol class="breadcrumb">
+                <li><i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Dashboard</a>
+                </li>
+                <li class="active">Courses</li>
+              </ol> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Company Details-->
+      <div class="row" *ngIf="loading2 == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> Add Company Details</h4>
+              </div>
+              <div class="portlet-widgets">
+                <a *ngIf="this.myForm.touched == true && this.myForm.valid == false" (click)="closeadform.open()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+                <a *ngIf="this.myForm.touched == false && this.myForm.valid == false" (click)="closeaddform()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal" [formGroup]="myForm" novalidate>
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.c_date }">
+                    <label>Drive date</label>
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)=" ChangeDate($event);gocompname()" placeholder="Enter drive date"
+                      formControlName="c_date" required></my-date-picker>
+                    <span style="color:red;" *ngIf="displayMessage.c_date">
+                      {{displayMessage.c_date}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.company }">
+                    <label>Company Name</label>
+                    <input type="text" class="form-control" autocomplete="off" (keyup)="gocompname()" placeholder="Enter company name" name="company"
+                      formControlName="company" required>
+                    <span style="color:red;" *ngIf="displayMessage.company">
+                      {{displayMessage.company}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.location }">
+                    <label>Location </label>
+                    <input type="text" autocomplete="off" class="form-control" placeholder="Enter Company location" name="location" formControlName="location"
+                      required>
+                    <span style="color:red;" *ngIf="displayMessage.location">
+                      {{displayMessage.location}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.package }">
+                    <label>Package
+                      <i class="fa fa-inr"></i> L</label>
+                    <input type="number" class="form-control" autocomplete="off" onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46 "
+                      placeholder="Enter package (Ex:3.50)" name="package" formControlName="package" required>
+                    <span style="color:red;" *ngIf="displayMessage.package">
+                      {{displayMessage.package}}
+                    </span>
+                  </div>
+
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.defbranches }">
+                    <angular2-multiselect class="form-control" [data]="myoptionsdefault" (onSelect)="onItemSelect1($event)" (onDeSelect)="OnItemDeSelect1($event)"
+                      (onSelectAll)="onSelectAll1($event)" (onDeSelectAll)="onDeSelectAll1($event)" formControlName="defbranches"
+                      name="defbranches" [settings]="dropdownSettingsdefbr"></angular2-multiselect>
+                    <span style="color:red;" *ngIf="displayMessage.defbranches">
+                      {{displayMessage.defbranches}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.drive_location }">
+                    <label>Drive Location</label>
+                    <input type="text" class="form-control" autocomplete="off" placeholder="Enter Drive location" name="drive_location" formControlName="drive_location"
+                      required>
+                    <span style="color:red;" *ngIf="displayMessage.drive_location">
+                      {{displayMessage.drive_location}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.backlogs }">
+                    <label>Maximum Backlogs</label>
+                    <input type="number" autocomplete="off" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && event.charCode != 45 "
+                      class="form-control" placeholder="Enter backlogs " name="backlogs" formControlName="backlogs" required>
+                    <span style="color:red;" *ngIf="displayMessage.backlogs">
+                      {{displayMessage.backlogs}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.percentage }">
+                    <label>Minimum Aggregate %</label>
+                    <select class="form-control" name="percentage" formControlName="percentage">
+                      <option value="">--Select--</option>
+                      <option value="55"> >= 55</option>
+                      <option value="60"> >= 60</option>
+                      <option value="65"> >= 65</option>
+                      <option value="70"> >= 70</option>
+                      <option value="75"> >= 75</option>
+                      <option value="80"> >= 80</option>
+                      <option value="85"> >= 85</option>
+                    </select>
+                    <span style="color:red;" *ngIf="displayMessage.percentage">
+                      {{displayMessage.percentage}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.gender }">
+                    <label>Eligible Gender</label>
+                    <select class="form-control" name="gender" formControlName="gender">
+                      <option value="M,F">Both</option>
+                      <option value="M"> Male</option>
+                      <option value="F"> Female</option>
+                    </select>
+                    <span style="color:red;" *ngIf="displayMessage.gender">
+                      {{displayMessage.gender}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.drive_name }">
+                    <label>Drive Name</label>
+                    <input type="text" class="form-control" autocomplete="off" readonly [(ngModel)]="drivename" placeholder="For Example Infosys17"
+                      name="drive_name" formControlName="drive_name" required>
+                    <span style="color:red;" *ngIf="displayMessage.drive_name">
+                      {{displayMessage.drive_name}}
+                    </span>
+                  </div>
+                  <div class="col-lg-4" [ngClass]="{'has-error': displayMessage.drive_descripition }">
+                    <label>Drive Descripition</label>
+                    <textarea type="text" class="form-control" autocomplete="off" placeholder="Enter Drive Description" name="drive_descripition"
+                      formControlName="drive_descripition" required></textarea>
+                    <span style="color:red;" *ngIf="displayMessage.drive_descripition">
+                      {{displayMessage.drive_descripition}}
+                    </span>
+                  </div>
+                  <div class="col-lg-2">
+                    <button (click)="addRounds()" class="btn btn-default btn-sm btn-square pull-right" style="margin-top: 25px;">
+                      <i class="fa fa-plus"></i> More</button>
+                  </div>
+                </div>
+                <div formArrayName="rounds">
+                  <div *ngFor="let exp of myForm.controls.rounds.controls;  let p=index">
+                    <div [formGroupName]="p">
+                      <div class="form-horizontal">
+                        <div class="form-group">
+                          <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.round }">
+                            <label>Round</label>
+                            <!-- [(ngModel)]="myForm.controls['rounds']['controls'][p]['controls']['round'].value" -->
+                            <input type="text" class="form-control" autocomplete="off" readonly value="R{{p+1}}" name="round" formControlName="round"
+                              required>
+                          </div>
+                          <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.round_descripition }">
+                            <label>Descripition</label>
+                            <input type="text" class="form-control" autocomplete="off" (ngModelChange)="goChangeV1(p)" placeholder="Enter round Description"
+                              name="round_descripition" formControlName="round_descripition">
+                            <span style="color:red;" *ngIf="displayMessage.round_descripition">
+                              {{displayMessage.round_descripition}}
+                            </span>
+                          </div>
+                          <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.r_date }">
+                            <label>Round date</label>
+                            <my-date-picker [options]="myDatePickerOptions2" placeholder="Enter Round date" formControlName="r_date" required></my-date-picker>
+                            <span style="color:red;" *ngIf="displayMessage.r_date">
+                              {{displayMessage.r_date}}
+                            </span>
+                          </div>
+                          <div class="col-lg-3">
+                            <div *ngIf="myForm.controls.rounds.controls.length > 1 ">
+                              <a (click)="remove_round(p)" style="cursor:pointe1 ">
+                                <i class="fa fa-trash-o" style="font-size: 25px; margin-top: 28px; color: #ff3833;"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <button *ngIf="this.myForm.touched == true && this.myForm.valid == false" class="btn btn-square btn-danger pull-right" style="margin-left:5px;"
+                      (click)="canceladform.open()">Cancel</button>
+                    <button *ngIf="this.myForm.touched == false && this.myForm.valid == false" class="btn btn-square btn-danger pull-right" style="margin-left:5px;"
+                      (click)="canceladform.open()">Cancel</button>
+                    <button [disabled]=" !this.myForm.valid " (click)="save()" type="submit" class="btn btn-square btn-green pull-right">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Company Details-->
+      <div class="row" *ngIf="loading3 == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> Edit Details</h4>
+              </div>
+              <div class="portlet-widgets">
+                <a *ngIf="this.myeditForm.touched == true && this.myeditForm.valid == true" (click)="closedit.open()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+                <a *ngIf="this.myeditForm.touched == false && this.myeditForm.valid == false" (click)="closeeditform()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal" [formGroup]="myeditForm" novalidate>
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.c_date }">
+                    <label>Drive date</label>
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="ChangeDate($event);gocompname2()" placeholder="Enter drive date"
+                      formControlName="c_date" required></my-date-picker>
+                    <span style="color:red;" *ngIf="displayMessage.c_date">
+                      {{displayMessage.c_date}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.company }">
+                    <label>Company Name</label>
+                    <input type="text" class="form-control" (keyup)="gocompname2()" autocomplete="off" placeholder="Enter company name" name="company"
+                      formControlName="company" required>
+                    <span style="color:red;" *ngIf="displayMessage.company">
+                      {{displayMessage.company}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.location }">
+                    <label>Location </label>
+                    <input type="text" class="form-control" placeholder="Enter Company location" autocomplete="off" name="location" formControlName="location"
+                      required>
+                    <span style="color:red;" *ngIf="displayMessage.location">
+                      {{displayMessage.location}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.package }">
+                    <label>Package
+                      <i class="fa fa-inr"></i> L</label>
+                    <input type="text" class="form-control" placeholder="Enter package (Example:3.50)" autocomplete="off" name="package" formControlName="package"
+                      required>
+                    <span style="color:red;" *ngIf="displayMessage.package">
+                      {{displayMessage.package}}
+                    </span>
+                  </div>
+
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.defcollege }">
+                    <label>College / Branch</label>
+                    <angular2-multiselect [data]="myoptionsdefault" [(ngModel)]="collegearr" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                      (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)" formControlName="defcollege"
+                      name="defcollege" [settings]="dropdownSettingsclg"></angular2-multiselect>
+                    <span style="color:red;" *ngIf="displayMessage.defcollege">
+                      {{displayMessage.defcollege}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.drive_location }">
+                    <label>Drive Location</label>
+                    <input type="text" class="form-control" placeholder="Enter Drive location" autocomplete="off" name="drive_location" formControlName="drive_location"
+                      required>
+                    <span style="color:red;" *ngIf="displayMessage.drive_location">
+                      {{displayMessage.drive_location}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.backlogs }">
+                    <label>Maximum Backlogs</label>
+                    <input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57 " class="form-control" placeholder="Enter package "
+                      name="backlogs" formControlName="backlogs" required>
+                    <span style="color:red;" *ngIf="displayMessage.backlogs">
+                      {{displayMessage.backlogs}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.percentage }">
+                    <label>Percentage(Min Score)</label>
+                    <select class="form-control" name="percentage" formControlName="percentage">
+                      <option selected>--Select--</option>
+                      <option value="55"> >= 55</option>
+                      <option value="60"> >= 60</option>
+                      <option value="65"> >= 65</option>
+                      <option value="70"> >= 70</option>
+                      <option value="75"> >= 75</option>
+                      <option value="80"> >= 80</option>
+                      <option value="85"> >= 85</option>
+                    </select>
+                    <span style="color:red;" *ngIf="displayMessage.percentage">
+                      {{displayMessage.percentage}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.gender }">
+                    <label>Eligible Gender</label>
+                    <select class="form-control" name="gender" formControlName="gender">
+                      <option value="M,F">Both</option>
+                      <option value="M"> Male</option>
+                      <option value="F"> Female</option>
+                    </select>
+                    <span style="color:red;" *ngIf="displayMessage.gender">
+                      {{displayMessage.gender}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.drive_name }">
+                    <label>Drive Name</label>
+                    <input type="text" class="form-control" readonly placeholder="For Example Infosys17" autocomplete="off" name="drive_name"
+                      formControlName="drive_name" required>
+                    <span style="color:red;" *ngIf="displayMessage.drive_name">
+                      {{displayMessage.drive_name}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.drive_descripition }">
+                    <label>Drive Descripition</label>
+                    <textarea type="text" class="form-control" placeholder="Enter Drive Description" autocomplete="off" name="drive_descripition"
+                      formControlName="drive_descripition"></textarea>
+                    <span style="color:red;" *ngIf="displayMessage.drive_descripition">
+                      {{displayMessage.drive_descripition}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3">
+                    <button (click)="addRounds21()" class="btn btn-default btn-sm btn-square pull-right" style="margin-top: 25px;">
+                      <i class="fa fa-plus"></i> More</button>
+                  </div>
+                </div>
+                <div formArrayName="rounds">
+                  <div *ngFor="let exp of myeditForm.controls.rounds.controls;  let p=index">
+                    <div [formGroupName]="p">
+                      <div class="form-horizontal">
+                        <div class="form-group">
+                          <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.round }">
+                            <label>Round</label>
+                            <input type="text" class="form-control" readonly value="R{{p+1}}" name="round" formControlName="round" required>
+                          </div>
+                          <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.round_descripition }">
+                            <label>Descripition</label>
+                            <input type="text" class="form-control" (ngModelChange)="goChangeV(p)" autocomplete="off" placeholder="Enter round Description"
+                              name="round_descripition" formControlName="round_descripition">
+                            <span style="color:red;" *ngIf="displayMessage.round_descripition">
+                              {{displayMessage.round_descripition}}
+                            </span>
+                          </div>
+                          <div class="col-lg-3" [ngClass]="{'has-error': displayMessage.r_date }">
+                            <label>Round date</label>
+                            <my-date-picker [options]="myDatePickerOptions2" placeholder="Enter Round date" formControlName="r_date" required></my-date-picker>
+                            <span style="color:red;" *ngIf="displayMessage.r_date">
+                              {{displayMessage.r_date}}
+                            </span>
+                          </div>
+                          <div class="col-lg-3">
+                            <!-- <div *ngIf="myForm.controls.rounds.controls.length > 1 "> -->
+                            <a (click)="remove_round2(p)" style="cursor:pointe1 ">
+                              <i class="fa fa-trash-o" style="font-size: 25px; margin-top: 28px; color: #ff3833;"></i>
+                            </a>
+                            <!-- </div> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <button *ngIf="this.myeditForm.touched == true && this.myeditForm.valid == true" class="btn btn-square btn-danger pull-right"
+                      style="margin-left:5px;" (click)="closedit.open()">cancel</button>
+                    <button *ngIf="this.myeditForm.touched == false && this.myeditForm.valid == false" (click)="closeeditform()" class="btn btn-square btn-danger pull-right"
+                      style="margin-left:5px;">cancel</button>
+                    <button type="submit" (click)="edit(myeditForm)" class="btn btn-square btn-green pull-right">Submit</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Company / Drive Details-->
+      <div class="row" *ngIf="opendrivedetails == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> Drive Details
+                </h4>
+              </div>
+              <div class="portlet-widgets">
+                <a *ngIf="date1 < companydata.c_date" class="btn btn-xs btn-square btn-green" style="cursor:pointer;" (click)="editcompanies(companydata)">
+                  <i class="fa fa-edit"></i> Edit Company / Drive Details</a>
+                <a (click)="closeDrivedetails()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <div class="col-lg-3">
+                    <label>Company Name</label>
+                    <input type="text" class="form-control" value="{{company_name}}" required readonly>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Package
+                      <i class="fa fa-inr"></i> L</label>
+                    <input type="text" class="form-control" value="{{company_package}}" required readonly>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Drive date</label>
+                    <input type="text" class="form-control" value="{{drivedate}}" required readonly>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Drive Dispname</label>
+                    <input type="text" class="form-control" value="{{company_dispname}}" required readonly>
+                  </div>
+                </div>
+              </form>
+              <table class="table table-striped table-bordered table-hover table-green">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th class="text-center">Rounds</th>
+                    <th>Descripition</th>
+                    <th>Round Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item2 of drivedetails; let i=index">
+                    <td>{{i+1}}</td>
+                    <td class="text-center">{{item2.rounds}}</td>
+                    <td>{{item2.descripition}}</td>
+                    <td>{{item2.round_date}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rounds Data-->
+      <div class="row" *ngIf="roundsdata == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> {{company_name}} Rounds Data
+                </h4>
+              </div>
+              <div class="portlet-widgets">
+                <a *ngIf="sub_button=='show'" (click)="roundsclose.open()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+                <a *ngIf="sub_button!='show'" (click)="closeroundslist()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <div class="col-lg-2">
+                    <label>Rounds</label>
+                    <select class="form-control" (change)="callrounds($event,company_id)">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of rounddetails" [value]="type.rounds">{{type.rounds}}</option>
+                    </select>
+                  </div>
+                  <div class="col-lg-2">
+                    <label>Descripition</label>
+                    <input type="text" class="form-control" value="{{round_descripition}}" required readonly>
+                  </div>
+                  <div class="col-lg-2">
+                    <label>Eligible</label>
+                    <input type="text" class="form-control" value="{{elgiblecount}}" required readonly>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Appeared for current round</label>
+                    <input type="text" class="form-control" value="{{total_count}}" required readonly>
+                  </div>
+                  <div class="col-lg-3" *ngIf="this.send_r1 == 'Next Round'">
+                    <label>Qualified for next round </label>
+                    <input type="text" class="form-control" value="{{present_count}}" required readonly>
+                  </div>
+                  <div class="col-lg-3" *ngIf="this.send_r1 == 'Final Round'">
+                    <label>Final round </label>
+                    <input type="text" class="form-control" value="{{present_count}}" required readonly>
+                  </div>
+                </div>
+              </form>
+              <div class="row">
+                <div class="col-lg-12">
+                  <table class="table table-striped table-bordered table-hover table-green" [mfData]="roundlist" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                    [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>
+                          <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                        </th>
+                        <th width="120px">Actions
+                          <input *ngIf="sub_button=='show'" class="pull-right" type="checkbox" name="reg_no" (change)="selectallstdbyrounds($event,total_count)"
+                            [checked]="check_all" />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of mf.data; let i = index">
+                        <td>{{roundlist.indexOf(item) + 1}}</td>
+                        <td>{{item.university_reg_number}}</td>
+                        <td>{{item.clg_fullname}}</td>
+                        <td>{{item.branch_fullname}}</td>
+                        <td>{{item.first_name}}</td>
+                        <td>{{item.email_id}}</td>
+                        <td class="text-center">{{item.btech_percentage}}%</td>
+                        <td class="text-center">{{item.backlogs}}</td>
+                        <td>
+                          <button (click)="studetails.open(id=item)" class="btn btn-xs btn-blue btn-square">More Details</button>
+                          <!-- <input  type="checkbox" name="reg_no" (change)="passedlist(item,item.university_reg_number,i)"
+                            [checked]="item.check_box" [disabled]="item.disabled"/> -->
+                          <input *ngIf="item.check_box == true" type="checkbox" name="reg_no" (change)="passedlist(item,item.university_reg_number,i,total_count)"
+                            [disabled]="item.disabled" checked/>
+                          <input *ngIf="item.check_box != true" type="checkbox" name="reg_no" (change)="passedlist(item,item.university_reg_number,i,total_count)"
+                            [disabled]="item.disabled" />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr *ngIf="mf.data.length == 0">
+                        <td colspan="9" class="text-center">
+                          No Data Found
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="9">
+                          <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <div *ngIf="mf.data.length != 0">
+                    <div *ngIf="sub_button=='show'">
+                      <div class="col-lg-3">
+                        <label>Passed Count</label>
+                        <input type="text" class="form-control" value="{{present_count}}" required readonly>
+                      </div>
+                      <div class="col-lg-9">
+                        <button class="btn btn-square btn-green pull-right" style="margin-top:28px;" (click)="roundconfirmation.open(rowdata13 = roundinfo)">
+                          Submit</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
+        </div>
+      </div>
+
+      <!-- Eligible / Select Students List-->
+      <div class="row" *ngIf="openshorteddata == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i>
+                  <span *ngIf="loading == true"> Eligible Students List</span>
+                  <span *ngIf="loading1 == true"> List of Selected Students</span>
+                </h4>
+              </div>
+              <div class="portlet-widgets">
+                <a class="btn btn-xs btn-square btn-green" *ngIf="date1 < emaildata.c_date" style="cursor:pointer;" (click)="opensenemailbox(emaildata)">
+                  <i class="fa fa-envelope"></i> Send Email</a>
+                <a *ngIf="loading == true && this.assigned != null " (click)="closeshortlist()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+                <a *ngIf="loading == true && this.assigned == null" (click)="elgibleclose.open()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+                <a *ngIf="loading1 == true" (click)="closeshortlist()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal">
+                <div class="form-group">
+                  <div class="col-lg-3">
+                    <label>Company Name</label>
+                    <input type="text" class="form-control" value="{{company_name}}" required readonly>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Package
+                      <i class="fa fa-inr"></i>(Lakhs)</label>
+                    <input type="text" class="form-control" value="{{company_package}}" required readonly>
+                  </div>
+                  <div class="col-lg-2">
+                    <label>Drive date</label>
+                    <input type="text" class="form-control" value="{{drivedate| date:'dd-M-yyyy'}}" required readonly>
+                  </div>
+                  <div *ngIf="loading == true" class="col-lg-2">
+                    <label>Eligible</label>
+                    <input type="text" class="form-control" value="{{total_count}}" required readonly>
+                  </div>
+                  <div *ngIf="loading1 == true" class="col-lg-2">
+                    <label>Selected Students</label>
+                    <input type="text" class="form-control" value="{{total_count}}" required readonly>
+                  </div>
+                  <div *ngIf="loading == true" class="col-lg-2">
+                    <label>Attended</label>
+                    <input type="text" class="form-control" value="{{present_count}}" required readonly>
+                  </div>
+                </div>
+              </form>
+              <div class="row">
+                <div class="col-lg-12">
+                  <form class="form-horizontal" #form="ngForm">
+                    <table class="table table-striped table-bordered table-hover table-green" [mfData]="details" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>
+                            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                          </th>
+                          <th width="120px">Actions
+                            <input *ngIf="assigned == null" class="pull-right" type="checkbox" name="reg_no" (change)="selectallstdbyattendance($event,total_count)"
+                              [checked]="check_all_attendance" />
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of mf.data; let i = index">
+                          <td>{{details.indexOf(item) + 1}}</td>
+                          <td>{{item.university_reg_number}}</td>
+                          <td>{{item.clg_fullname}}</td>
+                          <td>{{item.branch_fullname}}</td>
+                          <td>{{item.first_name}}</td>
+                          <td>{{item.email_id}}</td>
+                          <td class="text-center">{{item.btech_percentage}}</td>
+                          <td class="text-center">{{item.backlogs}}</td>
+                          <td>
+                            <button (click)="studetails.open(id=item)" class="btn btn-xs btn-blue btn-square">More Details</button>
+                            <span *ngIf="loading == true">
+                              <input *ngIf="item.reg_no == '0'" type="checkbox" name="reg_no" (change)="attendedlist(item,item.university_reg_number, i,total_count)"
+                                [disabled]=item.disabled />
+                              <input *ngIf="item.reg_no != '0'" type="checkbox" name="reg_no" (change)="attendedlist(item,item.university_reg_number, i,total_count)"
+                                [disabled]=item.disabled checked/>
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tbody>
+                        <tr *ngIf="mf.data.length == 0">
+                          <td colspan="9" class="text-center">
+                            No Data Found
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="9">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                    <div>
+                      <!-- <div class="col-lg-3">
+                        <label>Presenties Count</label>
+                        <input type="text" class="form-control" value="{{present_count}}" required readonly>
+                      </div> -->
+                      <div class="col-lg-9">
+                      </div>
+                      <div class="col-lg-3" *ngIf="assigned == null && loading == true">
+                        <button *ngIf="attendance.length != '0' " class="btn btn-square btn-green pull-right" style="margin-top:28px;" (click)="attendanceform.open(rowdata1 = attendance,id = company_id)">
+                          Submit</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
+        </div>
+      </div>
+
+      <div class="row" *ngIf="viewroundprogresss == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> {{company_name}} Round Progress
+                </h4>
+              </div>
+              <div class="portlet-widgets">
+                <a (click)="closeroundproglist()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <table class="table table-striped table-bordered table-hover table-green">
+                    <thead>
+                      <tr>
+                        <th class="text-center">Eligible</th>
+                        <th class="text-center">Attended</th>
+                        <th *ngFor="let item3 of roundsprogress" class="text-center">
+                          <span>{{item3.rounds}} ({{item3.descripition}})</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="text-center">{{elgiblecount}}</td>
+                        <td *ngFor="let item3 of roundsprogress1" class="text-center">
+                          <button class="btn btn-square btn-purple btn-xs" (click)="dispalybyround(item3)">{{item3.reg_no.split(',').length}}</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <form class="form-horizontal" #form="ngForm">
+                    <div class="col-lg-12">
+                      <div class="form-group" *ngIf="!roundsdatadis">
+                        <h4>Selected Students: {{finalrounddata.length}}</h4>
+                      </div>
+                      <div class="form-group" *ngIf="roundsdatadis">
+                        <h4>Round ({{roundsdatadis}}) Selected Students: {{finalrounddata.length}}</h4>
+                      </div>
+                    </div>
+                    <table class="table table-striped table-bordered table-hover table-green" [mfData]="finalrounddata" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>
+                            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                          </th>
+                          <th width="90px">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of mf.data; let i = index">
+                          <td>{{finalrounddata.indexOf(item) + 1}}</td>
+                          <td>{{item.university_reg_number}}</td>
+                          <td>{{item.college}}</td>
+                          <td>{{item.branch_name}}</td>
+                          <td>{{item.first_name}}</td>
+                          <td>{{item.email_id}}</td>
+                          <td class="text-center">{{item.btech_percentage}}</td>
+                          <td class="text-center">{{item.backlogs}}</td>
+                          <td>
+                            <button (click)="studetails.open(id=item)" class="btn btn-xs btn-blue btn-square">More Details</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tbody>
+                        <tr *ngIf="mf.data.length == 0">
+                          <td colspan="9" class="text-center">
+                            No Data Found
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="9">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
+        </div>
+      </div>
+
+
+      <!-- Send Emails-->
+      <div class="row" *ngIf="sendemailbox == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-envelope"></i> Sending Emails</h4>
+              </div>
+              <div class="portlet-widgets">
+                <a (click)="closeemailbox2.open()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal" novalidate [formGroup]="emailform" role="form">
+                <div class="form-group">
+                  <div class="col-lg-3">
+                    <label>Company Name</label>
+                    <input type="text" class="form-control" value="{{company_name}}" required readonly>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Package
+                      <i class="fa fa-inr"></i> L</label>
+                    <input type="text" class="form-control" value="{{company_package}}" required readonly>
+                  </div>
+                  <div class="col-lg-2">
+                    <label>Drive date</label>
+                    <input type="text" class="form-control" value="{{drivedate| date:'dd-M-yyyy'}}" required readonly>
+                  </div>
+                  <div class="col-lg-2">
+                    <label>Drive Location</label>
+                    <input type="text" class="form-control" value="{{c_location}}" required readonly>
+                  </div>
+                  <div class="col-lg-2">
+                    <label>Total Count</label>
+                    <input type="text" class="form-control" value="{{total_count}}" required readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3">
+                    <label *ngIf="stdsendsms.length != '0'">To Email:</label>
+                    <br/>
+                    <button *ngIf="stdsendsms.length == '0'" class="btn btn-square btn-green" (click)="opentable()">Select Students </button>
+                    <button *ngIf="stdsendsms.length != '0'" class="btn btn-square btn-green" (click)="scrollto()">Selected Emails {{stdsendsms.length}}</button>
+                  </div>
+                  <!-- <div class="col-lg-3" *ngIf="stdsendsms.length != '0'">
+                    <label>Cc:</label>
+                    <input type="text" class="form-control" formControlName="ccmail" name="ccmail" required>
+                  </div> -->
+                  <div class="col-lg-4" *ngIf="stdsendsms.length != '0'">
+                    <label>From:</label>
+                    <input type="text" class="form-control" formControlName="fromemail" name="fromemail" required readonly>
+                  </div>
+                  <div class="col-lg-4 " *ngIf="stdsendsms.length != '0'">
+                    <label>Subject:</label>
+                    <input type="text" class="form-control" formControlName="subject" name="subject" required readonly>
+                  </div>
+                  <div class="col-lg-1 " *ngIf="stdsendsms.length != '0'">
+                    <button *ngIf="remainder.length == 0" data-toggle="tooltip" data-placement="top" title="First Mail" class="btn btn-green btn-square"
+                      style="margin-top: 24px;">FM</button>
+                    <button *ngIf="remainder.length != 0" data-toggle="tooltip" data-placement="top" title="Remainder" class="btn btn-green btn-square"
+                      style="margin-top: 24px;">R{{remainder.length}}</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-8" *ngIf="stdsendsms.length != '0'">
+                    <label>Message:</label>
+                    <ckeditor [config]="{ toolbar: [
+                              { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+                              { name: 'editing', items: [ 'Scayt' ] },
+                              { name: 'links', items: [ 'Link', 'Unlink' ] },
+                              { name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
+                              { name: 'tools', items: [ 'Maximize' ] },
+                              { name: 'document', items: [ 'Source' ] },
+                              '/',
+                              { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+                              { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+                              { name: 'styles', items: [ 'Styles', 'Format' ] }	] }" formControlName="description" name="description"
+                      [(ngModel)]="ckeditorContent" required>
+                    </ckeditor>
+                  </div>
+                  <div class="col-lg-4" *ngIf="stdsendsms.length != '0'">
+                    <label>Rounds:</label>
+                    <table class="table table-striped table-bordered table-hover table-green">
+                      <thead>
+                        <tr>
+                          <th width="30px">#</th>
+                          <th width="60px" class="text-center">Rounds</th>
+                          <th>Descripition</th>
+                          <th width="105px">Date</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item2 of drivedetails1; let i=index">
+                          <td>{{i+1}}</td>
+                          <td class="text-center">{{item2.rounds}}</td>
+                          <td>{{item2.descripition}}</td>
+                          <td>{{item2.round_date| date:mediumDate}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="row" *ngIf="stdsendsms.length != '0'">
+                  <div class="col-lg-12 form-group">
+                    <button class="btn btn-default btn-square pull-right" (click)="emailverify.open(rowdata12 = stdsendsms);content();">
+                      <i class="fa fa-envelope"></i> Send</button>
+                    <!-- <button class="btn btn-red pull-right btn-square" (click)="closeemail()">
+                    <i class="fa fa-times"></i> Discard</button> -->
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </form>
+
+              <hr>
+
+              <div *ngIf="tableopen == true">
+                <table class="table table-striped table-bordered table-hover table-green" [mfData]="details1" #mf6="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                  [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>
+                        <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="university_reg_number">Reg No</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="dob">Date of birth</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="email_id">Email</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="mobile_number">Mobile No</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                      </th>
+                      <th width="123px">Status
+                        <input class="pull-right" type="checkbox" name="reg_no" (change)="selectallstd($event)" [checked]="emailcheck" />
+                      </th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item6 of mf6.data; let i = index;">
+                      <td>{{details1.indexOf(item6) + 1}}</td>
+                      <td>{{item6.first_name}}</td>
+                      <td *ngIf="item6.stu_status == '0' ">{{item6.university_reg_number}}
+                      </td>
+                      <td *ngIf="item6.stu_status != '0' ">{{item6.university_reg_number}}
+                        <a style="cursor:pointer;" (click)="mymodal.open(rowdata=item6);placementdatabyID(rowdata=item6)">
+                          <span class="label label-info">{{item6.stu_status}}</span>
+                        </a>
+                      </td>
+                      <td>{{item6.dob| date:mediumDate}}</td>
+                      <td>{{item6.email_id}}</td>
+                      <td>{{item6.mobile_number}}</td>
+                      <td class="text-center">{{item6.backlogs}}</td>
+                      <td>
+                        <span *ngIf="item6.c_status == 0">
+                          <button (click)="studetails.open(id=item6)" class="btn btn-xs btn-blue btn-square">Check Details</button>
+                          <input *ngIf="item6.reg_no == '0'" type="checkbox" name="reg_no" (change)="semailtoselectedstd($event,item6,item6.university_reg_number, i, total_count)"
+                            [disabled]=item6.disabled />
+                          <input *ngIf="item6.reg_no != '0'" type="checkbox" name="reg_no" (change)="semailtoselectedstd($event,item6,item6.university_reg_number, i, total_count)"
+                            [disabled]=item6.disabled checked/>
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr *ngIf="mf6.data.length == 0">
+                      <td colspan="8" class="text-center">
+                        No Data Found
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="8">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Default table-->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> List of Companies</h4>
+              </div>
+              <div class="portlet-widgets">
+                <a class="btn btn-success btn-square btn-xs" (click)="openaddform()">
+                  <i class="fa fa-plus"></i> Add Company Info</a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="row" style="overflow-x: scroll;">
+                <div class="col-lg-12">
+                  <table class="table table-striped table-bordered table-hover table-green" [mfData]="quelist" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                    [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>
+                          <mfDefaultSorter by="company">Company Name
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="location">Location
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="package">Package
+                            <i class="fa fa-inr"></i> L
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="itemName">College
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="branches">Branches
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="gender">Gender
+                          </mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                          <mfDefaultSorter by="backlogs">Backlogs
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="percentage">percentage
+                          </mfDefaultSorter>
+                        </th>
+                        <th width="105px;">
+                          <mfDefaultSorter by="c_date">Drive date
+                          </mfDefaultSorter>
+                        </th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let a of mf.data; let i = index" [ngClass]="{'bg-return': a.c_date >= date1}">
+                        <td>{{quelist.indexOf(a) + 1}}</td>
+                        <td>{{a.company}}</td>
+                        <td>{{a.location}}</td>
+                        <td class="text-center">{{a.package}}</td>
+                        <td style="word-break: break-word !important;">{{a.college}}</td>
+                        <td style="word-break: break-word !important;">{{a.branches}}</td>
+                        <td class="text-center" *ngIf="a.gender == 'M,F'">
+                          <i class="fa fa-male" data-toggle="tooltip" data-placement="top" title="Male"></i>
+                          <i class="fa fa-female" data-toggle="tooltip" data-placement="top" title="Female"></i>
+                        </td>
+                        <td class="text-center" *ngIf="a.gender == 'F'">
+                          <i class="fa fa-female" data-toggle="tooltip" data-placement="top" title="Female"></i>
+                        </td>
+                        <td class="text-center" data-toggle="tooltip" data-placement="top" title="Male" *ngIf="a.gender == 'M'">
+                          <i class="fa fa-male"></i>
+                        </td>
+                        <td class="text-center">{{a.backlogs}}</td>
+                        <td class="text-center">{{a.percentage}}%</td>
+                        <td>
+                          <b>{{a.c_date | date:mediumDate}}</b>
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-xs btn-purple dropdown-toggle" data-toggle="dropdown" type="button">
+                              More Details
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                              <li>
+                                <a style="cursor:pointer;" (click)="openDrivedetails1(a,companydata = a)">
+                                  <i class="fa fa-edit"></i>Company / Drive Details</a>
+                              </li>
+                              <li *ngIf="date1 > a.c_date">
+                                <a style="cursor:pointer;" (click)="openselectedstd(a)">
+                                  <i class="fa fa-user"></i> Selected Students</a>
+                              </li>
+                              <!-- <li>
+                                <a *ngIf="date1 < a.c_date" style="cursor:pointer;" (click)="editcompanies(a)">
+                                  <i class="fa fa-edit"></i> Edit Details</a>
+                              </li> -->
+                              <li>
+                                <a style="cursor:pointer;" (click)="openshortlist(a, emaildata = a)">
+                                  <i class="fa fa-user"></i> Eligible Students</a>
+                              </li>
+                              <!-- <li>
+                                <a *ngIf="date1 < a.c_date" style="cursor:pointer;" (click)="opensenemailbox(a)">
+                                  <i class="fa fa-envelope"></i> Send Email</a>
+                              </li> -->
+                              <li *ngIf="date1 <= a.c_date">
+                                <a style="cursor:pointer;" (click)="openroundslist(a)">
+                                  <i class="fa fa-user"></i> Update Rounds Progress</a>
+                              </li>
+                              <li *ngIf="date1 > a.c_date">
+                                <a style="cursor:pointer;" (click)="openroundslist(a)">
+                                  <i class="fa fa-user"></i> Updated Rounds List</a>
+                              </li>
+                              <li *ngIf="date1 > a.c_date">
+                                <a style="cursor:pointer;" (click)="openroundsprogress(a)">
+                                  <i class="fa fa-user"></i> View Rounds Progess</a>
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr *ngIf="mf.data.length == 0">
+                        <td colspan="11" class="text-center">
+                          No Data Found
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="11">
+                          <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75]"></mfBootstrapPaginator>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<modal #studetails modalClass="modal-dialog1 modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">{{id.first_name}}{{id.last_name}} Details</h4>
+  </modal-header>
+  <modal-content>
+    <table class="table table-striped table-bordered table-hover">
+      <tr>
+        <th Style="width: 180px;">University Reg No</th>
+        <td Style="width: 180px;">{{id.university_reg_number}}
+          <span *ngIf="id.reg_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th Style="width: 180px;">College Name</th>
+        <td Style="width: 180px;">{{id.clg_fullname}}
+          <span *ngIf="id.college_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Course</th>
+        <td>{{id.actual_course}}
+          <span *ngIf="id.course_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Year</th>
+        <td>{{id.actual_year}}
+          <span *ngIf="id.year_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Student Name</th>
+        <td>{{id.first_name}}{{id.last_name}}
+          <span *ngIf="id.firstname_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Date of birth</th>
+        <td>{{id.dob}}
+          <span *ngIf="id.dob_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td>{{id.email_id}}
+          <span *ngIf="id.email_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Aadhar No</th>
+        <td>{{id.aadhaar_number}}
+          <span *ngIf="id.aadhar_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Mother Name</th>
+        <td>{{id.mothers_name}}
+          <span *ngIf="id.mother_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Father Name</th>
+        <td>{{id.fathers_name}}
+          <span *ngIf="id.father_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Mobile No</th>
+        <td>{{id.mobile_number}}
+          <span *ngIf="id.mobile_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Alternative Mobile No</th>
+        <td>{{id.alternate_mobile_number }}
+          <span *ngIf="id.altermobile_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Address</th>
+        <td>{{id.address}}
+          <span *ngIf="id.address_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Backlogs</th>
+        <td>{{id.backlogs}}
+          <span *ngIf="id.backlogs_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Class X Board</th>
+        <td>{{id.x_board}}
+          <span *ngIf="id.Xboard_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Class X Percentage</th>
+        <td>{{id.x_percentage}}
+          <span *ngIf="id.Xper_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Class X Year of passing</th>
+        <td>{{id.x_year_of_passing}}
+          <span *ngIf="id.Xpass_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Class XII / Diploma</th>
+        <td>{{id.xII_board}}
+          <span *ngIf="id.XIIboard_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Class XII / Diploma Percentage</th>
+        <td>{{id.xII_percentage}}
+          <span *ngIf="id.XIIper_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>Class XII / Diploma Year of passing</th>
+        <td>{{id.xII_year_of_passing}}
+          <span *ngIf="id.XIIpass_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>Section</th>
+        <td>{{id.actual_section}}
+          <span *ngIf="id.section_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>BTech</th>
+        <td>{{id.btech_board}}
+          <span *ngIf="id.btechboard_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>BTech - CGPA Percentage</th>
+        <td>{{id.btech_percentage}}
+          <span *ngIf="id.btechper_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+        <td class="empty_td"></td>
+        <th>BTech Year of passing</th>
+        <td>{{id.btech_year_of_passing}}
+          <span *ngIf="id.btechpass_status == '1' ">
+            <i class="fa fa-check pull-right" aria-hidden="true"></i>
+          </span>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-square btn-primary" (click)="studetails.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal #crosscheck modalClass="modal-dialog1 modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Selected Students count {{stdsendsms.length}}</h4>
+  </modal-header>
+  <modal-content>
+    <table class="table table-striped table-bordered table-hover table-green" [mfData]="stdsendsms" #mf4="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Reg No</th>
+          <th>Name</th>
+          <!-- <th>Branch</th> -->
+          <th>Email Id</th>
+          <th>Mobile</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of mf4.data">
+          <td>{{stdsendsms.indexOf(item) + 1}}</td>
+          <td *ngIf="item.stu_status == '0' ">{{item.university_reg_number}}
+          </td>
+          <td *ngIf="item.stu_status != '0' ">{{item.university_reg_number}}
+            <span class="label label-info">{{item.stu_status}}</span>
+          </td>
+          <!-- <td class="text-center">{{item.branch}}</td> -->
+          <td>{{item.first_name}}</td>
+          <td>{{item.email_id}}</td>
+          <td>{{item.mobile_number}}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr *ngIf="mf4.data.length == 0">
+          <td colspan="5" class="text-center">
+            No Data Found
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-square btn-primary" (click)="crosscheck.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal #mymodal modalClass="modal-dailog1 modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Placement Details
+    </h4>
+  </modal-header>
+  <modal-content>
+    <form class="form-horizontal">
+      <div class="form-group">
+        <div class="col-lg-6">
+          <label>Registration No</label>
+          <input type="text" class="form-control" value="{{rowdata.university_reg_number}}" readonly/>
+        </div>
+        <div class="col-lg-6">
+          <label>College Name</label>
+          <input type="text" class="form-control" value="{{rowdata.clg_fullname}}" readonly/>
+        </div>
+      </div>
+    </form>
+    <table class="table table-striped table-bordered table-hover table-green">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Company Name</th>
+          <th>Drive Disp Name </th>
+          <th>Package
+            <i class="fa fa-inr"></i> L</th>
+          <th>Company Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of placementdetailsbyid; let i = index">
+          <td>{{i+1}}</td>
+          <td>{{item.company}}</td>
+          <td>{{item.drive_dispname}}</td>
+          <td>{{item.package}}</td>
+          <td>{{item.location}}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr *ngIf="placementdetailsbyid.length == 0">
+          <td class="text-center" colspan="3">
+            No Data Found
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-square btn-primary" (click)="mymodal.close()">close</button>
+  </modal-footer>
+</modal>
+
+<modal #closeadform modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>You have made some changes. Do you want to save?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-danger" (click)="closeaddform();closeadform.close()">No</button>
+      <button class="btn btn-square btn-success" (click)="closeadform.close()">Yes</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #canceladform modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Do you want to save the changes to Company Add form ?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="closeaddform();canceladform.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="canceladform.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #closedit modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Do you want to save the changes to Edit form ?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-danger" (click)="closeeditform();closedit.close()">No</button>
+      <button class="btn btn-square btn-success" (click)="closedit.close()">Yes</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #attendanceform modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure, You want to submit the attendance of {{rowdata1.length}} Students?</h4>
+    <table class="table table-striped table-bordered table-hover table-green" [mfData]="rowdata1" #mf9="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>
+            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of mf9.data; let i = index">
+          <td>{{rowdata1.indexOf(item) + 1}}</td>
+          <td>{{item.university_reg_number}}</td>
+          <td>{{item.clg_fullname}}</td>
+          <td>{{item.branch_fullname}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.email_id}}</td>
+          <td>{{item.btech_percentage}}</td>
+          <td>{{item.backlogs}}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr *ngIf="mf9.data.length == 0">
+          <td colspan="8" class="text-center">
+            No Data Found
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="submitAttendance(rowdata1,id);attendanceform.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="attendanceform.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #emailverify modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure, You want to Send Email to {{rowdata12.length}} Students?</h4>
+    <table class="table table-striped table-bordered table-hover table-green" [mfData]="rowdata12" #mf10="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>
+            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of mf10.data; let i = index">
+          <td>{{rowdata12.indexOf(item) + 1}}</td>
+          <td>{{item.university_reg_number}}</td>
+          <td>{{item.clg_fullname}}</td>
+          <td>{{item.branch_fullname}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.email_id}}</td>
+          <td>{{item.btech_percentage}}</td>
+          <td>{{item.backlogs}}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr *ngIf="mf10.data.length == 0">
+          <td colspan="8" class="text-center">
+            No Data Found
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-primary" (click)="emailpreview.open(rowdata12)">Email Preview</button>
+      <button class="btn btn-square btn-success" (click)="sendsms(rowdata12);emailverify.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="emailverify.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #emailpreview modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Email Preview</h4>
+  </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="col-lg-12">
+        Dear Candidate Name ({{rowdata12.length}} Students Names),
+        <br />
+        <br />
+        <p>Glad to inform you about the Placement drive, whose details are given below. You are requested to confirm your participation
+          (if not yet done) to Placement Officer immediately and make use of this opportunity. </p>
+        <br />
+      </div>
+      <div class="col-lg-12">
+        <div class="col-lg-2">
+        </div>
+        <div class="table-responsive col-lg-8">
+          <table class="table table-bordered">
+            <tr>
+              <th class="text-center" colspan="2">Placement drive Details</th>
+            </tr>
+            <tr>
+              <th>Company Name</th>
+              <td>{{company_name}}</td>
+            </tr>
+            <tr>
+              <th>Package (in INR Lakhs)</th>
+              <td>{{company_package}}</td>
+            </tr>
+            <tr>
+              <th>Drive Date</th>
+              <td>{{drivedate| date:'dd-M-yyyy'}}</td>
+            </tr>
+            <tr>
+              <th>Drive Location </th>
+              <td>{{c_location}}</td>
+            </tr>
+            <tr>
+              <th>Rounds Information</th>
+              <td>Total {{drivedetails1.length}} rounds</td>
+            </tr>
+            <tr *ngFor="let item0 of drivedetails1; let i=index">
+              <th class="text-center">{{item0.rounds}}</th>
+              <td>{{item0.descripition}}</td>
+            </tr>
+            <tr>
+              <th>Minimum Aggregate %</th>
+              <td>{{company_percentage}}</td>
+            </tr>
+            <tr>
+              <th>Maximum Backlogs allowed</th>
+              <td>{{company_backlogs}}</td>
+            </tr>
+            <tr>
+              <th>Eligible Branches</th>
+              <td>{{c_Branches}}</td>
+            </tr>
+            <tr>
+              <th>Eligible Genders</th>
+              <td>{{c_genders}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-lg-2">
+        </div>
+      </div>
+      <br/>
+      <div class="col-lg-12">
+        <div [innerHtml]="description"> </div>
+      </div>
+      <div class="col-lg-12">
+        <p>You may approach Placement Team if you require any guidance.</p>
+        <br/>
+        <p>Raghu Institutions wishes you all Success.</p>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-primary" (click)="emailverify.close();emailpreview.close()">
+        <i class="fa fa-edit"></i> Edit</button>
+      <button class="btn btn-square btn-success" (click)="emailpreview.close()">
+        <i class="fa fa-check"></i> ok</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #closeemailbox2 modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure, You want to close the Sending Email form ?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="closeemailbox();closeemailbox2.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="closeemailbox2.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #roundconfirmation modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure, You want to submit round {{round_data}} ({{rowdata13.length}}) students data?</h4>
+    <table class="table table-striped table-bordered table-hover table-green" [mfData]="rowdata13" #mf11="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>
+            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of mf11.data; let i = index">
+          <td>{{rowdata13.indexOf(item) + 1}}</td>
+          <td>{{item.university_reg_number}}</td>
+          <td>{{item.clg_fullname}}</td>
+          <td>{{item.branch_fullname}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.email_id}}</td>
+          <td>{{item.btech_percentage}}</td>
+          <td>{{item.backlogs}}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr *ngIf="mf11.data.length == 0">
+          <td colspan="8" class="text-center">
+            No Data Found
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="submitRound_data(rowdata13);roundconfirmation.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="roundconfirmation.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #roundsclose modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Do you want to save the changes to Rounds Table ?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="closeroundslist();roundsclose.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="roundsclose.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #elgibleclose modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4 *ngIf="attendance.length == 0">Are you sure, You want to close the Students Eligible List ?</h4>
+    <h4 *ngIf="attendance.length != 0">You have made some changes. Do you want to save?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="closeshortlist();elgibleclose.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="elgibleclose.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #selectedclose modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure, You want to close Selected Students List?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="closeshortlist();selectedclose.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="selectedclose.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #closeroundprogress modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure, You want to close Rounds Progress List?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="closeroundproglist();closeroundprogress.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="closeroundprogress.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #defaultloading modalClass="modal-flex modal12">
+  <modal-header style="display: none!important;">
+    <div style="display: none!important;"></div>
+  </modal-header>
+  <modal-content>
+    <div class="row">
+      <div class="text-center" style="margin-right:20px;">
+        <i class="fa fa-spinner fa-spin fa-5x fa-fw"></i>
+        <h6>Please wait !! Loading...</h6>
+      </div>
+    </div>
+  </modal-content>
+  <modal-footer>
+
+  </modal-footer>
+</modal>

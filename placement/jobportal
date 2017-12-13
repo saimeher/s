@@ -1,0 +1,169 @@
+SELECT r.college_name,(select count(*) from registration r2 where r2.university_reg_number in (select sp2.reg_no from students_placement sp2 group by sp2.reg_no ) ) as count1,count(sp.reg_no) as count2 FROM registration r,students_placement sp WHERE r.university_reg_number=sp.reg_no  group by r.college_name
+
+
+SELECT r.college_name,(select count(*) from registration r2 where r2.university_reg_number in (select sp2.reg_no from students_placement sp2 group by sp2.reg_no ) and r2.college_name=r.college_name ) as count1,count(sp.reg_no) as count2 FROM registration r,students_placement sp WHERE r.university_reg_number=sp.reg_no  group by r.college_name
+
+
+select count(registration.college_name) as total_clg_count,
+        (select (colleges.college) as clg_name  from raghuerp_db.colleges where registration.college_name=colleges.id )as clg_name,
+        (select count(registration.college_name) as clg1_count from raghuerp_db.colleges where registration.college_name=colleges.id )as clg_count,
+        (select (colleges.full_name) as clg_name  from raghuerp_db.colleges where registration.college_name=colleges.id )as clg_fullname,
+        (select (courses.course) as course_name from raghuerp_db.courses where registration.course = courses.id ) as course_name,
+        (select (year.year) as actual_year from raghuerp_db.year where registration.year=year.id  ) as actual_year,
+        (select count(*) from registration r2 where r2.university_reg_number in 
+         (select sp2.reg_no from students_placement sp2 group by sp2.reg_no) ) as stu_placed
+          from registration
+
+// clg_count
+
+SELECT r.college_name,
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rc.full_name from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_fullname ,
+(select count(rc.university_reg_number) from registration rc where rc.college_name = r.college_name) as clg_count ,
+(select (rc1.course) as course_name from raghuerp_db.courses rc1 where r.course = rc1.id ) as course_name,
+(select count(*) from registration r2 where r2.university_reg_number in 
+(select sp2.reg_no from students_placement sp2 group by sp2.reg_no ) 
+ and r2.college_name=r.college_name ) as actual_stu_placed,
+ count(sp.reg_no) as stu_placed_company FROM registration r,students_placement sp WHERE r.university_reg_number=sp.reg_no  group by r.college_name
+
+210.16.79.137/raghuerp/jobportal/server
+
+// with clg and branches count
+
+SELECT r.college_name,
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rc.full_name from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_fullname,
+(select rc.branch from raghuerp_db.branches rc where rc.id = r.branch) as branch_name ,
+(select count( r.branch=rc.id) from raghuerp_db.branches rc where rc.id = r.branch) as branch_count ,
+(select count(rc.university_reg_number) from registration rc where rc.college_name = r.college_name) as clg_count ,
+(select count(*) from registration r2 where r2.university_reg_number in 
+(select sp2.reg_no from students_placement sp2 group by sp2.reg_no ) 
+ and r2.college_name=r.college_name ) as actual_stu_placed,
+ count(sp.reg_no) as stu_placed_company
+ FROM registration r,students_placement sp 
+ WHERE r.university_reg_number=sp.reg_no  
+ group by r.branch
+
+
+// with branch count
+
+SELECT r.college_name,
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rc.full_name from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_fullname,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+(select rb.fullname from raghuerp_db.branches rb where rb.id = r.branch) as br_fullname,
+(select count(r.branch) from raghuerp_db.branches rb where rb.id = r.branch) as br_count,
+(select count(*) from registration r2 where r2.university_reg_number in 
+(select sp2.reg_no from students_placement sp2 group by sp2.reg_no ) 
+ and r2.branch=r.branch ) as branch_placed
+FROM registration r
+group by r.branch
+
+//with year branch college
+SELECT r.college_name,
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rc.full_name from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_fullname,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+(select rb.fullname from raghuerp_db.branches rb where rb.id = r.branch) as br_fullname,
+(select count(r.branch) from raghuerp_db.branches rb where rb.id = r.branch) as br_count,
+(select count(*) from registration r2 where r2.university_reg_number in 
+(select sp2.reg_no from students_placement sp2 group by sp2.reg_no ) 
+ and r2.branch=r.branch ) as branch_placed,
+ (select ry.year from raghuerp_db.year ry where ry.id = r.year) as actual_year
+FROM registration r
+group by r.branch
+
+
+
+//new query
+
+
+select 
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+backlogs,count(*) as count,count(*) as '>85',count(*) as '>75',count(*) as '>65',count(*) as '>60',count(*) as '<60'
+from registration r WHERE r.btech_percentage >='85' group by branch, backlogs
+
+
+
+//final query all colleges
+
+select 
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+backlogs,count(*) as count,
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '85') as 'above 85',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '75' and r2.btech_percentage < '85') as '85 - 75',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '65' and r2.btech_percentage < '75') as '75 - 65',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '60' and r2.btech_percentage < '65') as '65 - 60',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage < '60') as 'below 60'
+from registration r  where r.backlogs<=5 group by branch, backlogs
+
+
+
+// final by department
+
+select 
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+backlogs,count(*) as count,
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '85') as 'above 85',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '75' and r2.btech_percentage < '85') as '85 - 75',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '65' and r2.btech_percentage < '75') as '75 - 65',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '60' and r2.btech_percentage < '65') as '65 - 60',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage < '60') as 'below 60'
+from registration r inner join raghuerp_db.colleges c  on r.college_name=c.id  and c.college="REC" inner join raghuerp_db.branches bc on r.branch=bc.id and bc.branch='CSE' where r.backlogs<=5 group by r.branch, r.backlogs
+
+
+// final by college
+
+select 
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+backlogs,count(*) as count,
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '85') as 'above 85',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '75' and r2.btech_percentage < '85') as '85 - 75',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '65' and r2.btech_percentage < '75') as '75 - 65',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '60' and r2.btech_percentage < '65') as '65 - 60',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage < '60') as 'below 60'
+from registration r inner join raghuerp_db.colleges c  on r.college_name=c.id  and c.college="REC" where r.backlogs<=5 group by r.branch, r.backlogs
+
+
+// according to college
+
+
+select 
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+backlogs,count(*) as count,
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '85') as 'above 85',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '75' and r2.btech_percentage < '85') as '85 - 75',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '65' and r2.btech_percentage < '75') as '75 - 65',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '60' and r2.btech_percentage < '65') as '65 - 60',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage < '60') as 'below 60'
+from registration r inner join raghuerp_db.colleges c  on r.college_name=c.id  and c.college="REC" where r.backlogs<=5 group by r.branch, r.backlogs
+
+select 
+(select rc.college from raghuerp_db.colleges rc where rc.id = r.college_name) as clg_name ,
+(select rb.branch from raghuerp_db.branches rb where rb.id = r.branch) as br_name,
+backlogs,count(*) as count,
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '85') as 'above 85',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '75' and r2.btech_percentage < '85') as '85 - 75',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '65' and r2.btech_percentage < '75') as '75 - 65',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage >= '60' and r2.btech_percentage < '65') as '65 - 60',
+(select count(*) from registration r2 where r2.branch=r.branch and r2.backlogs =r.backlogs and r2.btech_percentage < '60') as 'below 60'
+from registration r inner join raghuerp_db.colleges c  on r.college_name=c.id  and FIND_IN_SET (c.college, 'REC')  inner join raghuerp_db.branches bc on r.branch=bc.id and  FIND_IN_SET (bc.branch, 'CSE,MECH')  where r.backlogs<=5 group by r.branch, r.backlogs
+
+
+// colleges
+select concat(c.college ,' - ',cr.course , ' - ', d.department ) as field1,c.college,c.id as col_id,cr.course,cr.id as course_id,d.branch,d.id as br_id 
+from raghuerp_db.colleges c 
+inner join raghuerp_db.courses cr on c.id=cr.college and cr.course="B.Tech"
+inner join raghuerp_db.branches d on c.id=d.course and d.branch = "CSE"
+Where c.college = "REC"
+group by c.college,cr.course,d.branch
+
+
+// default clg
+select *, college as itemName from raghuerp_db.colleges
+

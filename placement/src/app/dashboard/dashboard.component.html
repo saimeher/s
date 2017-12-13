@@ -1,0 +1,1423 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+
+    <div class="spl-content">
+
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <h1>
+              Raghu Placement Portal
+              <small>Dashboard</small>
+            </h1>
+            <ol class="breadcrumb">
+              <li>
+                <i class="fa fa-dashboard"></i>
+                <a [routerLink]="['/dashboard']">Dashboard</a>
+              </li>
+              <li class="active">Placement Dashboard</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="this.currentRole == 'placement_officier'">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="">
+              <div class="circle-tile-content dark-blue pannel-pad">
+                <div class="circle-tile1">
+                  <span class="circle-tile-header1 title-font">
+                    <a class="title-font">Raghu Educational Institutions</a>
+                  </span>
+                </div>
+                <div class="circle-tile1">
+                  <img src="{{basicurl}}/rei.png" width="150">
+                </div>
+                <div class="circle-tile-content dark-blue pannel-pad">
+                  <span class="circle-tile-header2 title-font1">
+                    <a class="title-font1" (click)="chartopen();" [ngClass]="{'active12': chart == true}">
+                      <i style="margin-top: 5px;" class="fa fa-check pull-left"></i> Selected Students</a>
+                  </span>
+                </div>
+                <div class="circle-tile-content dark-blue pannel-pad">
+                  <span class="circle-tile-header2 title-font1">
+                    <a class="title-font1" (click)="companywiseopen()" [ngClass]="{'active12': companyinfo1 == true}">
+                      <i style="margin-top: 5px;" class="fa fa-table  pull-left"></i>
+                      Company Info</a>
+                  </span>
+                </div>
+                <div class="circle-tile-content dark-blue pannel-pad">
+                  <span class="circle-tile-header2 title-font1">
+                    <a class="title-font1" (click)="elgiblelistopen()" [ngClass]="{'active12': elgiblecandidates == true}">
+                      <i style="margin-top: 5px;" class="fa fa-table  pull-left"></i>
+                      Eligible Students Count</a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="col-lg-8" *ngIf="elgiblecandidates == true">
+            <!-- <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4 class="text-center">Eligible Candidates Information</h4>
+                </div>
+                <div class="portlet-widgets">
+                  <i class="fa fa-times" (click)="closeelgiblelist()" style="cursor:pointer;"></i>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div id="transactionsPortlet" class="panel-collapse collapse in">
+                <div class="portlet-body">
+                  <form class="form-horizontal" role="form" #f="ngForm" novalidate>
+                    <div class="form-group">
+                      <div class="col-lg-6">
+                        <angular2-multiselect class="form-control" [data]="clgbr" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                          (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)" [settings]="dropdownSettings"
+                          name="branchid" #fd='ngModel' (ngModelChange)="send($event)" [(ngModel)]="branchid12"></angular2-multiselect>
+                      </div>
+                      <label class="col-sm-2 " style="margin-top: 7px; margin-left: 111px;"> Total Count </label>
+                      <div class="col-sm-2">
+                        <input type="text" class="form-control" name="total_sum" [(ngModel)]="total_sum" disabled>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-striped table-bordered table-hover table-green">
+                        <thead>
+                          <tr>
+                            <th class="text-center">Backlogs</th>
+                            <th class="text-center">Above 85</th>
+                            <th class="text-center">85 - 75</th>
+                            <th class="text-center">75 - 65</th>
+                            <th class="text-center">65 - 60</th>
+                            <th class="text-center">Total</th>
+                            <th class="text-center" width="100px">Grand Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item1 of finaltable ;let index=i ">
+                            <td class="text-center success">{{item1.backlogs}}</td>
+                            <td class="text-center">{{item1.above_85}}
+                              <input type="checkbox" class="pull-right" name="item1.above_85" (change)="getsumstd($event,item1.above_85,item1.backlogs)"
+                              />
+                            </td>
+                            <td class="text-center">{{item1.a85_75}}
+                              <input type="checkbox" class="pull-right" name="item1.a85_75" (change)="getsumstd($event,item1.a85_75,item1.backlogs)" />
+                            </td>
+                            <td class="text-center">{{item1.a75_65}}
+                              <input type="checkbox" class="pull-right" name="item1.a75_65" (change)="getsumstd($event,item1.a75_65,item1.backlogs)" />
+                            </td>
+                            <td class="text-center">{{item1.a65_60}}
+                              <input type="checkbox" class="pull-right" name="item1.a65_60" (change)="getsumstd($event,item1.a65_60,item1.backlogs)" />
+                            </td>
+                            <td class="text-center">{{item1.count}}</td>
+                            <td class="text-center" width="50px">
+                              <input type="text" style="width:50px;" class="text-center" [(ngModel)]="sumvalue[item1.backlogs]" name="item1" disabled/>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div> -->
+
+            <div class="row">
+              <div class="col-lg-12">
+
+                <div class="portlet portlet-default">
+                  <div class="portlet-heading">
+                    <div class="portlet-title">
+                      <h4> Eligible Students Count</h4>
+                    </div>
+                    <div class="portlet-widgets">
+                      <i class="fa fa-times" (click)="closeelgiblelist()" style="cursor:pointer;"></i>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="portlet-body">
+                    <form class="form-horizontal" [formGroup]="myform">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <div class="col-lg-3" style="padding-right: 23px!important;">
+                            <label style="margin-left:30px">Backlogs</label>
+                            <nouislider [tooltips]="[ true, true ]" style="margin-top: 3em;font-size:10px;" [connect]="true" [min]="0" [max]="6" [step]="1"
+                              name="backlogs" [formControl]="myform.controls.backlogs"></nouislider>
+                            <!-- <div class="alert alert-danger" *ngIf="!myform.controls['backlogs'].valid">Backlogs Required</div> -->
+                            <span style="color:red;" *ngIf="displayMessage.backlogs">
+                              {{displayMessage.backlogs}}
+                            </span>
+                          </div>
+                          <div class="col-lg-9">
+                            <label style="margin-left:175px"> Percentage</label>
+                            <nouislider [tooltips]="[ true, true ]" style="margin-top: 3em;font-size:10px;" [connect]="true" [min]="50" [max]="100" [step]="5"
+                              name="percentage" [formControl]="myform.controls.percentage"></nouislider>
+                            <!-- <div class="alert alert-danger" *ngIf="myform.controls['percentage'].valid">Percentage Required</div> -->
+                            <span style="color:red;" *ngIf="displayMessage.percentage">
+                              {{displayMessage.percentage}}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="col-lg-9">
+                            <angular2-multiselect class="form-control" [data]="clgbr" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                              (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)" [settings]="dropdownSettings"
+                              name="defclgbr" [formControl]="myform.controls.defclgbr"></angular2-multiselect>
+                            <!-- <div class="alert alert-danger" *ngIf="!myform.controls['defclgbr'].valid">College and Branch is Required</div> -->
+                            <span style="color:red;" *ngIf="displayMessage.defclgbr">
+                              {{displayMessage.defclgbr}}
+                            </span>
+                          </div>
+                          <div class="col-lg-3">
+                            <!-- <button (click)="clearform(myform)" [disabled]="!myform.controls['defclgbr'].valid" class="btn btn-square btn-danger pull-right"> Clear</button> -->
+                            <button [disabled]="!myform.controls['defclgbr'].valid" (click)="getdatabybackper(myform)" class="btn btn-square btn-green pull-right">
+                              Submit</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="clearfix"></div>
+                    </form>
+
+                    <div class="row" *ngIf="elgibledata">
+                      <div class="col-lg-12">
+                        <table class="table table-striped table-bordered table-hover table-green">
+                          <!-- <thead>
+                              <tr>
+                                <th class="text-center">Backlogs</th>
+                                <th class="text-center">Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item3 of elgibledata">
+                                <td class="text-center">{{item3.backlogs}}</td>
+                                <td class="text-center">{{item3.count}}</td>
+                              </tr>
+                            </tbody> -->
+                          <tbody *ngIf="elgibledata.length != 0">
+                            <tr>
+                              <th width="90px;" class="text-center" style=" background-color: #16a085!important; color: #fff;">Backlogs</th>
+                              <td *ngFor="let item3 of elgibledata" class="text-center">{{item3.backlogs}}</td>
+                            </tr>
+                            <tr>
+                              <th class="text-center" style=" background-color: #16a085!important; color: #fff;">Count</th>
+                              <td *ngFor="let item3 of elgibledata" class="text-center">{{item3.count}}</td>
+                            </tr>
+                          </tbody>
+                          <tbody *ngIf="elgibledata.length == 0">
+                            <tr>
+                              <th width="90px;" class="text-center" style=" background-color: #16a085!important; color: #fff;">Backlogs</th>
+                              <td style="background-color: #eee;" rowspan="2" class="text-center">
+                                No Data Found
+                              </td>
+                            </tr>
+                            <tr>
+                              <th class="text-center" style=" background-color: #16a085!important; color: #fff;">Count</th>
+                            </tr>
+                          </tbody>
+
+                        </table>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <!-- <div class="c"><chart [options]="options" style="height: 200px;"></chart></div> -->
+                          <div class="c">
+                            <chart [options]="blockgraph" style="width:100% !important;"></chart>
+                          </div>
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                </div>
+                <!-- /.col-lg-12 -->
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-8" *ngIf="companyinfo1 == true">
+            <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4 class="text-center">Companies Information</h4>
+                </div>
+                <div class="portlet-widgets">
+                  <i class="fa fa-times" (click)="closecompanyinfo()" style="cursor:pointer;"></i>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="portlet-body" style="overflow-x: scroll;">
+                <div class="row" style="margin-bottom: 9px;">
+                  <div class="col-lg-2">
+                    <div style="width: 16px;height: 16px; border: 1px solid #ecd0a3; background-color: #ecd0a3;margin-left: 40px;">
+                    </div>
+                  </div>
+                  <a (click)="getupcomingcmp(detail.upcomingcompanies,'greater')">
+                    <div class="col-lg-4" style="margin-top: -3px;margin-left: -48px;">{{detail.upcomingcompanies}} Upcoming Companies
+                    </div>
+                  </a>
+                  <div class="col-lg-2">
+                    <div style="width: 16px;height: 16px; border: 1px solid #8ad66b; background-color: #8ad66b;">
+                    </div>
+                  </div>
+                  <a (click)="getupcomingcmp(detail.vistedcompanies,'lesser')">
+                    <div class="col-lg-3" style="margin-top: -3px;margin-left: -85px;">{{detail.vistedcompanies}} Companies Visited
+                    </div>
+                  </a>
+
+                  <div class="col-lg-3" style="margin-top: -3px;">
+                    <a class="btn btn-xs btn-square btn-default pull-right" style="margin-right: -12px;" (click)="getupcomingcmp('equal')">Back</a>
+                  </div>
+
+                </div>
+                <table class="table table-striped table-bordered table-hover table-green" [mfData]="companydetails" #mf1="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                  [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>
+                        <mfDefaultSorter by="company">Company Name
+                        </mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="location">Location
+                        </mfDefaultSorter>
+                      </th>
+                      <th class="text-center">
+                        <mfDefaultSorter by="package">Package
+                          <i class="fa fa-inr"></i> L
+                        </mfDefaultSorter>
+                      </th>
+                      <th class="text-center">
+                        <mfDefaultSorter by="backlogs">Backlogs
+                        </mfDefaultSorter>
+                      </th>
+                      <th class="text-center">
+                        <mfDefaultSorter by="percentage">B.Tech(%)
+                        </mfDefaultSorter>
+                      </th>
+                      <th width="105px;">
+                        <mfDefaultSorter by="c_date">Drive date
+                        </mfDefaultSorter>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let a of mf1.data; let i = index" [ngClass]="{'bg-visited' : a.c_date <= date1 , 'bg-notvisited':  a.c_date > date1 }">
+                      <td>{{companydetails.indexOf(a) + 1}}</td>
+                      <td>{{a.company}}</td>
+                      <td>{{a.location}}</td>
+                      <td class="text-center">{{a.package}}</td>
+                      <td class="text-center">{{a.backlogs}}</td>
+                      <td class="text-center">{{a.percentage}}</td>
+                      <td>
+                        <b>{{a.c_date | date:mediumDate}}</b>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr *ngIf="mf1.data.length == 0">
+                      <td colspan="10" class="text-center">
+                        No Data Found
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="10">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75]"></mfBootstrapPaginator>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8" *ngIf="chart == true">
+            <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4 class="text-center">Selected Candidates Information</h4>
+                </div>
+                <!-- <div class="portlet-widgets">
+                  <i class="fa fa-times" (click)="closecompanyinfo()" style="cursor:pointer;"></i>
+                </div> -->
+                <div class="clearfix"></div>
+              </div>
+              <div class="portlet-body">
+                <chart [options]="options4" (selection)="onChartSelection($event)"></chart>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <!-- <div class="col-lg-4">
+            <div *ngFor="let item of college_count">
+              <div class="circle-tile-content dark-blue pannel-pad">
+                <span class="circle-tile-header title-font">
+                  <a class="title-font">{{item.clg_fullname}}</a>
+                </span>
+                <div class="widget widget-default widget-item-icon">
+                  <div class="widget-item-left">
+                    <span class="fa fa-users"></span>
+                  </div>
+                  <div class="widget-data">
+                    <div class="widget-int num-count">
+                      <a (click)="placedgraf(id=item,item.clg_name);testgo()">
+                        {{item.clg_count}}
+                      </a>
+                    </div>
+                    <div class="widget-title">
+                      <a (click)="placedgraf(id=item,item.clg_name);testgo()">Total Students</a>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12" class="widget-subtitle">
+                        <div class="col-md-6">
+                          <a (click)="placedgraf(id=item,item.clg_name);testgo()">HeadCount Placed :
+                            <span class="text_underline">{{item.actual_stu_placed}}</span>
+                          </a>
+                        </div>
+                        <div class="col-md-5">
+                          <a (click)="placedgraf(id=item,item.clg_name);testgo()">Total Offers :
+                            <span class="text_underline">{{item.stu_placed_company}}</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4 class="text-center">Raghu Educational Institutions</h4>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div id="transactionsPortlet" class="panel-collapse collapse in">
+                <div class="portlet-body">
+                  <form class="form-horizontal" role="form" #f="ngForm" novalidate>
+                    <div class="form-group">
+                      <div class="col-lg-6">
+                        <angular2-multiselect class="form-control" [data]="clgbr" (onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+                          (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)" [settings]="dropdownSettings"
+                          name="branchid" #fd='ngModel' (ngModelChange)="send($event)" [(ngModel)]="branchid12"></angular2-multiselect>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-striped table-bordered table-hover table-green">
+                        <thead>
+                          <tr>
+                            <th class="text-center">Backlogs</th>
+                            <th class="text-center">Above 85</th>
+                            <th class="text-center">85 - 75</th>
+                            <th class="text-center">75 - 65</th>
+                            <th class="text-center">65 - 60</th>
+                            <th class="text-center">Below 60</th>
+                            <th class="text-center">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item1 of finaltable ;let index=i ">
+                            <td class="text-center success">{{item1.backlogs}}</td>
+                            <td class="text-center">{{item1.above_85}}</td>
+                            <td class="text-center">{{item1.a85_75}}</td>
+                            <td class="text-center">{{item1.a75_65}}</td>
+                            <td class="text-center">{{item1.a65_60}}</td>
+                            <td class="text-center">{{item1.below_60}}</td>
+                            <td class="text-center">{{item1.count}}</td>
+                          </tr>
+                        </tbody>
+                        <tbody *ngIf="finaltable.length == 0">
+                          <tr>
+                            <td class="text-center success">0</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td class="text-center success">1</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td class="text-center success">2</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td class="text-center success">3</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td class="text-center success">4</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr>
+                            <td class="text-center success">5</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2 col-sm-6">
+            <div class="circle-tile">
+              <div class="circle-tile-heading dark-blue">
+                <i class="fa fa-users fa-fw fa-3x"></i>
+              </div>
+              <div class="circle-tile-content1 dark-blue">
+                <div class="circle-tile-description1 text-faded1">
+                  SELECTED STUDENTS
+                </div>
+                <div class="circle-tile-number1 text-faded1">
+                  {{stdplaced}}
+                </div>
+                <a (click)="company.open()" class="circle-tile-footer1">More Info
+                  <i class="fa fa-chevron-circle-right"></i>
+                </a>
+              </div>
+            </div>
+            <div class="circle-tile">
+              <a href="#">
+                <div class="circle-tile-heading green">
+                  <i class="fa fa-building-o fa-fw fa-3x"></i>
+                </div>
+              </a>
+              <div class="circle-tile-content green">
+                <div class="circle-tile-description text-faded">
+                  Company-wise
+                </div>
+                <div class="circle-tile-number text-faded">
+                  INFO
+                </div>
+                <a (click)="companyinfo.open()" class="circle-tile-footer">More Info
+                  <i class="fa fa-chevron-circle-right"></i>
+                </a>
+              </div>
+            </div>
+          </div> -->
+          </div>
+          <div class="row" *ngIf="this.loading1 == true">
+            <!-- <div class="col-lg-12">
+            <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4>{{clgs}}</h4>
+                </div>
+                <div class="portlet-widgets">
+                  <a (click)="placedgrafclose(id=item);testdown()">
+                    <i class="fa fa-times"></i>
+                  </a>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="portlet-body">
+                <div class="row">
+                  <div class="col-lg-3">
+                    <div class="portlet portlet-green">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>Companies List</h4>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let data1 of graphdata">
+                                <td>{{data1.name}}</td>
+                                <td class="text-center">
+                                  <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="getdatabyclgcmpid(data1)">{{data1.y}}</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                            <tbody>
+                              <tr *ngIf="graphdata.length == 0">
+                                <td colspan="2" class="text-center"> No Data Found</td>
+                              </tr>
+
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="portlet portlet-green" *ngIf="graphbox1 == true">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>{{company_name}}</h4>
+                        </div>
+                        <div class="portlet-widgets">
+                          <i class="fa fa-times" style="cursor:pointer;" *ngIf="firstclose == true" (click)="closefirst()"></i>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th>Branch</th>
+                                <th>Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let data2 of branchwisedata">
+                                <td>{{data2.branch}}</td>
+                                <td class="text-center">
+                                  <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="getstddatabygraph(data2)">{{data2.count}}</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <chart [options]="companyinformation" (selection)="onChartSelection($event)"></chart>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12" *ngIf="graphbox2 == true">
+                    <div class="portlet portlet-green">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>Department of {{branch_name}}</h4>
+                        </div>
+                        <div class="portlet-widgets">
+                          <i class="fa fa-times" style="cursor:pointer;" *ngIf="secondclose == true" (click)="closesecond()"></i>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-striped table-bordered table-hover table-green dataTable">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>University No</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Mobile</th>
+                                <th class="text-center">Backlogs</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let data of studentwisedata; let i =index">
+                                <td>{{i+1}}</td>
+                                <td>{{data.university_reg_number}}</td>
+                                <td>{{data.first_name}}</td>
+                                <td>{{data.email_id}}</td>
+                                <td>{{data.mobile_number}}</td>
+                                <td class="text-center">{{data.backlogs}}</td>
+                            </tbody>
+                            <tbody>
+                              <tr *ngIf="studentwisedata.length == 0">
+                                <td colspan="6" class="text-center">No Data Found</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+            </div>
+          </div> -->
+          </div>
+          <modal #companyinfo modalClass="modal-dialog1 modal-flex modal-lg">
+            <modal-header>
+              <h4 class="modal-title">Comapany Details</h4>
+            </modal-header>
+            <modal-content>
+              <div class="row" style="overflow-x: scroll;">
+                <div class="col-lg-12">
+                  <table class="table table-striped table-bordered table-hover table-green" [mfData]="companydetails" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                    [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>
+                          <mfDefaultSorter by="company">Company Name
+                          </mfDefaultSorter>
+                        </th>
+                        <th>
+                          <mfDefaultSorter by="location">Location
+                          </mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                          <mfDefaultSorter by="package">Package
+                          </mfDefaultSorter>
+                        </th>
+                        <!-- <th>
+                    <mfDefaultSorter by="itemName">College
+                    </mfDefaultSorter>
+                  </th>
+                  <th>
+                    <mfDefaultSorter by="branches">Branches
+                    </mfDefaultSorter>
+                  </th> -->
+                        <th class="text-center">
+                          <mfDefaultSorter by="backlogs">Backlogs
+                          </mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                          <mfDefaultSorter by="percentage">percentage
+                          </mfDefaultSorter>
+                        </th>
+                        <th width="105px;">
+                          <mfDefaultSorter by="c_date">Drive date
+                          </mfDefaultSorter>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let a of mf.data; let i = index" [ngClass]="{'bg-return': a.c_date >= date1}">
+                        <td>{{i+1}}</td>
+                        <td>{{a.company}}</td>
+                        <td>{{a.location}}</td>
+                        <td class="text-center">{{a.package}}</td>
+                        <!-- <td>{{a.college}}</td>
+                  <td>{{a.branches}}</td> -->
+                        <td class="text-center">{{a.backlogs}}</td>
+                        <td class="text-center">{{a.percentage}}%</td>
+                        <td>
+                          <b>{{a.c_date | date:mediumDate}}</b>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr *ngIf="mf.data.length == 0">
+                        <td colspan="10" class="text-center">
+                          No Data Found
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="10">
+                          <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75]"></mfBootstrapPaginator>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </modal-content>
+            <modal-footer>
+              <button class="btn btn-square btn-primary" (click)="companyinfo.close()">close</button>
+            </modal-footer>
+          </modal>
+          <modal #company modalClass="modal-dialog1 modal-flex modal-lg">
+            <modal-header>
+              <h4 class="modal-title">Selected Students Information</h4>
+            </modal-header>
+            <modal-content>
+              <div class="row">
+                <div class="col-lg-3">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="portlet portlet-green">
+                        <div class="portlet-heading">
+                          <div class="portlet-title">
+                            <h4>Companies List</h4>
+                          </div>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                          <div class="table-responsive dashboard-demo-table">
+                            <table class="table table-bordered table-striped table-hover">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Count</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let item1 of c_std_placed">
+                                  <td>{{item1.company}}</td>
+                                  <td class="text-center">
+                                    <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="opencols(item1)">{{item1.company_count}}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3" *ngIf="openacccom == true">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="portlet portlet-green">
+                        <div class="portlet-heading">
+                          <div class="portlet-title">
+                            <h4> {{com_name}}</h4>
+                          </div>
+                          <div class="portlet-widgets">
+                            <i class="fa fa-times" *ngIf="firstbox == true" (click)="closefirstbox()" style="cursor:pointer;"></i>
+                          </div>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                          <div class="table-responsive dashboard-demo-table">
+                            <table class="table table-bordered table-striped table-hover">
+                              <thead>
+                                <tr>
+                                  <th>College</th>
+                                  <th>Count</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let item2 of c_data">
+                                  <td>{{item2.college}}</td>
+                                  <td class="text-center">
+                                    <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="openacccoll1(item2)">{{item2.count}}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3" *ngIf="openacccoll == true">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="portlet portlet-green">
+                        <div class="portlet-heading">
+                          <div class="portlet-title">
+                            <h4> {{clg_name}}</h4>
+                          </div>
+                          <div class="portlet-widgets">
+                            <i class="fa fa-times" *ngIf="secondbox == true" (click)="closesecondbox()" style="cursor:pointer;"></i>
+                          </div>
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="portlet-body">
+                          <div class="table-responsive dashboard-demo-table">
+                            <table class="table table-bordered table-striped table-hover">
+                              <thead>
+                                <tr>
+                                  <th>Branches</th>
+                                  <th>Count</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let item3 of clgdata">
+                                  <td>{{item3.branch}}</td>
+                                  <td class="text-center">
+                                    <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="openaccbranch(item3)">{{item3.count}}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="openaccbrach == true">
+                <div class="col-lg-12">
+                  <div class="portlet portlet-green">
+                    <div class="portlet-heading">
+                      <div class="portlet-title">
+                        <h4>Department of {{branch_name}}</h4>
+                      </div>
+                      <div class="portlet-widgets">
+                        <i class="fa fa-times" *ngIf="thirdbox == true" (click)="closethirdbox()" style="cursor:pointer;"></i>
+                      </div>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="portlet-body">
+                      <div class="table-responsive dashboard-demo-table">
+                        <table class="table table-striped table-bordered table-hover table-green dataTable">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>University No</th>
+                              <th>Name</th>
+                              <th>Email</th>
+                              <th>Mobile</th>
+                              <th>Backlogs</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let data of stddata; let i =index">
+                              <td>{{i+1}}</td>
+                              <td>{{data.university_reg_number}}</td>
+                              <td>{{data.first_name}}</td>
+                              <td>{{data.email_id}}</td>
+                              <td>{{data.mobile_number}}</td>
+                              <td>{{data.backlogs}}</td>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </modal-content>
+            <modal-footer>
+              <button class="btn btn-square btn-primary" (click)="company.close()">close</button>
+            </modal-footer>
+          </modal>
+          <modal #accordingtograph modalClass="modal-dialog1 inmodal modal-flex modal-lg">
+            <modal-header>
+              <h4 class="modal-title">{{acccompany_name}}</h4>
+              <!-- <small class="font-bold">Total Students Selected {{acccompany_count}}</small> -->
+            </modal-header>
+            <modal-content>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="portlet portlet-green">
+                    <div class="portlet-heading">
+                      <div class="portlet-title">
+                        <h4>Raghu Educational Institutions</h4>
+                      </div>
+                      <div class="portlet-widgets">
+                        <a class="btn btn-xs btn-square btn-default" (click)="opengraph(acccompany_id,acccompany_name,acccompany_count)"> Selected Students {{acccompany_count}}</a>
+                      </div>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="portlet-body">
+                      <div class="row">
+                        <!-- REC -->
+                        <div class="col-lg-3" *ngIf="recdata">
+                          <div class="table-responsive dashboard-demo-table">
+                            <table class="table table-bordered table-striped table-hover ">
+                              <thead>
+                                <tr>
+                                  <th class="success" style="text-align:center;" colspan="2"> REC
+                                    <a *ngIf="reccount" class="btn btn-xs btn-square btn-warning" (click)="opengraphbyclg(reccount)">{{reccount.count}}</a>
+                                  </th>
+                                </tr>
+                                <tr>
+                                  <th>Branches</th>
+                                  <th class="text-center">Count</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let data of recdata">
+                                  <td>{{data.branch}}</td>
+                                  <td class="text-center">
+                                    <a class="btn btn-xs btn-square btn-purple" (click)="opentabledata(data)">{{data.count}}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <!-- RIT -->
+                        <div class="col-lg-3" *ngIf="ritdata">
+                          <div class="table-responsive dashboard-demo-table">
+                            <table class="table table-bordered table-striped table-hover ">
+                              <thead>
+                                <tr>
+                                  <th class="success" style="text-align:center;" colspan="2"> RIT
+                                    <a *ngIf="ritcount" class="btn btn-xs btn-square btn-warning" (click)="opengraphbyclg(ritcount)">{{ritcount.count}}</a>
+                                  </th>
+                                </tr>
+                                <tr>
+                                  <th>Branches</th>
+                                  <th class="text-center">Count</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let data of ritdata">
+                                  <td>{{data.branch}}</td>
+                                  <td class="text-center">
+                                    <a class="btn btn-xs btn-square btn-purple" (click)="opentabledata(data)">{{data.count}}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <!-- RCP -->
+                        <div class="col-lg-3" *ngIf="rcpdata">
+                          <div class="table-responsive dashboard-demo-table">
+                            <table class="table table-bordered table-striped table-hover ">
+                              <thead>
+                                <tr>
+                                  <th class="success" style="text-align:center;" colspan="2"> RCP
+                                    <a *ngIf="rcpcount" class="btn btn-xs btn-square btn-warning" (click)="opengraphbyclg(rcpcount)">{{rcpcount.count}}</a>
+                                  </th>
+                                </tr>
+                                <tr>
+                                  <th>Branches</th>
+                                  <th class="text-center">Count</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let data of rcpdata">
+                                  <td>{{data.branch}}</td>
+                                  <td class="text-center">
+                                    <a class="btn btn-xs btn-square btn-purple" (click)="opentabledata(data)">{{data.count}}</a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <table class="table table-striped table-bordered table-hover table-green" [mfData]="allstddata" #mf3="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                            [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th width="113px">
+                                  <mfDefaultSorter by="university_reg_number">Reg No</mfDefaultSorter>
+                                </th>
+                                <th>
+                                  <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                                </th>
+                                <th>
+                                  <mfDefaultSorter by="email_id">Email</mfDefaultSorter>
+                                </th>
+                                <th>
+                                  <mfDefaultSorter by="mobile_number">Mobile No</mfDefaultSorter>
+                                </th>
+                                <th class="text-center">
+                                  <mfDefaultSorter by="btech_percentage">B.Tech(%)</mfDefaultSorter>
+                                </th>
+                                <th class="text-center">
+                                  <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let data of mf3.data; let i = index;">
+                                <td>{{allstddata.indexOf(data) + 1}}</td>
+                                <td>{{data.university_reg_number}}</td>
+                                <td>{{data.first_name}}</td>
+                                <td>{{data.email_id}}</td>
+                                <td>{{data.mobile_number}}</td>
+                                <td class="text-center">{{data.btech_percentage}}</td>
+                                <td class="text-center">{{data.backlogs}}</td>
+                            </tbody>
+                            <tbody>
+                              <tr *ngIf="mf3.data.length == 0">
+                                <td colspan="7" class="text-center">No Data Found</td>
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr>
+                                <td colspan="7">
+                                  <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                                </td>
+                              </tr>
+                            </tfoot>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="row">
+              <div class="col-lg-3">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="portlet portlet-green">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>Colleges List</h4>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th>Name</th>
+                                <th>Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item1 of c_std_placed">
+                                <td>{{item1.company}}</td>
+                                <td class="text-center">
+                                  <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="opencols(item1)">{{item1.company_count}}</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="portlet portlet-green">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>REC List</h4>
+                        </div>
+                        <div class="portlet-widgets">
+                          <i class="fa fa-times" *ngIf="firstbox == true" (click)="closefirstbox()" style="cursor:pointer;"></i>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th>Branches</th>
+                                <th>Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item2 of c_data">
+                                <td>{{item2.college}}</td>
+                                <td class="text-center">
+                                  <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="openacccoll1(item2)">{{item2.count}}</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="portlet portlet-green">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>RIT</h4>
+                        </div>
+                        <div class="portlet-widgets">
+                          <i class="fa fa-times" *ngIf="secondbox == true" (click)="closesecondbox()" style="cursor:pointer;"></i>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th>Branches</th>
+                                <th>Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item3 of clgdata">
+                                <td>{{item3.branch}}</td>
+                                <td class="text-center">
+                                  <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="openaccbranch(item3)">{{item3.count}}</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="portlet portlet-green">
+                      <div class="portlet-heading">
+                        <div class="portlet-title">
+                          <h4>RCP</h4>
+                        </div>
+                        <div class="portlet-widgets">
+                          <i class="fa fa-times" *ngIf="secondbox == true" (click)="closesecondbox()" style="cursor:pointer;"></i>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                      <div class="portlet-body">
+                        <div class="table-responsive dashboard-demo-table">
+                          <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                              <tr>
+                                <th>Branches</th>
+                                <th>Count</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item3 of clgdata">
+                                <td>{{item3.branch}}</td>
+                                <td class="text-center">
+                                  <a style="cursor:pointer;" class="btn btn-primary btn-xs" (click)="openaccbranch(item3)">{{item3.count}}</a>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+
+                <div class="table-responsive dashboard-demo-table">
+                  <table class="table table-striped table-bordered table-hover table-green dataTable">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>University No</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Mobile</th>
+                        <th>Backlogs</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let data of allstddata; let i =index">
+                        <td>{{i+1}}</td>
+                        <td>{{data.university_reg_number}}</td>
+                        <td>{{data.first_name}}</td>
+                        <td>{{data.email_id}}</td>
+                        <td>{{data.mobile_number}}</td>
+                        <td>{{data.backlogs}}</td>
+                    </tbody>
+                    <tbody>
+                      <tr *ngIf="allstddata.length == 0">
+                        <td colspan="6" class="text-center">No Data Found</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div> -->
+            </modal-content>
+            <modal-footer>
+              <button class="btn btn-square btn-primary" (click)="accordingtograph.close()">close</button>
+            </modal-footer>
+          </modal>
+        </div>
+
+
+        <div *ngIf="master_role == 'hod'">
+          <div class="row">
+            <div *ngFor="let data of branchs_count; let i=index">
+              <div *ngIf="data.br_name==dept && data.clg_name==college">
+                <div class="col-lg-4 col-sm-6">
+                  <div class="circle-tile">
+                    <div class="circle-tile-content dark-blue pannel-pad">
+                      <span class="circle-tile-header title-font">
+                        <a class="title-font"> {{data.clg_fullname}} &nbsp; {{data.br_name}} Department</a>
+                      </span>
+                      <div class="widget widget-default widget-item-icon">
+                        <div class="widget-item-left">
+                          <span class="fa fa-users"></span>
+                        </div>
+                        <div class="widget-data">
+                          <div class="widget-int num-count">
+                            <a>{{data.br_count}}
+                            </a>
+                          </div>
+                          <div class="widget-title">
+                            <a>Total Students</a>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12" class="widget-subtitle">
+                              <div class="col-md-6">
+                                <a>Placed : {{data.branch_placed}}</a>
+                              </div>
+                              <div class="col-md-6">
+                                <a>Year : {{data.actual_year}}</a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="clearfix"></div>
+        <div class="row" *ngIf="this.loading == true">
+          <div class="col-lg-12">
+            <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4>Student Placed Details</h4>
+                </div>
+                <div class="portlet-widgets">
+                  <a (click)="placeddataclose(id=item)">
+                    <i class="fa fa-close"></i>
+                  </a>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="portlet-body">
+                <table class="table table-striped table-bordered table-hover table-green" [mfData]="details" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                  [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>
+                        <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="university_reg_number">Reg No</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="dob">Date of birth</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="email_id">Email</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="mobile_number">Mobile No</mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                      </th>
+                      <!-- <th>Status</th> -->
+                      <!-- <th>#</th>
+                        <th>Student Name</th>
+                        <th>Reg No</th>
+                        <th>Date of birth</th>
+                        <th>Email</th>
+                        <th>Mobile No</th>
+                        <th>Backlogs</th>
+                        <th>Status</th> -->
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of mf.data; let i = index;">
+                      <td>{{i+1}}</td>
+                      <td>{{item.first_name}}{{item.last_name}}</td>
+                      <td>{{item.university_reg_number}}</td>
+                      <td>{{item.dob | date:'dd-MMM-yyyy'}}</td>
+                      <td>{{item.email_id}}</td>
+                      <td>{{item.mobile_number}}</td>
+                      <td>{{item.backlogs}}</td>
+                      <!-- <td><span *ngIf="item.c_status == 1"><button (click)="approvedatabyid(id=item)" class="btn btn-xs btn-purple btn-square">Approved</button></span>
+                          <span *ngIf="item.c_status == 0"><button (click)="checkdatabyid(id=item)" class="btn btn-xs btn-blue btn-square">Check Details</button></span>
+                        </td> -->
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr *ngIf="details.length == 0">
+                      <td>
+                        No Data Found
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="8">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.portlet-body -->
+            </div>
+            <!-- /.portlet -->
+          </div>
+        </div>
+        <div class="clearfix"></div>
+
+      </div>
+
+      <div class="col-lg-12" *ngIf="this.utype == 'std' || this.currentRole == 'hod'">
+        Coming Soon...
+      </div>
+      <!-- /.page-content -->
+
+    </div>
+    <!-- /#page-wrapper -->
+  </div>

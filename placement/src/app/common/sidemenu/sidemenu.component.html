@@ -1,0 +1,82 @@
+<nav class="navbar-side" role="navigation">
+  <div class="navbar-collapse sidebar-collapse collapse">
+    <ul id="side" class="nav navbar-nav side-nav">
+      <!-- begin SIDE NAV USER PANEL -->
+      <li class="side-user hidden-xs">
+        <img class="img-circle" src={{this.img}} alt="" height="150px">
+        <p class="welcome">
+          <i class="fa fa-key"></i> Logged in as
+        </p>
+        <p class="name tooltip-sidebar-logout">
+          {{usertype}}
+          <span class="last-name">{{name}}</span>
+          <a style="color: inherit" class="logout_open" href="#logout" data-toggle="tooltip" data-placement="top" title="Logout">
+            <i class="fa fa-sign-out"></i>
+          </a>
+        </p>
+        <div class="clearfix"></div>
+      </li>
+      <li>
+        <a [routerLink]="['/dashboard']">
+          <i class="fa fa-dashboard"></i> Dashboard</a>
+      </li>
+
+      <!-- end DASHBOARD LINK -->
+      <li class="panel">
+        <a href="javascript:;" data-parent="#side" data-toggle="collapse" class="accordion-toggle" data-target="#charts">
+          <i class="fa fa-users"></i> Placement
+          <i class="fa fa-caret-down"></i>
+        </a>
+        <ul class="nav" id="charts">
+          <!-- <li>
+            <a [ngClass]="{'active': (page=='dashboard')}" [routerLink]="['/dashboard']">
+              <i class="fa fa-angle-double-right"></i> Dashboard</a>
+          </li> -->
+          <li *ngIf="utype == 'std'">
+              <a [ngClass]="{'active': (page=='studentdash')}" [routerLink]="['/studentdash']">
+                <i class="fa fa-angle-double-right"></i> Dashboard</a>
+            </li>
+          <li *ngIf="utype == 'stf' && (currentRole == 'hod' || currentRole == 'asst_hod' )">
+            <a [ngClass]="{'active': (page=='students')}" [routerLink]="['/students']">
+              <i class="fa fa-angle-double-right"></i> Review Student Profile</a>
+          </li>
+          <li *ngIf="utype == 'stf' && currentRole == 'placement_officier'">
+            <a [ngClass]="{'active': (page=='companies')}" [routerLink]="['/companies']">
+              <i class="fa fa-angle-double-right"></i> Update Company Details</a>
+          </li>
+          <li *ngIf="utype == 'stf' && currentRole == 'placement_officier'">
+            <a [ngClass]="{'active': (page=='stdshortlist')}" [routerLink]="['/stdshortlist']">
+              <i class="fa fa-angle-double-right"></i> Dept-Wise Eligible Students </a>
+          </li>
+          <li *ngIf="utype == 'stf' && currentRole == 'placement_officier'">
+            <a [ngClass]="{'active': (page=='placement')}" [routerLink]="['/placement']">
+              <i class="fa fa-angle-double-right"></i> Update Drive Details</a>
+          </li>
+          <li *ngIf="utype == 'adm' && currentRole == 'adm'">
+            <a [ngClass]="{'active': (page=='rolesassign')}" [routerLink]="['/rolesassign']">
+              <i class="fa fa-angle-double-right"></i> Assigining Roles</a>
+          </li>
+          <li *ngIf="utype == 'std'">
+            <a [ngClass]="{'active': (page=='register')}" [routerLink]="['/register']">
+              <i class="fa fa-angle-double-right"></i> Registration Page</a>
+          </li>
+          
+          <!-- <li *ngIf="utype == 'stf' && currentRole == 'placement_officier'">
+            <a [ngClass]="{'active': (page=='roundsattdeletion')}" [routerLink]="['/roundsattdeletion']">
+              <i class="fa fa-angle-double-right"></i> Deleting Rounds</a>
+          </li> -->
+          <!-- <li>
+            <a [ngClass]="{'active': (page=='transport')}" [routerLink]="['/transport']"><i class="fa fa-angle-double-right"></i> Transportation</a>
+          </li> -->
+          <!-- <li>
+            <a [ngClass]="{'active': (page=='seatallotment')}" [routerLink]="['/seatallotment']"><i class="fa fa-angle-double-right"></i> Seat Allotment</a>
+          </li> -->
+        </ul>
+      </li>
+      <!-- end PAGES DROPDOWN -->
+    </ul>
+    <!-- /.side-nav -->
+  </div>
+  <!-- /.navbar-collapse -->
+</nav>
+<!-- /.navbar-side -->

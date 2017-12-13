@@ -1,0 +1,192 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+    <div class="spl-content">
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <!-- <ol class="breadcrumb">
+                <li><i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Dashboard</a>
+                </li>
+                <li class="active">Courses</li>
+              </ol> -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Default table-->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> Delete Attendance</h4>
+              </div>
+              <div class="portlet-widgets">
+                <!-- <a class="btn btn-success btn-square btn-xs" (click)="openaddform()">
+                  <i class="fa fa-plus"></i> Add Company Info</a> -->
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="row" style="overflow-x: scroll;">
+                <div class="col-lg-12">
+                  <table class="table table-striped table-bordered table-hover table-green" [mfData]="details" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                    [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>
+                          <mfDefaultSorter by="company">Company Name
+                          </mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                          <mfDefaultSorter by="rounds">Rounds
+                          </mfDefaultSorter>
+                        </th>
+                        <th width="106px;" class="text-center">
+                          <mfDefaultSorter by="c_date">Drive Date
+                          </mfDefaultSorter>
+                        </th>
+                        <th class="text-center">
+                          <mfDefaultSorter by="reg_no">Registeration No
+                          </mfDefaultSorter>
+                        </th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let a of mf.data; let i = index">
+                        <td>{{details.indexOf(a) + 1}}</td>
+                        <td>{{a.company}}</td>
+                        <td class="text-center">{{a.rounds}}</td>
+                        <td>
+                          <b class="text-center">{{a.c_date | date:mediumDate}}</b>
+                        </td>
+                        <td class="text-center">
+                          <a style="cursor:pointer;" (click)="modelregno.open(rowdata = a.reg_no);getstddatabyregno(a.reg_no)">{{a.reg_no.split(',').length}} students</a>
+                        </td>
+                        <td>
+                          <button disabled="a.c_date >= date1" class="btn btn-danger btn-square btn-xs" (click)="deleteitem.open(rowdata = a)">
+                            <i class="fa fa-trash"></i> Delete</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr *ngIf="mf.data.length == 0">
+                        <td colspan="6" class="text-center">
+                          No Data Found
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="6">
+                          <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50]"></mfBootstrapPaginator>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<modal #deleteitem modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Are you sure you want to Delete the {{rowdata.company}} {{rowdata.rounds}} data?</h4>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <button class="btn btn-square btn-success" (click)="deleteeachitem(rowdata);deleteitem.close()">Yes</button>
+      <button class="btn btn-square btn-danger" (click)="deleteitem.close()">No</button>
+    </div>
+  </modal-footer>
+</modal>
+
+<modal #modelregno modalClass="modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title">Alert !!!</h4>
+  </modal-header>
+  <modal-content>
+    <table class="table table-striped table-bordered table-hover table-green" [mfData]="details1" #mf9="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>
+            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+          </th>
+          <th>
+            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of mf9.data; let i = index">
+          <td>{{details1.indexOf(item) + 1}}</td>
+          <td>{{item.university_reg_number}}</td>
+          <td>{{item.college}}</td>
+          <td>{{item.branch_name}}</td>
+          <td>{{item.first_name}}</td>
+          <td>{{item.email_id}}</td>
+          <td>{{item.btech_percentage}}</td>
+          <td>{{item.backlogs}}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr *ngIf="mf9.data.length == 0">
+          <td colspan="8" class="text-center">
+            No Data Found
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="8">
+            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="clearfix"></div>
+  </modal-content>
+  <modal-footer>
+    <div class="pull-right">
+      <!-- <button class="btn btn-square btn-success" (click)="modelregno.close()">Yes</button> -->
+      <button class="btn btn-square btn-danger" (click)="modelregno.close()">Close</button>
+    </div>
+  </modal-footer>
+</modal>

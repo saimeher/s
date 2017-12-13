@@ -1,0 +1,1592 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+    <div class="spl-content">
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+          </div>
+        </div>
+      </div>
+      <!-- /.row -->
+      <!-- end PAGE TITLE ROW -->
+      <!--add form start-->
+      <div class="row">
+        <div class="col-lg-12">
+          <div *ngIf="register">
+            <div *ngIf="truedata == true">
+              <div class="portlet portlet-default">
+                <div class="portlet-heading">
+                  <div class="portlet-title">
+                    <h4>
+                      <i class="fa fa-user"></i> Edit Registeration Form</h4>
+                  </div>
+                  <div class="portlet-widgets">
+                    <a (click)="getstddata()" style="cursor:pointer;">
+                      <i class="fa fa-times"></i>
+                    </a>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="portlet-body">
+                  <form class="form-horizontal" novalidate [formGroup]="reg_Form" role="form">
+                    <h3>College Details</h3>
+                    <hr>
+                    <div class="form-group">
+                      <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.university_reg_number }">
+                        <label>University Reg Number</label>
+                        <input type="text" class="form-control" placeholder="Enter University Registered No" name="university_reg_number" formControlName="university_reg_number"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.university_reg_number">
+                          {{displayMessage.university_reg_number}}
+                        </span>
+                      </div>
+                      <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.college_name }">
+                        <label>College Name </label>
+                        <!-- <select class="form-control" (change)="callcollege($event)" name="college_name" formControlName="college_name">
+                          <option selected>--Select--</option>
+                          <option *ngFor="let type of collegedata" [value]="type.id">{{type.full_name}}</option>
+                        </select> -->
+                        <input type="text" class="form-control" value="{{viewdata.clg_name}}" formControlName="college_name" required readonly/>
+                        <span style="color:red;" *ngIf="displayMessage.college_name">
+                          {{displayMessage.college_name}}
+                        </span>
+                      </div>
+                      <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.course }">
+                        <label>Course</label>
+                        <!-- <select class="form-control" (change)="callcourse($event)" name="course" formControlName="course">
+                          <option selected>--Select--</option>
+                          <option *ngFor="let type of newcourse" [value]="type.id">{{type.course}}</option>
+                        </select> -->
+                        <input type="text" class="form-control" value="{{viewdata.actual_course}}" formControlName="course" required readonly/>
+                        <span style="color:red;" *ngIf="displayMessage.course">
+                          {{displayMessage.course}}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.branch }">
+                        <label>Branch</label>
+                        <!-- <select class="form-control" (change)="callbranch($event)" name="branch" formControlName="branch">
+                          <option selected>--Select--</option>
+                          <option *ngFor="let type of newbranch" [value]="type.id">{{type.fullname}}-{{type.branch}}</option>
+                        </select> -->
+                        <input type="text" class="form-control" value="{{viewdata.branch_fullname}}" formControlName="branch" required readonly/>
+                        <span style="color:red;" *ngIf="displayMessage.branch">
+                          {{displayMessage.branch}}
+                        </span>
+                      </div>
+                      <div class="col-lg-2 col-md-6" [ngClass]="{'has-error': displayMessage.year }">
+                        <label>Year</label>
+                        <!-- <select class="form-control" (change)="callyear($event)" name="year" formControlName="year">
+                          <option selected>--Select--</option>
+                          <option *ngFor="let type of newyear" [value]="type.yid">{{type.year}}</option>
+                        </select> -->
+                        <input type="text" class="form-control" value="{{viewdata.actual_year}}" formControlName="year" required readonly/>
+                        <span style="color:red;" *ngIf="displayMessage.year">
+                          {{displayMessage.year}}
+                        </span>
+                      </div>
+                      <div class="col-lg-2 col-md-6" [ngClass]="{'has-error': displayMessage.section }">
+                        <label>Section</label>
+                        <!-- <select class="form-control" (change)="callsection($event)" name="section" formControlName="section">
+                          <option selected>--Select--</option>
+                          <option *ngFor="let type of addsection" [value]="type.id">{{type.section}}</option>
+                        </select> -->
+                        <input type="text" class="form-control" value="{{viewdata.actual_section}}" formControlName="section" required readonly/>
+                        <span style="color:red;" *ngIf="displayMessage.section">
+                          {{displayMessage.section}}
+                        </span>
+                      </div>
+                      <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.section }">
+                        <label>Academic Year-Entry & Passout</label>
+                        <!-- <select class="form-control" (change)="callsection($event)" name="section" formControlName="section">
+                          <option selected>--Select--</option>
+                          <option *ngFor="let type of addsection" [value]="type.id">{{type.section}}</option>
+                        </select> -->
+                        <input type="text" class="form-control" value="{{viewdata.actual_section}}" formControlName="section" required readonly/>
+                        <span style="color:red;" *ngIf="displayMessage.section">
+                          {{displayMessage.section}}
+                        </span>
+                      </div>
+                    </div>
+                    <h3>Personal & Correspondence Details</h3>
+                    <hr>
+                    <div class="form-group">
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.first_name }">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Firstname" name="first_name" formControlName="first_name" required
+                          readonly>
+                        <span style="color:red;" *ngIf="displayMessage.first_name">
+                          {{displayMessage.first_name}}
+                        </span>
+
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.last_name }">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Lastname" name="last_name" formControlName="last_name" required
+                          readonly>
+                        <span style="color:red;" *ngIf="displayMessage.last_name">
+                          {{displayMessage.last_name}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.dob }">
+                        <label>Date of Birth</label>
+                        <my-date-picker [options]="myDatePickerOptions" name="dob" formControlName="dob" readonly></my-date-picker>
+                        <span style="color:red;" *ngIf="displayMessage.dob">
+                          {{displayMessage.dob}}
+                        </span>
+                      </div>
+
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.gender }">
+                        <label>Gender</label>
+                        <select class="form-control" name="gender" formControlName="gender" readonly>
+                          <option value="M">Male</option>
+                          <option value="F">Female</option>
+                        </select>
+                        <span style="color:red;" *ngIf="displayMessage.gender">
+                          {{displayMessage.gender}}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.fathers_name }">
+                        <label>Father Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Fathers Name" name="fathers_name" formControlName="fathers_name"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.fathers_name">
+                          {{displayMessage.fathers_name}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.mothers_name }">
+                        <label>Mother Name</label>
+                        <input type="text" class="form-control" placeholder="Enter Mothers Name" name="mothers_name" formControlName="mothers_name"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.mothers_name">
+                          {{displayMessage.mothers_name}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.father_proffesion }">
+                        <label>Father's Profession </label>
+                        <input type="text" class="form-control" placeholder="Enter Fathers Profession" name="father_proffesion" formControlName="father_proffesion"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.father_proffesion">
+                          {{displayMessage.father_proffesion}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.address }">
+                        <label>Address</label>
+                        <textarea class="form-control" placeholder="Enter Address" name="address" formControlName="address" required>
+                      </textarea>
+                        <span style="color:red;" *ngIf="displayMessage.address">
+                          {{displayMessage.address}}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.email_id }">
+                        <label>Email Id</label>
+                        <input type="text" class="form-control" placeholder="Enter Email Id" name="email_id" formControlName="email_id" required
+                          readonly>
+                        <span style="color:red;" *ngIf="displayMessage.email_id">
+                          {{displayMessage.email_id}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.aadhaar_number }">
+                        <label>Aadhaar Number</label>
+                        <input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" min="100000000000" max="999999999999"
+                          class="form-control" placeholder="Enter Aadhaar Number" name="aadhaar_number" formControlName="aadhaar_number"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.aadhaar_number">
+                          {{displayMessage.aadhaar_number}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.nationalitiy }">
+                        <label>Nationality</label>
+                        <input type="text" class="form-control" placeholder="Enter Nationality" name="nationalitiy" formControlName="nationalitiy"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.nationalitiy">
+                          {{displayMessage.nationalitiy}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.language_known }">
+                        <label>Languages Known</label>
+                        <input type="text" class="form-control" placeholder="Enter Languages Known" name="language_known" formControlName="language_known"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.language_known">
+                          {{displayMessage.language_known}}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.mobile_number }">
+                        <label>Contact Number</label>
+                        <input type="text" class="form-control" placeholder="Enter Contact No" name="mobile_number" formControlName="mobile_number"
+                          required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.mobile_number">
+                          {{displayMessage.mobile_number}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.alternate_mobile_number }">
+                        <label>Alternate Contact Number</label>
+                        <input type="text" class="form-control" placeholder="Enter Contact No" name="alternate_mobile_number" formControlName="alternate_mobile_number"
+                          required>
+                        <span style="color:red;" *ngIf="displayMessage.alternate_mobile_number">
+                          {{displayMessage.alternate_mobile_number}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.eamcet_rank }">
+                        <label for="">Eamcet Rank</label>
+                        <input type="number" placeholder="Enter Eamcet Rank" onkeypress="return event.charCode >= 48 && event.charCode <= 57 " class="form-control"
+                          name="eamcet_rank" formControlName="eamcet_rank" required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.eamcet_rank">
+                          {{displayMessage.eamcet_rank}}
+                        </span>
+                      </div>
+                      <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.backlogs }">
+                        <label for="">Backlogs</label>
+                        <input type="number" placeholder="Enter No of Backlogs " onkeypress="return event.charCode >= 48 && event.charCode <= 57 "
+                          class="form-control" name="backlogs" formControlName="backlogs" required readonly>
+                        <span style="color:red;" *ngIf="displayMessage.backlogs">
+                          {{displayMessage.backlogs}}
+                        </span>
+                      </div>
+                    </div>
+                    <h3>Academic Profile</h3>
+                    <hr>
+                    <div class="form-group">
+                      <div class="col-lg-12 col-md-12">
+                        <label>Educational Qualification Details</label>
+                        <table class="table table-bordered table-green">
+                          <thead>
+                            <tr>
+                              <th style="width: 40px;">S.No</th>
+                              <th style="width: 200px;">Examination</th>
+                              <th>Board</th>
+                              <th style="width: 150px;">Percentage</th>
+                              <th style="width: 150px;">Year of Passing</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <th>X Standard / SSC</th>
+                              <td [ngClass]="{'has-error': displayMessage.x_board }">
+                                <input type="text" class="form-control" name="x_board" formControlName="x_board" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.x_board">
+                                  {{displayMessage.x_board}}
+                                </span>
+                              </td>
+                              <td [ngClass]="{'has-error': displayMessage.x_percentage }">
+                                <input type="text" class="form-control" name="x_percentage" formControlName="x_percentage" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.x_percentage">
+                                  {{displayMessage.x_percentage}}
+                                </span>
+                              </td>
+                              <td [ngClass]="{'has-error': displayMessage.x_year_of_passing }">
+                                <input type="text" class="form-control" name="x_year_of_passing" formControlName="x_year_of_passing" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.x_year_of_passing">
+                                  {{displayMessage.x_year_of_passing}}
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <th>Intermediate / PUC / XII Standard / Diploma</th>
+                              <td [ngClass]="{'has-error': displayMessage.xII_board }">
+                                <input type="text" class="form-control" name="xII_board" formControlName="xII_board" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.xII_board">
+                                  {{displayMessage.xII_board}}
+                                </span>
+                              </td>
+                              <td [ngClass]="{'has-error': displayMessage.xII_percentage }">
+                                <input type="text" class="form-control" name="xII_percentage" formControlName="xII_percentage" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.xII_percentage">
+                                  {{displayMessage.xII_percentage}}
+                                </span>
+
+                              </td>
+
+                              <td [ngClass]="{'has-error': displayMessage.xII_year_of_passing }">
+                                <input type="text" class="form-control" name="xII_year_of_passing" formControlName="xII_year_of_passing" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.xII_year_of_passing">
+                                  {{displayMessage.xII_year_of_passing}}
+                                </span>
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>3</td>
+                              <th>BTech - CGPA Till date(Graduation)</th>
+                              <td [ngClass]="{'has-error': displayMessage.btech_board }">
+                                <input type="text" class="form-control" name="btech_board" formControlName="btech_board" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.btech_board">
+                                  {{displayMessage.btech_board}}
+                                </span>
+                              </td>
+                              <td [ngClass]="{'has-error': displayMessage.btech_percentage}">
+                                <input type="text" class="form-control" name="btech_percentage" formControlName="btech_percentage" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.btech_percentage">
+                                  {{displayMessage.btech_percentage}}
+                                </span>
+                              </td>
+                              <td [ngClass]="{'has-error': displayMessage.btech_year_of_passing}">
+                                <input type="text" class="form-control" name="btech_year_of_passing" formControlName="btech_year_of_passing" required readonly>
+                                <span style="color:red;" *ngIf="displayMessage.btech_year_of_passing">
+                                  {{displayMessage.btech_year_of_passing}}
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <h3>Uploads</h3>
+                    <h6>Note: File Should be saved (For Example: 14981A0***_filename.(jpg,pdf))</h6>
+                    <hr>
+                    <div class="form-group" *ngIf="!dpdata">
+                      <div class="col-md-3">
+                        <form>
+                          <label for="multiple">Profile Pic (.jpg;
+                            <300kB)</label>
+                              <input type="file" class="form-control" name="dp" ng2FileSelect [uploader]="dp" single />
+                        </form>
+                      </div>
+                      <div class="col-md-9">
+                        Queue length: {{ dp?.queue?.length }}
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th width="50%">Image</th>
+                              <th>Size</th>
+                              <th>Progress</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of dp.queue">
+                              <td>
+                                <strong>{{ item.file.name }}</strong>
+                              </td>
+                              <td nowrap>{{ item.file.size}} KB</td>
+                              <td>
+                                <div class="progress" style="margin-bottom: 0;">
+                                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <span *ngIf="item.isSuccess">
+                                  <i class="glyphicon glyphicon-ok"></i>
+                                </span>
+                                <span *ngIf="item.isCancel">
+                                  <i class="glyphicon glyphicon-ban-circle"></i>
+                                </span>
+                                <span *ngIf="item.isError">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </span>
+                              </td>
+                              <td nowrap>
+                                <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                  <span class="glyphicon glyphicon-upload"></span> Upload
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                  <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
+                                  <span class="glyphicon glyphicon-trash"></span> Remove
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="form-group" *ngIf="!resumefile">
+                      <div class="col-md-3">
+                        <form>
+                          <label for="single">Resume (.pdf; 2MB)</label>
+                          <input type="file" class="form-control" name="resume" ng2FileSelect [uploader]="resume" single/>
+                        </form>
+                      </div>
+                      <div class="col-md-9">
+                        Queue length: {{ resume?.queue?.length }}
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th width="50%">Resume</th>
+                              <th>Size</th>
+                              <th>Progress</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of resume.queue">
+                              <td>
+                                <strong>{{ item.file.name }}</strong>
+                              </td>
+                              <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+                              <td>
+                                <div class="progress" style="margin-bottom: 0;">
+                                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <span *ngIf="item.isSuccess">
+                                  <i class="glyphicon glyphicon-ok"></i>
+                                </span>
+                                <span *ngIf="item.isCancel">
+                                  <i class="glyphicon glyphicon-ban-circle"></i>
+                                </span>
+                                <span *ngIf="item.isError">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </span>
+                              </td>
+                              <td nowrap>
+                                <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                  <span class="glyphicon glyphicon-upload"></span> Upload
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                  <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
+                                  <span class="glyphicon glyphicon-trash"></span> Remove
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                      <div class="col-md-3">
+                        <form>
+                          <label for="single">Technical Certificate (.pdf; 2MB)</label>
+                          <input #uploadEl type="file" class="form-control" name="technical" ng2FileSelect [uploader]="technical" multiple/>
+                        </form>
+                      </div>
+                      <div class="col-md-9">
+                        Queue length: {{ technical?.queue?.length }}
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th width="50%">Technical Certificate</th>
+                              <th>Size</th>
+                              <th>Progress</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of technical.queue">
+                              <td>
+                                <strong>{{ item.file.name }}</strong>
+                              </td>
+                              <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+                              <td>
+                                <div class="progress" style="margin-bottom: 0;">
+                                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <span *ngIf="item.isSuccess">
+                                  <i class="glyphicon glyphicon-ok"></i>
+                                </span>
+                                <span *ngIf="item.isCancel">
+                                  <i class="glyphicon glyphicon-ban-circle"></i>
+                                </span>
+                                <span *ngIf="item.isError">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </span>
+                              </td>
+                              <td nowrap>
+                                <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                  <span class="glyphicon glyphicon-upload"></span> Upload
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                  <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                  <span class="glyphicon glyphicon-trash"></span> Remove
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <!-- <div>
+                          Queue progress:
+                          <div class="progress">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': technical.progress + '%' }"></div>
+                          </div>
+                        </div> -->
+                        <button type="button" class="btn btn-success btn-s" (click)="technical.uploadAll()" [disabled]="!technical.getNotUploadedItems().length">
+                          <span class="glyphicon glyphicon-upload"></span> Upload all
+                        </button>
+                        <button type="button" class="btn btn-warning btn-s" (click)="technical.cancelAll()" [disabled]="!technical.isUploading">
+                          <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                        </button>
+                        <button type="button" class="btn btn-danger btn-s" (click)="technical.clearQueue()" [disabled]="!technical.getNotUploadedItems().length">
+                          <span class="glyphicon glyphicon-trash"></span> Remove all
+                        </button>
+                      </div>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                      <div class="col-md-3">
+                        <form>
+                          <label for="single">Extra-curricular Certificates (.pdf; 2MB)</label>
+                          <input type="file" class="form-control" name="nontechnical" ng2FileSelect [uploader]="nontechnical" />
+                        </form>
+                      </div>
+                      <div class="col-md-9">
+                        Queue length: {{ nontechnical?.queue?.length }}
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th width="50%">Extra-curricular Certificates</th>
+                              <th>Size</th>
+                              <th>Progress</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of nontechnical.queue">
+                              <td>
+                                <strong>{{ item.file.name }}</strong>
+                              </td>
+                              <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+                              <td>
+                                <div class="progress" style="margin-bottom: 0;">
+                                  <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                </div>
+                              </td>
+                              <td class="text-center">
+                                <span *ngIf="item.isSuccess">
+                                  <i class="glyphicon glyphicon-ok"></i>
+                                </span>
+                                <span *ngIf="item.isCancel">
+                                  <i class="glyphicon glyphicon-ban-circle"></i>
+                                </span>
+                                <span *ngIf="item.isError">
+                                  <i class="glyphicon glyphicon-remove"></i>
+                                </span>
+                              </td>
+                              <td nowrap>
+                                <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                  <span class="glyphicon glyphicon-upload"></span> Upload
+                                </button>
+                                <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                  <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                  <span class="glyphicon glyphicon-trash"></span> Remove
+                                </button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <!-- <div>
+                          Queue progress:
+                          <div class="progress">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': nontechnical.progress + '%' }"></div>
+                          </div>
+                        </div> -->
+                        <button type="button" class="btn btn-success btn-s" (click)="nontechnical.uploadAll()" [disabled]="!nontechnical.getNotUploadedItems().length">
+                          <span class="glyphicon glyphicon-upload"></span> Upload all
+                        </button>
+                        <button type="button" class="btn btn-warning btn-s" (click)="nontechnical.cancelAll()" [disabled]="!nontechnical.isUploading">
+                          <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                        </button>
+                        <button type="button" class="btn btn-danger btn-s" (click)="nontechnical.clearQueue()" [disabled]="!nontechnical.getNotUploadedItems().length">
+                          <span class="glyphicon glyphicon-trash"></span> Remove all
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-12">
+                        <button type="submit" (click)="updatestd()" class="btn btn-green btn-square pull-right">update</button>
+                        <button style="margin-right:5px;" (click)="getstddata()" class="btn btn-danger btn-square pull-right">Cancel</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="falsedata == true">
+              <div class="portlet portlet-default">
+                <div class="portlet-heading">
+                  <div class="portlet-title">
+                    <h4>
+                      <i class="fa fa-user"></i> Placements Registeration Form</h4>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="portlet-body">
+                  <div *ngIf="openform == true">
+                    <form class="form-horizontal" novalidate [formGroup]="reg_Form" role="form">
+                      <h3>College Details</h3>
+                      <hr>
+                      <div class="form-group">
+                        <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.university_reg_number }">
+                          <label>University Reg Number</label>
+                          <input type="text" class="form-control" placeholder="Enter University Registered No" [(ngModel)]="regno" name="university_reg_number"
+                            formControlName="university_reg_number" required readonly>
+                          <span style="color:red;" *ngIf="displayMessage.university_reg_number">
+                            {{displayMessage.university_reg_number}}
+                          </span>
+                        </div>
+                        <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.college_name }">
+                          <label>College Name </label>
+                          <select class="form-control" (change)="callcollege($event)" name="college_name" formControlName="college_name">
+                            <option selected>--Select--</option>
+                            <option *ngFor="let type of collegedata" [value]="type.id">{{type.full_name}}</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.college_name">
+                            {{displayMessage.college_name}}
+                          </span>
+                        </div>
+                        <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.course }">
+                          <label>Course</label>
+                          <select class="form-control" (change)="callcourse($event)" name="course" formControlName="course">
+                            <option selected>--Select--</option>
+                            <option *ngFor="let type of newcourse" [value]="type.id">{{type.course}}</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.course">
+                            {{displayMessage.course}}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.branch }">
+                          <label>Branch</label>
+                          <select class="form-control" (change)="callbranch($event)" name="branch" formControlName="branch">
+                            <option selected>--Select--</option>
+                            <option *ngFor="let type of newbranch" [value]="type.id">{{type.fullname}}-{{type.branch}}</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.branch">
+                            {{displayMessage.branch}}
+                          </span>
+                        </div>
+                        <div class="col-lg-2 col-md-6" [ngClass]="{'has-error': displayMessage.year }">
+                          <label>Year</label>
+                          <select class="form-control" (change)="callyear($event)" name="year" formControlName="year">
+                            <option selected>--Select--</option>
+                            <option *ngFor="let type of newyear" [value]="type.yid">{{type.year}}</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.year">
+                            {{displayMessage.year}}
+                          </span>
+                        </div>
+                        <div class="col-lg-2 col-md-6" [ngClass]="{'has-error': displayMessage.section }">
+                          <label>Section</label>
+                          <select class="form-control" (change)="callsection($event)" name="section" formControlName="section">
+                            <option selected>--Select--</option>
+                            <option *ngFor="let type of addsection" [value]="type.id">{{type.section}}</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.section">
+                            {{displayMessage.section}}
+                          </span>
+                        </div>
+                        <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.section }">
+                          <label>Academic Year-Entry & Passout</label>
+                          <select class="form-control" name="batch" formControlName="batch">
+                            <option selected>--Select--</option>
+                            <option *ngFor="let type of addsection" [value]="type.id">{{type.section}}</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.section">
+                            {{displayMessage.section}}
+                          </span>
+                        </div>
+                      </div>
+                      <h3>Personal & Correspondence Details</h3>
+                      <hr>
+                      <div class="form-group">
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.first_name }">
+                          <label>First Name</label>
+                          <input type="text" class="form-control" placeholder="Enter Firstname" name="first_name" formControlName="first_name" required>
+                          <span style="color:red;" *ngIf="displayMessage.first_name">
+                            {{displayMessage.first_name}}
+                          </span>
+
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.last_name }">
+                          <label>Last Name</label>
+                          <input type="text" class="form-control" placeholder="Enter Lastname" name="last_name" formControlName="last_name" required>
+                          <span style="color:red;" *ngIf="displayMessage.last_name">
+                            {{displayMessage.last_name}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.dob }">
+                          <label>Date of Birth</label>
+                          <my-date-picker [options]="myDatePickerOptions" name="dob" formControlName="dob"></my-date-picker>
+                          <span style="color:red;" *ngIf="displayMessage.dob">
+                            {{displayMessage.dob}}
+                          </span>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.gender }">
+                          <label>Gender</label>
+                          <select class="form-control" name="gender" formControlName="gender">
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                          </select>
+                          <span style="color:red;" *ngIf="displayMessage.gender">
+                            {{displayMessage.gender}}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.fathers_name }">
+                          <label>Father Name</label>
+                          <input type="text" class="form-control" placeholder="Enter Fathers Name" name="fathers_name" formControlName="fathers_name"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.fathers_name">
+                            {{displayMessage.fathers_name}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.mothers_name }">
+                          <label>Mother Name</label>
+                          <input type="text" class="form-control" placeholder="Enter Mothers Name" name="mothers_name" formControlName="mothers_name"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.mothers_name">
+                            {{displayMessage.mothers_name}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.father_proffesion }">
+                          <label>Father's Profession </label>
+                          <input type="text" class="form-control" placeholder="Enter Fathers Profession" name="father_proffesion" formControlName="father_proffesion"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.father_proffesion">
+                            {{displayMessage.father_proffesion}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.address }">
+                          <label>Address</label>
+                          <textarea class="form-control" placeholder="Enter Address" name="address" formControlName="address" required>
+                          </textarea>
+                          <span style="color:red;" *ngIf="displayMessage.address">
+                            {{displayMessage.address}}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.email_id }">
+                          <label>Email Id</label>
+                          <input type="text" class="form-control" placeholder="Enter Email Id" name="email_id" formControlName="email_id" required>
+                          <span style="color:red;" *ngIf="displayMessage.email_id">
+                            {{displayMessage.email_id}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.aadhaar_number }">
+                          <label>Aadhaar Number</label>
+                          <input type="number" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57 " min="100000000000"
+                            max="999999999999" placeholder="Enter Aadhaar Number" name="aadhaar_number" formControlName="aadhaar_number"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.aadhaar_number">
+                            {{displayMessage.aadhaar_number}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.nationalitiy }">
+                          <label>Nationality</label>
+                          <input type="text" class="form-control" placeholder="Enter Nationality" name="nationalitiy" formControlName="nationalitiy"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.nationalitiy">
+                            {{displayMessage.nationalitiy}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.language_known }">
+                          <label>Languages Known</label>
+                          <input type="text" class="form-control" placeholder="Enter Languages Known" name="language_known" formControlName="language_known"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.language_known">
+                            {{displayMessage.language_known}}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.mobile_number }">
+                          <label>Contact Number</label>
+                          <input type="text" class="form-control" placeholder="Enter Contact No" name="mobile_number" formControlName="mobile_number"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.mobile_number">
+                            {{displayMessage.mobile_number}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.alternate_mobile_number }">
+                          <label>Alternate Contact Number</label>
+                          <input type="text" class="form-control" placeholder="Enter Contact No" name="alternate_mobile_number" formControlName="alternate_mobile_number"
+                            required>
+                          <span style="color:red;" *ngIf="displayMessage.alternate_mobile_number">
+                            {{displayMessage.alternate_mobile_number}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.eamcet_rank }">
+                          <label for="">Eamcet Rank</label>
+                          <input type="number" placeholder="Enter Eamcet Rank" onkeypress="return event.charCode >= 48 && event.charCode <= 57 " class="form-control"
+                            name="eamcet_rank" formControlName="eamcet_rank" required>
+                          <span style="color:red;" *ngIf="displayMessage.eamcet_rank">
+                            {{displayMessage.eamcet_rank}}
+                          </span>
+                        </div>
+                        <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.backlogs }">
+                          <label for="">Backlogs</label>
+                          <input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57 " placeholder="Enter No of Backlogs "
+                            class="form-control" name="backlogs" formControlName="backlogs" required>
+                          <span style="color:red;" *ngIf="displayMessage.backlogs">
+                            {{displayMessage.backlogs}}
+                          </span>
+                        </div>
+                      </div>
+                      <!-- <div class="form-group">
+                      <div class="col-lg-3 col-md-6">
+                        <label>Image Upload </label>
+                        <input type="file" class="btn btn-flat btn-file btn-info" (change)="onChange($event)">
+                      </div>
+                    </div> -->
+                      <h3>Academic Profile</h3>
+                      <hr>
+                      <div class="form-group">
+                        <div class="col-lg-12 col-md-12">
+                          <label>Educational Qualification Details</label>
+                          <table class="table table-bordered table-green">
+                            <thead>
+                              <tr>
+                                <th style="width: 40px;">S.No</th>
+                                <th style="width: 200px;">Examination</th>
+                                <th>Board</th>
+                                <th style="width: 150px;">Percentage / CGPA</th>
+                                <th style="width: 150px;">Year of Passing</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <th>X Standard / SSC</th>
+                                <td [ngClass]="{'has-error': displayMessage.x_board }">
+                                  <input type="text" class="form-control" name="x_board" formControlName="x_board" required>
+                                  <span style="color:red;" *ngIf="displayMessage.x_board">
+                                    {{displayMessage.x_board}}
+                                  </span>
+                                </td>
+                                <td [ngClass]="{'has-error': displayMessage.x_percentage }">
+                                  <input type="text" class="form-control" name="x_percentage" formControlName="x_percentage" required>
+                                  <span style="color:red;" *ngIf="displayMessage.x_percentage">
+                                    {{displayMessage.x_percentage}}
+                                  </span>
+                                </td>
+                                <td [ngClass]="{'has-error': displayMessage.x_year_of_passing }">
+                                  <select name="x_year_of_passing" class="form-control" (change)="changeyear($event.target.value)" formControlName="x_year_of_passing"
+                                    required>
+                                    <option>Select</option>
+                                    <option *ngFor="let y of years10" [selected]="yy === y[0] ">{{y}}</option>
+                                  </select>
+                                  <!-- <app-year-picker name="x_year_of_passing" (change)="onYearChange1($event.target.value)">
+
+                                  </app-year-picker> -->
+                                  <span style="color:red;" *ngIf="displayMessage.x_year_of_passing">
+                                    {{displayMessage.x_year_of_passing}}
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <th>Intermediate / PUC / XII Standard / Diploma</th>
+                                <td [ngClass]="{'has-error': displayMessage.xII_board }">
+                                  <input type="text" class="form-control" name="xII_board" formControlName="xII_board" required>
+                                  <span style="color:red;" *ngIf="displayMessage.xII_board">
+                                    {{displayMessage.xII_board}}
+                                  </span>
+                                </td>
+                                <td [ngClass]="{'has-error': displayMessage.xII_percentage }">
+                                  <input type="text" class="form-control" name="xII_percentage" formControlName="xII_percentage" required>
+                                  <span style="color:red;" *ngIf="displayMessage.xII_percentage">
+                                    {{displayMessage.xII_percentage}}
+                                  </span>
+
+                                </td>
+
+                                <td [ngClass]="{'has-error': displayMessage.xII_year_of_passing }">
+                                  <select name="xII_year_of_passing" class="form-control" (change)="changeyear15($event.target.value)" formControlName="xII_year_of_passing"
+                                    required>
+                                    <option>Select</option>
+                                    <option *ngFor="let y of years12" [selected]="yy === y[0] ">{{y}}</option>
+                                  </select>
+                                  <!-- <app-year-picker name="xII_year_of_passing" (change)="onYearChange2($event.target.value)">
+
+                                  </app-year-picker> -->
+                                  <span style="color:red;" *ngIf="displayMessage.xII_year_of_passing">
+                                    {{displayMessage.xII_year_of_passing}}
+                                  </span>
+
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>3</td>
+                                <th>BTech - CGPA Till date(Graduation)</th>
+                                <td [ngClass]="{'has-error': displayMessage.btech_board }">
+                                  <input type="text" class="form-control" name="btech_board" formControlName="btech_board" required>
+                                  <span style="color:red;" *ngIf="displayMessage.btech_board">
+                                    {{displayMessage.btech_board}}
+                                  </span>
+                                </td>
+                                <td [ngClass]="{'has-error': displayMessage.btech_percentage}">
+                                  <input type="text" class="form-control" name="btech_percentage" formControlName="btech_percentage" required>
+                                  <span style="color:red;" *ngIf="displayMessage.btech_percentage">
+                                    {{displayMessage.btech_percentage}}
+                                  </span>
+                                </td>
+                                <td [ngClass]="{'has-error': displayMessage.btech_year_of_passing}">
+                                  <select name="btech_year_of_passing" class="form-control" formControlName="btech_year_of_passing" required>
+                                    <option>Select</option>
+                                    <option *ngFor="let y of years15" [selected]="yy === y[0] ">{{y}}</option>
+                                  </select>
+                                  <!-- <app-year-picker name="btech_year_of_passing" (change)="onYearChange3($event.target.value)"></app-year-picker> -->
+                                  <span style="color:red;" *ngIf="displayMessage.btech_year_of_passing">
+                                    {{displayMessage.btech_year_of_passing}}
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <!-- <button type="submit" class="btn btn-danger btn-square pull-right"><i class="fa fa-upload" aria-hidden="true"></i>  Upload Resume</button> -->
+                          <button (click)="registrationadd()" [disabled]="!reg_Form.valid" class="btn btn-green btn-square pull-right">Save and Next</button>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                  <div *ngIf="openupload == true">
+                    <h3>Uploads</h3>
+                    <hr>
+                    <form class="form-horizontal" novalidate [formGroup]="uploadForm" role="form">
+                      <div class="form-group">
+                        <div class="col-md-3">
+                          <label for="multiple">Profile Pic (.jpg;
+                            <300KB) <sup>
+                              <small style="color:red">*</small>
+                              </sup>
+                          </label>
+                          <input type="file" class="form-control" name="dp" ng2FileSelect [uploader]="dp" formControlName="dp" required single/>
+                          <span style="color:red;" *ngIf="displayMessage.dp">
+                            {{displayMessage.dp}}
+                          </span>
+                        </div>
+                        <div class="col-md-9">
+                          Queue length: {{ dp?.queue?.length }}
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th width="50%">Profile</th>
+                                <th>Size</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item of dp.queue">
+                                <td>
+                                  <strong>{{ item.file.name }}</strong>
+                                </td>
+                                <td nowrap>{{ item.file.size }} KB</td>
+                                <td>
+                                  <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                  </div>
+                                </td>
+                                <td class="text-center">
+                                  <span *ngIf="item.isSuccess">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                  </span>
+                                  <span *ngIf="item.isCancel">
+                                    <i class="glyphicon glyphicon-ban-circle"></i>
+                                  </span>
+                                  <span *ngIf="item.isError">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                  </span>
+                                </td>
+                                <td nowrap>
+                                  <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-upload"></span> Upload
+                                  </button>
+                                  <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                  </button>
+                                  <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
+                                    <span class="glyphicon glyphicon-trash"></span> Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          <div>
+                            <!-- <div>
+                            Queue progress:
+                            <div class="progress">
+                              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                            </div>
+                          </div>
+                          <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-upload"></span> Upload all
+                          </button>
+                          <button type="button" class="btn btn-warning btn-s" (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                          </button>
+                          <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                            <span class="glyphicon glyphicon-trash"></span> Remove all
+                          </button> -->
+                          </div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="form-group">
+                        <div class="col-md-3">
+                          <label for="single">Resume (.pdf;
+                            <2MB)<sup>
+                              <small style="color:red">*</small>
+                              </sup>
+                          </label>
+                          <input type="file" class="form-control" name="resume" ng2FileSelect [uploader]="resume" formControlName="resume" single/>
+                          <span style="color:red;" *ngIf="displayMessage.resume">
+                            {{displayMessage.resume}}
+                          </span>
+                        </div>
+                        <div class="col-md-9">
+                          Queue length: {{ resume?.queue?.length }}
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th width="50%">Resume</th>
+                                <th>Size</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item of resume.queue">
+                                <td>
+                                  <strong>{{ item.file.name }}</strong>
+                                </td>
+                                <td nowrap>{{ item.file.size }} KB</td>
+                                <td>
+                                  <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                  </div>
+                                </td>
+                                <td class="text-center">
+                                  <span *ngIf="item.isSuccess">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                  </span>
+                                  <span *ngIf="item.isCancel">
+                                    <i class="glyphicon glyphicon-ban-circle"></i>
+                                  </span>
+                                  <span *ngIf="item.isError">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                  </span>
+                                </td>
+                                <td nowrap>
+                                  <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-upload"></span> Upload
+                                  </button>
+                                  <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                  </button>
+                                  <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
+                                    <span class="glyphicon glyphicon-trash"></span> Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="form-group">
+                        <div class="col-md-3">
+                          <label for="single">Technical Certificates (.pdf; 2MB)</label>
+                          <input type="file" class="form-control" name="technical" ng2FileSelect [uploader]="technical" multiple/>
+                          <span>
+                            You can upload multiple files
+                          </span>
+                        </div>
+                        <div class="col-md-9">
+                          Queue length: {{ technical?.queue?.length }}
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th width="50%">Technical Certificates</th>
+                                <th>Size</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item of technical.queue">
+                                <td>
+                                  <strong>{{ item.file.name }}</strong>
+                                </td>
+                                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+                                <td>
+                                  <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                  </div>
+                                </td>
+                                <td class="text-center">
+                                  <span *ngIf="item.isSuccess">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                  </span>
+                                  <span *ngIf="item.isCancel">
+                                    <i class="glyphicon glyphicon-ban-circle"></i>
+                                  </span>
+                                  <span *ngIf="item.isError">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                  </span>
+                                </td>
+                                <td nowrap>
+                                  <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-upload"></span> Upload
+                                  </button>
+                                  <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                  </button>
+                                  <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-trash"></span> Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <!-- <div>
+                            Queue progress:
+                            <div class="progress">
+                              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': technical.progress + '%' }"></div>
+                            </div>
+                          </div> -->
+                          <button type="button" class="btn btn-success btn-s" (click)="technical.uploadAll()" [disabled]="!technical.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-upload"></span> Upload all
+                          </button>
+                          <button type="button" class="btn btn-warning btn-s" (click)="technical.cancelAll()" [disabled]="!technical.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                          </button>
+                          <button type="button" class="btn btn-danger btn-s" (click)="technical.clearQueue()" [disabled]="!technical.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-trash"></span> Remove all
+                          </button>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="form-group">
+                        <div class="col-md-3">
+                          <label for="single">Extra-curricular Certificates (.pdf; 2MB)</label>
+                          <input type="file" class="form-control" name="nontechnical" ng2FileSelect [uploader]="nontechnical" />
+                          <span>
+                            You can upload multiple files.
+                          </span>
+                        </div>
+                        <div class="col-md-9">
+                          Queue length: {{ nontechnical?.queue?.length }}
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th width="50%">Extra-curricular Certificates</th>
+                                <th>Size</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let item of nontechnical.queue">
+                                <td>
+                                  <strong>{{ item.file.name }}</strong>
+                                </td>
+                                <td nowrap>{{ item.file.size/1024/1024 | number:'.2' }} MB</td>
+                                <td>
+                                  <div class="progress" style="margin-bottom: 0;">
+                                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                  </div>
+                                </td>
+                                <td class="text-center">
+                                  <span *ngIf="item.isSuccess">
+                                    <i class="glyphicon glyphicon-ok"></i>
+                                  </span>
+                                  <span *ngIf="item.isCancel">
+                                    <i class="glyphicon glyphicon-ban-circle"></i>
+                                  </span>
+                                  <span *ngIf="item.isError">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                  </span>
+                                </td>
+                                <td nowrap>
+                                  <button type="button" class="btn btn-success btn-xs" (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-upload"></span> Upload
+                                  </button>
+                                  <button type="button" class="btn btn-warning btn-xs" (click)="item.cancel()" [disabled]="!item.isUploading">
+                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                  </button>
+                                  <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-trash"></span> Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <!-- <div>
+                            Queue progress:
+                            <div class="progress">
+                              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': nontechnical.progress + '%' }"></div>
+                            </div>
+                          </div> -->
+                          <button type="button" class="btn btn-success btn-s" (click)="nontechnical.uploadAll()" [disabled]="!nontechnical.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-upload"></span> Upload all
+                          </button>
+                          <button type="button" class="btn btn-warning btn-s" (click)="nontechnical.cancelAll()" [disabled]="!nontechnical.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                          </button>
+                          <button type="button" class="btn btn-danger btn-s" (click)="nontechnical.clearQueue()" [disabled]="!nontechnical.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-trash"></span> Remove all
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-12">
+                          <button class="btn btn-green btn-square pull-right" (click)="opensuccess()"> Submit</button>
+                        </div>
+                      </div>
+                      <div class="clearfix"></div>
+                    </form>
+                  </div>
+                </div>
+                <!-- /.portlet-body -->
+              </div>
+            </div>
+          </div>
+          <!-- /.portlet -->
+
+          <div *ngIf=" viewregdata == true ">
+            <div class="portlet portlet-default">
+              <div class="portlet-heading">
+                <div class="portlet-title">
+                  <h4>
+                    <i class="fa fa-user"></i> Basic Information</h4>
+                </div>
+                <div class="portlet-widgets">
+                  <button (click)="openeditform()" class="btn btn-xs btn-square btn-green">
+                    <i class="fa fa-edit"></i> Edit Details
+                  </button>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="portlet-body">
+                <div>
+                  <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                      <table class="table table-hover table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th colspan="2">
+                              <img src="{{basicurl}}/{{this.dpdata.certificate_name}}" style="height:160px;width:150px; " *ngIf="this.dpdata">
+                              <img src="{{basicurl}}/{{viewdata.gender}}.png" style="height:160px;width:150px; " *ngIf="!this.dpdata">
+                            </th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    <div class="col-lg-5 col-sm-6">
+                      <table class="table table-hover table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td width="150">Registeration No</td>
+                            <th>{{viewdata.university_reg_number}}
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>College</td>
+                            <th>{{viewdata.clg_name}}</th>
+                          </tr>
+                          <tr>
+                            <td>Course</td>
+                            <th>{{viewdata.actual_course}}</th>
+                          </tr>
+                          <tr>
+                            <td>Branch</td>
+                            <th>{{viewdata.branch_fullname}}</th>
+                          </tr>
+                          <tr>
+                            <td>Year</td>
+                            <th>{{viewdata.actual_year}}</th>
+                          </tr>
+                          <tr>
+                            <td>Section</td>
+                            <th>{{viewdata.actual_section}}</th>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-lg-5 col-sm-6">
+                      <table class="table table-hover table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td width="150">Name</td>
+                            <th>{{viewdata.first_name}}</th>
+                          </tr>
+                          <tr>
+                            <td>Date of Birth</td>
+                            <th>{{viewdata.dob | date:'mediumDate'}}</th>
+                          </tr>
+                          <tr>
+                            <td>Gender</td>
+                            <th>{{viewdata.gender}}</th>
+                          </tr>
+                          <tr>
+                            <td>BTech (%)</td>
+                            <th>{{viewdata.btech_percentage}}</th>
+                          </tr>
+                          <tr>
+                            <td>Backlogs</td>
+                            <th>{{viewdata.backlogs}}</th>
+                          </tr>
+                          <tr>
+                            <td>Emacet Rank</td>
+                            <th>{{viewdata.eamcet_rank}}</th>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <label> Personal Information</label>
+                      <div class="row">
+                        <div class="col-lg-6 col-sm-6">
+                          <table class="table table-hover table-bordered table-striped">
+                            <tbody>
+                              <tr>
+                                <td width="150">Aadhaar Number</td>
+                                <th width="200">{{viewdata.aadhaar_number}}</th>
+                              </tr>
+                              <tr>
+                                <td>Email Address</td>
+                                <th>{{viewdata.email_id}}
+                                  <span *ngIf="viewdata.email_status == 0 " style="cursor:pointer;" (click)="verifyemail()" class="badge badge-xs red pull-right">Verify</span>
+                                  <span *ngIf="viewdata.email_status == 1 " class="badge badge-xs green pull-right">
+                                    <i class="fa fa-check"></i> Verified
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Mobile No</td>
+                                <th>{{viewdata.mobile_number}}
+                                  <span *ngIf="viewdata.mobile_status == 0 " style="cursor:pointer;" class="badge badge-xs red pull-right" (click)="mymodal.open()">Verify</span>
+                                  <span *ngIf="viewdata.mobile_status == '1' " class="badge badge-xs green pull-right">
+                                    <i class="fa fa-check"></i> Verified
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Alternate Mobile No</td>
+                                <th>{{viewdata.alternate_mobile_number}}</th>
+                              </tr>
+                              <tr>
+                                <td>Address</td>
+                                <th>{{viewdata.address}}</th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-lg-6 col-sm-6">
+                          <table class="table table-hover table-bordered table-striped">
+                            <tbody>
+                              <tr>
+                                <td>Father Name</td>
+                                <th>{{viewdata.fathers_name}}</th>
+                              </tr>
+                              <tr>
+                                <td>Mother Name</td>
+                                <th>{{viewdata.mothers_name}}</th>
+                              </tr>
+                              <tr>
+                                <td>Father Proffesion</td>
+                                <th>{{viewdata.father_proffesion}}</th>
+                              </tr>
+                              <tr>
+                                <td>Nationality</td>
+                                <th>{{viewdata.nationalitiy}}</th>
+                              </tr>
+                              <tr>
+                                <td>Language known</td>
+                                <th>{{viewdata.language_known}}</th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-12 col-md-12">
+                        <label>Educational Qualification Details</label>
+                        <table class="table table-bordered table-green">
+                          <thead>
+                            <tr>
+                              <th style="width: 40px;">S.No</th>
+                              <th style="width: 280px;">Examination</th>
+                              <th>Board</th>
+                              <th style="width: 150px;">Percentage / CGPA</th>
+                              <th style="width: 150px;">Year of Passing</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <th>X Standard / SSC</th>
+                              <td>{{viewdata.x_board}}</td>
+                              <td>{{viewdata.x_percentage}}</td>
+                              <td>{{viewdata.x_year_of_passing}}</td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <th>Intermediate / PUC / XII Standard / Diploma</th>
+                              <td>{{viewdata.xII_board}}</td>
+                              <td>{{viewdata.xII_percentage}}</td>
+                              <td>{{viewdata.xII_year_of_passing}}</td>
+                            </tr>
+                            <tr>
+                              <td>3</td>
+                              <th>BTech - CGPA Till date(Graduation)</th>
+                              <td>{{viewdata.btech_board}}</td>
+                              <td>{{viewdata.btech_percentage}}</td>
+                              <td>{{viewdata.btech_year_of_passing}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h3>Resume</h3>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <iframe [src]='sanitizer.bypassSecurityTrustResourceUrl(photoURL(resumefile.certificate_name))' style="width:500px; height:400px;"
+                        frameborder="0" *ngIf="resumefile"></iframe>
+                      <span *ngIf="!resumefile">
+                        <i class="fa fa-file fa-5x"></i>
+                        <h6>No Resume Uploaded</h6>
+                      </span>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h3>Technical Certificates</h3>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div *ngFor="let item2 of technicalfiles">
+                      <div class="col-md-6">
+                        <iframe [src]='sanitizer.bypassSecurityTrustResourceUrl(photoURL(item2.certificate_name))' style="width:500px; height:400px;"
+                          frameborder="0"></iframe>
+                      </div>
+                    </div>
+                    <span *ngIf="technicalfiles.length == 0">
+                      <div class="col-md-6">
+                        <i class="fa fa-file fa-5x"></i>
+                        <h6>No Certificates Uploaded</h6>
+                      </div>
+                    </span>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h3>Extra-curricular Certificates</h3>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div *ngFor="let item3 of nontechnicalfiles">
+                      <div class="col-md-6">
+                        <iframe [src]='sanitizer.bypassSecurityTrustResourceUrl(photoURL(item3.certificate_name))' style="width:500px; height:400px;"
+                          frameborder="0"></iframe>
+                      </div>
+                    </div>
+                    <span *ngIf="technicalfiles.length == 0">
+                      <div class="col-md-6">
+                        <i class="fa fa-file fa-5x"></i>
+                        <h6>No Certificates Uploaded</h6>
+                      </div>
+                    </span>
+                    <div class="clearfix"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <!--add form end-->
+      </div>
+      <!-- /.page-content -->
+    </div>
+    <!-- /#page-wrapper -->
+    <!-- end MAIN PAGE CONTENT -->
+  </div>
+  <modal #mymodal modalClass="modal-dailog modal-flex">
+    <modal-header>
+      <h4 class="modal-title">Verification</h4>
+    </modal-header>
+    <modal-content>
+      <form class="form-horizontal" (ngSubmit)="f.valid && mobilecheck(f)" #f="ngForm" novalidate role="form">
+        <h6>Enter Your OTP which have sent to your phone Number</h6>
+        <div class="form-group">
+          <div class="col-md-4">
+            <label>Please Enter Your OTP</label>
+            <input type="number" class="form-control" name="otp" placeholder="Enter OTP Here" #otp="ngModel" [(ngModel)]="otp1" required/>
+            <div *ngIf="f.submitted && !otp.valid" class="help-block">Please Enter OTP</div>
+          </div>
+          <div class="col-md-3"></div>
+          <div class="col-md-5" style="margin-top: 24px;">
+            <button style="margin-right:5px;" type="submit" class="btn btn-square btn-default">Submit</button>
+            <!-- <button *ngIf="otpenable == true" class="btn btn-square btn-primary" (click)="resendotp()">Resend OTP</button> -->
+            <button [disabled]="otpenable" class="btn btn-square btn-primary" (click)="resendotp()">Resend OTP</button>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </form>
+    </modal-content>
+    <modal-footer>
+      <button class="btn btn-square btn-danger" (click)="mymodal.close()">close</button>
+    </modal-footer>
+  </modal>

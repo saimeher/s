@@ -1,0 +1,1071 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+    <div class="spl-content">
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <!-- <ol class="breadcrumb">
+                  <li><i class="fa fa-dashboard"></i> <a [routerLink]="['/dashboard']">Dashboard</a>
+                  </li>
+                  <li class="active">Courses</li>
+                </ol> -->
+          </div>
+        </div>
+      </div>
+      <!-- /.row -->
+      <!-- end PAGE TITLE ROW -->
+      <!--add form start-->
+
+
+      <div class="row" *ngIf="this.editform == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> Edit {{eid.first_name}} Details</h4>
+              </div>
+              <div class="portlet-widgets">
+                <a (click)="closeeditform()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal" novalidate [formGroup]="reg_Form" role="form">
+                <h3>College Details</h3>
+                <hr>
+                <div class="form-group">
+                  <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.university_reg_number }">
+                    <label>University Reg Number</label>
+                    <input type="text" class="form-control" placeholder="Enter University Registered No" name="university_reg_number" formControlName="university_reg_number"
+                      required readonly>
+                    <span style="color:red;" *ngIf="displayMessage.university_reg_number">
+                      {{displayMessage.university_reg_number}}
+                    </span>
+                  </div>
+                  <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.college_name }">
+                    <label>College Name </label>
+                    <select *ngIf="eid.college_status== 0" class="form-control" (change)="callcollege($event)" name="college_name" formControlName="college_name">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of collegedata" [value]="type.id">{{type.full_name}}</option>
+                    </select>
+                    <input *ngIf="eid.college_status== 1" type="text" class="form-control" value="{{eid.clg_fullname}}" formControlName="college_name"
+                      required readonly/>
+                    <span style="color:red;" *ngIf="displayMessage.college_name">
+                      {{displayMessage.college_name}}
+                    </span>
+                  </div>
+                  <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.course }">
+                    <label>Course</label>
+                    <select *ngIf="eid.course_status== 0" class="form-control" (change)="callcourse($event)" name="course" formControlName="course">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of newcourse" [value]="type.id">{{type.course}}</option>
+                    </select>
+                    <input type="text" *ngIf="eid.course_status== 1" class="form-control" value="{{eid.actual_course}}" formControlName="course"
+                      required readonly/>
+                    <span style="color:red;" *ngIf="displayMessage.course">
+                      {{displayMessage.course}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.branch }">
+                    <label>Branch</label>
+                    <!-- <select class="form-control" (change)="callbranch($event)" name="branch" formControlName="branch">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of newbranch" [value]="type.id">{{type.fullname}}-{{type.branch}}</option>
+                    </select> -->
+                    <input type="text" class="form-control" value="{{eid.branch_fullname}}" formControlName="branch" required readonly/>
+                    <span style="color:red;" *ngIf="displayMessage.branch">
+                      {{displayMessage.branch}}
+                    </span>
+                  </div>
+                  <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.year }">
+                    <label>Year</label>
+                    <!-- <select class="form-control" (change)="callyear($event)" name="year" formControlName="year">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of newyear" [value]="type.yid">{{type.year}}</option>
+                    </select> -->
+                    <input type="text" class="form-control" value="{{eid.actual_year}}" formControlName="year" required readonly/>
+                    <span style="color:red;" *ngIf="displayMessage.year">
+                      {{displayMessage.year}}
+                    </span>
+                  </div>
+                  <div class="col-lg-4 col-md-6" [ngClass]="{'has-error': displayMessage.section }">
+                    <label>Section</label>
+                    <select *ngIf="eid.section_status== 0" class="form-control" (change)="callsection($event)" name="section" formControlName="section">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of addsection" [value]="type.id">{{type.section}}</option>
+                    </select>
+                    <input *ngIf="eid.section_status== 1" type="text" class="form-control" value="{{eid.actual_section}}" formControlName="section"
+                      required readonly/>
+                    <span style="color:red;" *ngIf="displayMessage.section">
+                      {{displayMessage.section}}
+                    </span>
+                  </div>
+                </div>
+                <h3>Personal & Correspondence Details</h3>
+                <hr>
+                <div class="form-group">
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.first_name }">
+                    <label>First Name</label>
+                    <input *ngIf="eid.firstname_status == 0 " type="text" class="form-control" placeholder="Enter Firstname" name="first_name"
+                      formControlName="first_name" required>
+                    <input *ngIf="eid.firstname_status == 1 " type="text" class="form-control" placeholder="Enter Firstname" name="first_name"
+                      formControlName="first_name" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.first_name">
+                      {{displayMessage.first_name}}
+                    </span>
+
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.last_name }">
+                    <label>Last Name</label>
+                    <input *ngIf="eid.lastname_status == 0 " type="text" class="form-control" placeholder="Enter Lastname" name="last_name" formControlName="last_name"
+                      required>
+                    <input *ngIf="eid.lastname_status == 1 " type="text" class="form-control" placeholder="Enter Lastname" name="last_name" formControlName="last_name"
+                      required readonly>
+                    <span style="color:red;" *ngIf="displayMessage.last_name">
+                      {{displayMessage.last_name}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.dob }">
+                    <label>Date of Birth</label>
+                    <my-date-picker [options]="myDatePickerOptions" name="dob" formControlName="dob"></my-date-picker>
+                    <span style="color:red;" *ngIf="displayMessage.dob">
+                      {{displayMessage.dob}}
+                    </span>
+                  </div>
+
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.gender }">
+                    <label>Gender</label>
+                    <select *ngIf="eid.gender_status == 0 " class="form-control" name="gender" formControlName="gender">
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                    </select>
+                    <input *ngIf="eid.gender_status == 1" type="text" class="form-control" name="gender" formControlName="gender" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.gender">
+                      {{displayMessage.gender}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.fathers_name }">
+                    <label>Father Name</label>
+                    <input type="text" *ngIf="eid.father_status == 0 " class="form-control" placeholder="Enter Fathers Name" name="fathers_name"
+                      formControlName="fathers_name" required>
+                    <input type="text" *ngIf="eid.father_status == 1 " class="form-control" placeholder="Enter Fathers Name" name="fathers_name"
+                      formControlName="fathers_name" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.fathers_name">
+                      {{displayMessage.fathers_name}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.mothers_name }">
+                    <label>Mother Name</label>
+                    <input type="text" class="form-control" *ngIf="eid.mother_status == 0 " placeholder="Enter Mothers Name" name="mothers_name"
+                      formControlName="mothers_name" required>
+                    <input type="text" class="form-control" *ngIf="eid.mother_status == 1 " placeholder="Enter Mothers Name" name="mothers_name"
+                      formControlName="mothers_name" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.mothers_name">
+                      {{displayMessage.mothers_name}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.father_proffesion }">
+                    <label>Father's Profession </label>
+                    <input type="text" *ngIf="eid.proffision_status	 == 0 " class="form-control" placeholder="Enter Fathers Profession" name="father_proffesion"
+                      formControlName="father_proffesion" required>
+                    <input type="text" *ngIf="eid.proffision_status	 == 1 " class="form-control" placeholder="Enter Fathers Profession" name="father_proffesion"
+                      formControlName="father_proffesion" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.father_proffesion">
+                      {{displayMessage.father_proffesion}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.address }">
+                    <label>Address</label>
+                    <textarea *ngIf="eid.address_status == 0 " class="form-control" placeholder="Enter Address" name="address" formControlName="address"
+                      required>
+                  </textarea>
+                    <textarea *ngIf="eid.address_status == 1 " class="form-control" placeholder="Enter Address" name="address" formControlName="address"
+                      readonly required>
+                  </textarea>
+                    <span style="color:red;" *ngIf="displayMessage.address">
+                      {{displayMessage.address}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.email_id }">
+                    <label>Email Id</label>
+                    <input type="text" *ngIf="eid.email_status == 0 " class="form-control" placeholder="Enter Email Id" name="email_id" formControlName="email_id"
+                      required>
+                    <input type="text" *ngIf="eid.email_status == 1 " class="form-control" placeholder="Enter Email Id" name="email_id" formControlName="email_id"
+                      readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.email_id">
+                      {{displayMessage.email_id}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.aadhaar_number }">
+                    <label>Aadhaar Number</label>
+                    <input type="text" *ngIf="eid.aadhar_status == 0 " class="form-control" placeholder="Enter Aadhaar Number" name="aadhaar_number"
+                      formControlName="aadhaar_number" required>
+                    <input type="text" *ngIf="eid.aadhar_status == 1 " class="form-control" placeholder="Enter Aadhaar Number" name="aadhaar_number"
+                      formControlName="aadhaar_number" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.aadhaar_number">
+                      {{displayMessage.aadhaar_number}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.nationalitiy }">
+                    <label>Nationality</label>
+                    <input type="text" *ngIf="eid.nationalitiy_status == 0 " class="form-control" placeholder="Enter Nationality" name="nationalitiy"
+                      formControlName="nationalitiy" required>
+                    <input type="text" *ngIf="eid.nationalitiy_status == 1 " class="form-control" placeholder="Enter Nationality" name="nationalitiy"
+                      formControlName="nationalitiy" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.nationalitiy">
+                      {{displayMessage.nationalitiy}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.language_known }">
+                    <label>Languages Known</label>
+                    <input type="text" *ngIf="eid.language_status == 0 " class="form-control" placeholder="Enter Languages Known" name="language_known"
+                      formControlName="language_known" required>
+                    <input type="text" *ngIf="eid.language_status == 1 " class="form-control" placeholder="Enter Languages Known" name="language_known"
+                      formControlName="language_known" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.language_known">
+                      {{displayMessage.language_known}}
+                    </span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.mobile_number }">
+                    <label>Contact Number</label>
+                    <input type="text" *ngIf="eid.mobile_status == 0 " class="form-control" placeholder="Enter Contact No" name="mobile_number"
+                      formControlName="mobile_number" required>
+                    <input type="text" *ngIf="eid.mobile_status == 1 " class="form-control" placeholder="Enter Contact No" name="mobile_number"
+                      formControlName="mobile_number" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.mobile_number">
+                      {{displayMessage.mobile_number}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.alternate_mobile_number }">
+                    <label>Alternate Contact Number</label>
+                    <input type="text" *ngIf="eid.altermobile_status == 0 " class="form-control" placeholder="Enter Contact No" name="alternate_mobile_number"
+                      formControlName="alternate_mobile_number" required>
+                    <input type="text" *ngIf="eid.altermobile_status == 1 " class="form-control" placeholder="Enter Contact No" name="alternate_mobile_number"
+                      formControlName="alternate_mobile_number" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.alternate_mobile_number">
+                      {{displayMessage.alternate_mobile_number}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.eamcet_rank }">
+                    <label for="">Eamcet Rank</label>
+                    <input type="text" *ngIf="eid.eamcet_status == 0 " placeholder="Enter Eamcet Rank" class="form-control" name="eamcet_rank"
+                      formControlName="eamcet_rank" required>
+                    <input type="text" *ngIf="eid.eamcet_status == 1 " placeholder="Enter Eamcet Rank" class="form-control" name="eamcet_rank"
+                      formControlName="eamcet_rank" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.eamcet_rank">
+                      {{displayMessage.eamcet_rank}}
+                    </span>
+                  </div>
+                  <div class="col-lg-3 col-md-6" [ngClass]="{'has-error': displayMessage.backlogs }">
+                    <label for="">Backlogs</label>
+                    <input type="number" *ngIf="eid.backlogs_status == 0 " placeholder="Enter No of Backlogs " class="form-control" name="backlogs"
+                      formControlName="backlogs" required>
+                    <input type="number" *ngIf="eid.backlogs_status == 1 " placeholder="Enter No of Backlogs " class="form-control" name="backlogs"
+                      formControlName="backlogs" readonly required>
+                    <span style="color:red;" *ngIf="displayMessage.backlogs">
+                      {{displayMessage.backlogs}}
+                    </span>
+                  </div>
+                </div>
+                <h3>Academic Profile</h3>
+                <hr>
+                <div class="form-group">
+                  <div class="col-lg-12 col-md-12">
+                    <label>Educational Qualification Details</label>
+                    <table class="table table-bordered table-green">
+                      <thead>
+                        <tr>
+                          <th style="width: 40px;">S.No</th>
+                          <th style="width: 200px;">Examination</th>
+                          <th>Board</th>
+                          <th style="width: 150px;">Percentage</th>
+                          <th style="width: 150px;">Year of Passing</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>1</td>
+                          <th>X Standard / SSC</th>
+                          <td [ngClass]="{'has-error': displayMessage.x_board }">
+                            <input *ngIf="eid.Xboard_status == 0 " type="text" class="form-control" name="x_board" formControlName="x_board" required>
+                            <input *ngIf="eid.Xboard_status == 1 " type="text" class="form-control" name="x_board" formControlName="x_board" readonly
+                              required>
+                            <span style="color:red;" *ngIf="displayMessage.x_board">
+                              {{displayMessage.x_board}}
+                            </span>
+                          </td>
+                          <td [ngClass]="{'has-error': displayMessage.x_percentage }">
+                            <input *ngIf="eid.Xper_status == 0 " type="text" class="form-control" name="x_percentage" formControlName="x_percentage"
+                              required>
+                            <input *ngIf="eid.Xper_status == 1 " type="text" class="form-control" name="x_percentage" formControlName="x_percentage"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.x_percentage">
+                              {{displayMessage.x_percentage}}
+                            </span>
+                          </td>
+                          <td [ngClass]="{'has-error': displayMessage.x_year_of_passing }">
+                            <input *ngIf="eid.Xpass_status == 0 " type="text" class="form-control" name="x_year_of_passing" formControlName="x_year_of_passing"
+                              required>
+                            <input *ngIf="eid.Xpass_status == 1 " type="text" class="form-control" name="x_year_of_passing" formControlName="x_year_of_passing"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.x_year_of_passing">
+                              {{displayMessage.x_year_of_passing}}
+                            </span>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <th>Intermediate / PUC / XII Standard / Diploma</th>
+                          <td [ngClass]="{'has-error': displayMessage.xII_board }">
+                            <input *ngIf="eid.XIIboard_status == 0 " type="text" class="form-control" name="xII_board" formControlName="xII_board" required>
+                            <input *ngIf="eid.XIIboard_status == 1 " type="text" class="form-control" name="xII_board" formControlName="xII_board" readonly
+                              required>
+                            <span style="color:red;" *ngIf="displayMessage.xII_board">
+                              {{displayMessage.xII_board}}
+                            </span>
+                          </td>
+                          <td [ngClass]="{'has-error': displayMessage.xII_percentage }">
+                            <input *ngIf="eid.XIIper_status == 0 " type="text" class="form-control" name="xII_percentage" formControlName="xII_percentage"
+                              required>
+                            <input *ngIf="eid.XIIper_status == 1 " type="text" class="form-control" name="xII_percentage" formControlName="xII_percentage"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.xII_percentage">
+                              {{displayMessage.xII_percentage}}
+                            </span>
+
+                          </td>
+
+                          <td [ngClass]="{'has-error': displayMessage.xII_year_of_passing }">
+                            <input *ngIf="eid.XIIpass_status == 0 " type="text" class="form-control" name="xII_year_of_passing" formControlName="xII_year_of_passing"
+                              required>
+                            <input *ngIf="eid.XIIpass_status == 1 " type="text" class="form-control" name="xII_year_of_passing" formControlName="xII_year_of_passing"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.xII_year_of_passing">
+                              {{displayMessage.xII_year_of_passing}}
+                            </span>
+
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>3</td>
+                          <th>BTech - CGPA Till date(Graduation)</th>
+                          <td [ngClass]="{'has-error': displayMessage.btech_board }">
+                            <input *ngIf="eid.btechboard_status == 0 " type="text" class="form-control" name="btech_board" formControlName="btech_board"
+                              required>
+                            <input *ngIf="eid.btechboard_status == 1 " type="text" class="form-control" name="btech_board" formControlName="btech_board"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.btech_board">
+                              {{displayMessage.btech_board}}
+                            </span>
+                          </td>
+                          <td [ngClass]="{'has-error': displayMessage.btech_percentage}">
+                            <input *ngIf="eid.btechper_status == 0 " type="text" class="form-control" name="btech_percentage" formControlName="btech_percentage"
+                              required>
+                            <input *ngIf="eid.btechper_status == 1 " type="text" class="form-control" name="btech_percentage" formControlName="btech_percentage"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.btech_percentage">
+                              {{displayMessage.btech_percentage}}
+                            </span>
+                          </td>
+                          <td [ngClass]="{'has-error': displayMessage.btech_year_of_passing}">
+                            <input *ngIf="eid.btechpass_status == 0 " type="text" class="form-control" name="btech_year_of_passing" formControlName="btech_year_of_passing"
+                              required>
+                            <input *ngIf="eid.btechpass_status == 1 " type="text" class="form-control" name="btech_year_of_passing" formControlName="btech_year_of_passing"
+                              readonly required>
+                            <span style="color:red;" *ngIf="displayMessage.btech_year_of_passing">
+                              {{displayMessage.btech_year_of_passing}}
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <button type="submit" (click)="updatebyid()" class="btn btn-green btn-square pull-right">update</button>
+                    <button style="margin-right:5px;" (click)="closeeditform()" class="btn btn-danger btn-square pull-right">Cancel</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="this.loading1 == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>Student Details</h4>
+              </div>
+              <div class="portlet-widgets">
+                <i class="fa fa-times" (click)="closecheckdata()" style="cursor:pointer;"></i>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form role="form" (ngSubmit)="approvestudata(f)" #f="ngForm" novalidate>
+                <div>
+                  <div class="row">
+                    <div class="col-lg-2 col-sm-12">
+                      <table class="table table-hover table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th colspan="2">
+                              <img src="{{basicurl}}/{{this.dp.certificate_name}}" style="height:160px;width:150px; " *ngIf="this.dp">
+                              <img src="{{basicurl}}/{{eid.gender}}.png" style="height:160px;width:150px; " *ngIf="!this.dp">
+                            </th>
+                          </tr>
+                        </thead>
+                      </table>
+                      <a (click)="deletedata.open(did = this.dp);" class="pull-right" *ngIf="this.dp">
+                        <i class="fa fa-trash-o fa-lg" style="cursor:pointer;"></i>
+                      </a>
+                    </div>
+                    <div class="col-lg-5 col-sm-6">
+                      <table class="table table-hover table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td width="130">Registeration No</td>
+                            <th>{{eid.university_reg_number}}
+                              <span *ngIf="eid.reg_status == '0'" Style="width: 30px;">
+                                <input type="checkbox" class="pull-right" name="reg_status" [(ngModel)]="id.reg_status" />
+                              </span>
+                              <span *ngIf="eid.reg_status == '1'" Style="width: 30px; background-color: #ddd; ">
+                                <input type="checkbox" class="pull-right" name="reg_status" [(ngModel)]="eid.reg_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>College</td>
+                            <th>{{eid.clg_fullname}}
+                              <span *ngIf="eid.college_status == '1'" Style="width: 30px; background-color: #ddd; ">
+                                <input type="checkbox" class="pull-right" name="reg_status" [(ngModel)]="eid.college_status" disabled/>
+                              </span>
+                              <span *ngIf="eid.college_status =='0'" Style="width: 30px;">
+                                <input type="checkbox" class="pull-right" name="college_status" [(ngModel)]="id.college_status" />
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Course</td>
+                            <th>{{eid.actual_course}}
+                              <span *ngIf="eid.course_status == 0">
+                                <input type="checkbox" class="pull-right" name="course_status" [(ngModel)]="id.course_status" />
+                              </span>
+                              <span *ngIf="eid.course_status == 1" Style="background-color: #ddd">
+                                <input type="checkbox" class="pull-right" name="course_status" [(ngModel)]="eid.course_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Branch</td>
+                            <th>{{eid.branch_fullname}}
+                              <span *ngIf="eid.branch_status == 0">
+                                <input type="checkbox" class="pull-right" name="branch_status" [(ngModel)]="id.branch_status" />
+                              </span>
+                              <span *ngIf="eid.branch_status == 1" Style="background-color: #ddd;">
+                                <input type="checkbox" class="pull-right" name="branch_status" [(ngModel)]="eid.branch_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Year</td>
+                            <th>{{eid.actual_year}}
+                              <span *ngIf="eid.year_status == 0">
+                                <input type="checkbox" class="pull-right" name="year_status" [(ngModel)]="id.year_status" />
+                              </span>
+                              <span *ngIf="eid.year_status == 1" Style="background-color: #ddd;">
+                                <input type="checkbox" class="pull-right" name="year_status" [(ngModel)]="eid.year_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Section</td>
+                            <th>{{eid.actual_section}}
+                              <span *ngIf="eid.section_status == 0">
+                                <input type="checkbox" class="pull-right" name="section_status" [(ngModel)]="id.section_status" />
+                              </span>
+                              <span *ngIf="eid.section_status == 1" Style="background-color: #ddd;">
+                                <input type="checkbox" class="pull-right" name="section_status" [(ngModel)]="eid.section_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="col-lg-5 col-sm-6">
+                      <table class="table table-hover table-bordered table-striped">
+                        <tbody>
+                          <tr>
+                            <td width="130">Name</td>
+                            <th>{{eid.first_name}}
+                              <span *ngIf="eid.firstname_status == 0">
+                                <input type="checkbox" class="pull-right" name="firstname_status" [(ngModel)]="id.firstname_status" checked/>
+                              </span>
+                              <span *ngIf="eid.firstname_status == 1" Style="background-color: #ddd;">
+                                <input type="checkbox" class="pull-right" name="firstname_status" [(ngModel)]="eid.firstname_status" disabled />
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Date of Birth</td>
+                            <th>{{eid.dob | date:'mediumDate'}}
+                              <span *ngIf="eid.dob_status == 0">
+                                <input type="checkbox" class="pull-right" name="dob_status" [(ngModel)]="id.dob_status" />
+                              </span>
+                              <span *ngIf="eid.dob_status == 1" Style="background-color: #ddd">
+                                <input type="checkbox" class="pull-right" name="dob_status" [(ngModel)]="eid.dob_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Gender</td>
+                            <th>{{eid.gender}}
+                              <span *ngIf="eid.gender_status == '0'">
+                                <input type="checkbox" class="pull-right" name="gender_status" [(ngModel)]="id.gender_status" />
+                              </span>
+                              <span *ngIf="eid.gender_status == '1'" Style="background-color: #ddd;">
+                                <input type="checkbox" class="pull-right" name="gender_status" [(ngModel)]="eid.gender_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>BTech (%)</td>
+                            <th>{{eid.btech_percentage}}
+                              <span *ngIf="eid.btechper_status == 0">
+                                <input type="checkbox" class="pull-right" name="btechper_status" [(ngModel)]="id.btechper_status" />
+                              </span>
+                              <span *ngIf="eid.btechper_status == 1" Style="background-color: #ddd">
+                                <input type="checkbox" class="pull-right" name="btechper_status" [(ngModel)]="eid.btechper_status" disabled/>
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Backlogs</td>
+                            <th>{{eid.backlogs}}
+                              <span *ngIf="eid.backlogs_status == 0">
+                                <input type="checkbox" class="pull-right" name="backlogs_status" [(ngModel)]="id.backlogs_status" />
+                              </span>
+                              <span *ngIf="eid.backlogs_status == 1" Style="background-color: #ddd">
+                                <input type="checkbox" class="pull-right" name="backlogs_status" [(ngModel)]="eid.backlogs_status" disabled />
+                              </span>
+                            </th>
+                          </tr>
+                          <tr>
+                            <td>Emacet Rank</td>
+                            <th>{{eid.eamcet_rank}}
+                              <span *ngIf="eid.eamcet_status == 0">
+                                <input type="checkbox" class="pull-right" name="eamcet_status" [(ngModel)]="id.eamcet_status" />
+                              </span>
+                              <span *ngIf="eid.eamcet_status == 1" Style="background-color: #ddd">
+                                <input type="checkbox" class="pull-right" name="eamcet_status" [(ngModel)]="eid.eamcet_status" disabled />
+                              </span>
+                            </th>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <label> Personal Information</label>
+                      <div class="row">
+                        <div class="col-lg-6 col-sm-6">
+                          <table class="table table-hover table-bordered table-striped">
+                            <tbody>
+                              <tr>
+                                <td width="150">Aadhaar Number</td>
+                                <th width="200">{{eid.aadhaar_number}}
+                                  <span *ngIf="eid.aadhar_status == 0">
+                                    <input type="checkbox" class="pull-right" name="aadhar_status" [(ngModel)]="id.aadhar_status" />
+                                  </span>
+                                  <span *ngIf="eid.aadhar_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="aadhar_status" [(ngModel)]="eid.aadhar_status" disabled/>
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Email Address</td>
+                                <th>{{eid.email_id}}
+                                  <span *ngIf="eid.email_status == 1 " class="badge badge-xs green pull-right">
+                                    <i class="fa fa-check"></i> Verified
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Mobile No</td>
+                                <th>{{eid.mobile_number}}
+                                  <span *ngIf="eid.mobile_status == '1' " class="badge badge-xs green pull-right">
+                                    <i class="fa fa-check"></i> Verified
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Alternate Mobile No</td>
+                                <th>{{eid.alternate_mobile_number}}
+                                  <span *ngIf="eid.altermobile_status == 0">
+                                    <input type="checkbox" class="pull-right" name="altermobile_status" [(ngModel)]="id.altermobile_status" />
+                                  </span>
+                                  <span *ngIf="eid.altermobile_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="altermobile_status" [(ngModel)]="eid.altermobile_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Address</td>
+                                <th>{{eid.address}}
+                                  <span *ngIf="eid.address_status == 0">
+                                    <input type="checkbox" class="pull-right" name="address_status" [(ngModel)]="id.address_status" />
+                                  </span>
+                                  <span *ngIf="eid.address_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="address_status" [(ngModel)]="eid.address_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-lg-6 col-sm-6">
+                          <table class="table table-hover table-bordered table-striped">
+                            <tbody>
+                              <tr>
+                                <td>Father Name</td>
+                                <th>{{eid.fathers_name}}
+                                  <span *ngIf="eid.father_status == 0">
+                                    <input type="checkbox" class="pull-right" name="father_status" [(ngModel)]="id.father_status" />
+                                  </span>
+                                  <span *ngIf="eid.father_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="father_status" [(ngModel)]="eid.father_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Mother Name</td>
+                                <th>{{eid.mothers_name}}
+                                  <span *ngIf="eid.mother_status == 0">
+                                    <input type="checkbox" class="pull-right" name="mother_status" [(ngModel)]="id.mother_status" />
+                                  </span>
+                                  <span *ngIf="eid.mother_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="mother_status" [(ngModel)]="eid.mother_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Father Proffesion</td>
+                                <th>{{eid.father_proffesion}}
+                                  <span *ngIf="eid.proffision_status == 0">
+                                    <input type="checkbox" class="pull-right" name="proffision_status" [(ngModel)]="id.proffision_status" />
+                                  </span>
+                                  <span *ngIf="eid.proffision_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="proffision_status" [(ngModel)]="eid.proffision_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Nationality</td>
+                                <th>{{eid.nationalitiy}}
+                                  <span *ngIf="eid.nationalitiy_status == 0">
+                                    <input type="checkbox" class="pull-right" name="nationalitiy_status" [(ngModel)]="id.nationalitiy_status" />
+                                  </span>
+                                  <span *ngIf="eid.nationalitiy_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="nationalitiy_status" [(ngModel)]="eid.nationalitiy_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                              <tr>
+                                <td>Language known</td>
+                                <th>{{eid.language_known}}
+                                  <span *ngIf="eid.language_status == 0">
+                                    <input type="checkbox" class="pull-right" name="language_status" [(ngModel)]="id.language_status" />
+                                  </span>
+                                  <span *ngIf="eid.language_status == 1" Style="background-color: #ddd">
+                                    <input type="checkbox" class="pull-right" name="language_status" [(ngModel)]="eid.language_status" disabled />
+                                  </span>
+                                </th>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-12 col-md-12">
+                        <label>Educational Qualification Details</label>
+                        <table class="table table-bordered table-green">
+                          <thead>
+                            <tr>
+                              <th style="width: 40px;">S.No</th>
+                              <th style="width: 200px;">Examination</th>
+                              <th>Board</th>
+                              <th style="width: 150px;">Percentage / CGPA</th>
+                              <th style="width: 150px;">Year of Passing</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1</td>
+                              <th>X Standard / SSC</th>
+                              <td>{{eid.x_board}}
+                                <span *ngIf="eid.Xboard_status == 0">
+                                  <input type="checkbox" class="pull-right" name="Xboard_status" [(ngModel)]="id.Xboard_status" />
+                                </span>
+                                <span *ngIf="eid.Xboard_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="Xboard_status" [(ngModel)]="eid.Xboard_status" disabled />
+                                </span>
+                              </td>
+                              <td>{{eid.x_percentage}}
+                                <span *ngIf="eid.Xper_status == 0">
+                                  <input type="checkbox" class="pull-right" name="Xper_status" [(ngModel)]="id.Xper_status" />
+                                </span>
+                                <span *ngIf="eid.Xper_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="Xper_status" [(ngModel)]="eid.Xper_status" disabled/>
+                                </span>
+                              </td>
+                              <td>{{eid.x_year_of_passing}}
+                                <span *ngIf="eid.Xpass_status == 0">
+                                  <input type="checkbox" class="pull-right" name="Xpass_status" [(ngModel)]="id.Xpass_status" />
+                                </span>
+                                <span *ngIf="eid.Xpass_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="Xpass_status" [(ngModel)]="eid.Xpass_status" disabled/>
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>2</td>
+                              <th>Intermediate / PUC / XII Standard / Diploma</th>
+                              <td>{{eid.xII_board}}
+                                <span *ngIf="eid.XIIboard_status == 0">
+                                  <input type="checkbox" class="pull-right" name="XIIboard_status" [(ngModel)]="id.XIIboard_status" />
+                                </span>
+                                <span *ngIf="eid.XIIboard_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="XIIboard_status" [(ngModel)]="eid.XIIboard_status" disabled/>
+                                </span>
+                              </td>
+                              <td>{{eid.xII_percentage}}
+                                <span *ngIf="eid.XIIper_status == 0">
+                                  <input type="checkbox" class="pull-right" name="XIIper_status" [(ngModel)]="id.XIIper_status" />
+                                </span>
+                                <span *ngIf="eid.XIIper_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="XIIper_status" [(ngModel)]="eid.XIIper_status" disabled />
+                                </span>
+                              </td>
+                              <td>{{eid.xII_year_of_passing}}
+                                <span *ngIf="eid.XIIpass_status == 0">
+                                  <input type="checkbox" class="pull-right" name="XIIpass_status" [(ngModel)]="id.XIIpass_status" />
+                                </span>
+                                <span *ngIf="eid.XIIpass_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="XIIpass_status" [(ngModel)]="eid.XIIpass_status" disabled />
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>3</td>
+                              <th>BTech - CGPA Till date(Graduation)</th>
+                              <td>{{eid.btech_board}}
+                                <span *ngIf="eid.btechboard_status == 0">
+                                  <input type="checkbox" class="pull-right" name="btechboard_status" [(ngModel)]="id.btechboard_status" />
+                                </span>
+                                <span *ngIf="eid.btechboard_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="btechboard_status" [(ngModel)]="eid.btechboard_status" disabled/>
+                                </span>
+                              </td>
+                              <td>{{eid.btech_percentage}}
+                                <span *ngIf="eid.btechper_status == 0">
+                                  <input type="checkbox" class="pull-right" name="btechper_status" [(ngModel)]="id.btechper_status" />
+                                </span>
+                                <span *ngIf="eid.btechper_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="btechper_status" [(ngModel)]="eid.btechper_status" disabled/>
+                                </span>
+                              </td>
+                              <td>{{eid.btech_year_of_passing}}
+                                <span *ngIf="eid.btechpass_status == 0">
+                                  <input type="checkbox" class="pull-right" name="btechpass_status" [(ngModel)]="id.btechpass_status" />
+                                </span>
+                                <span *ngIf="eid.btechpass_status == 1" Style="background-color: #ddd">
+                                  <input type="checkbox" class="pull-right" name="btechpass_status" [(ngModel)]="eid.btechpass_status" disabled/>
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="form-group">
+                      <div class="col-lg-12">
+                        <label>Certificate Uploads</label>
+                        <table class="table table-striped table-bordered table-hover">
+                          <tr>
+                            <th Style="width: 100px;">Resume</th>
+                            <td Style="width: 200px;">
+                              <a style="cursor:pointer;" data-toggle="modal" data-target="#reject" (click)="reject.open();certificate_show(resumefile,'resume')">
+                                <i class=" fa fa-file-text fa-lg " *ngIf="res"></i> {{res}}
+                              </a>
+                              <i (click)="deletedata.open(did = resumefile)" class="fa fa-trash-o fa-lg" style="cursor:pointer;" *ngIf="res"></i>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th Style="width: 100px; ">Technical</th>
+                            <td Style="width: 200px; ">
+                              <div *ngFor="let type of technical">
+                                <a style="cursor:pointer;" data-toggle="modal" data-target="#reject" (click)="reject.open();certificate_show(type, 'technical')">
+                                  <i class="fa fa-file-text fa-lg"></i> {{type.certificate_name}}
+                                </a>
+                                <i class="fa fa-trash-o fa-lg" (click)="deletedata.open(did = type)" style="cursor:pointer;"></i>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th Style="width: 100px; ">Extracurricular</th>
+                            <td Style="width: 200px; ">
+                              <div *ngFor="let type1 of nontechnical">
+                                <a style="cursor:pointer;" data-toggle="modal" data-target="#reject" (click)="reject.open();certificate_show(type1, 'nontechnical')">
+                                  <i class="fa fa-file-text fa-lg"></i> {{type1.certificate_name}}
+                                </a>
+                                <i (click)="deletedata.open(did = type1)" class="fa fa-trash-o fa-lg" style="cursor:pointer;"></i>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row ">
+                  <div class="col-lg-12 ">
+                    <button type="submit " (click)="closecheckdata() " class="btn btn-danger btn-square ">Cancel</button>
+                    <!-- <button type="submit " (click)="mymodal.open() " class="btn btn-green btn-square pull-right ">Forward to Placement</button>
+                       -->
+                    <button type="submit " class="btn btn-green btn-square pull-right ">Forward to Placement</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
+        </div>
+      </div>
+
+      <div class="row" *ngIf="this.loading == true ">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-users"></i> Student Details</h4>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal" [formGroup]="studentForm" (ngSubmit)="searchdata()" role="form">
+                <div class="form-group">
+                  <div class="col-lg-3" [ngClass]="{ 'has-error': displayMessage.college_name }">
+                    <label>College Name</label>
+                    <input type="text" class="form-control" value="{{this.clg_fulname}}" name="college" required readonly>
+                    <span style="color:red;" *ngIf="displayMessage.college_name">
+                      {{displayMessage.college_name}}
+                    </span>
+                  </div>
+
+                  <div class="col-lg-2" [ngClass]="{ 'has-error': displayMessage.course } ">
+                    <label>Course</label>
+                    <select class="form-control" (change)="callcourse($event)" name="course" formControlName="course">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of clg_data" [value]="type.id">{{type.course}}</option>
+                    </select>
+                  </div>
+                  <div class="col-lg-3" [ngClass]="{ 'has-error': displayMessage.branch } ">
+                    <label>Department</label>
+                    <input type="text" class="form-control" *ngIf="dept=='CSE' " value="Computer Science & Engineering" name="branch" required
+                      readonly>
+                    <input type="text" class="form-control" *ngIf="dept=='ECE' " value="Electronics and Communication Engineering" name="branch"
+                      required readonly>
+                    <input type="text" class="form-control" *ngIf="dept=='EEE' " value="Electrical and Electronics Engineering" name="branch"
+                      required readonly>
+                    <input type="text" class="form-control" *ngIf="dept=='CIVIL' " value="Civil Engineering" name="branch" required readonly>
+                    <input type="text" class="form-control" *ngIf="dept=='MECH' " value="Mechanical Engineering" name="branch" required readonly>
+                    <span style="color:red;" *ngIf="displayMessage.branch">
+                      {{displayMessage.branch}}
+                    </span>
+                  </div>
+                  <div class="col-lg-1" [ngClass]="{ 'has-error': displayMessage.year } ">
+                    <label>Year</label>
+                    <select class="form-control" (change)="callyear($event)" name="year" formControlName="year">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of newyeardata " [value]="type.yid">{{type.year}}</option>
+                    </select>
+                    <span style="color:red; " *ngIf="displayMessage.year">
+                      {{displayMessage.year}}
+                    </span>
+                  </div>
+                  <div class="col-lg-2" [ngClass]="{ 'has-error': displayMessage.section } ">
+                    <label>Section</label>
+                    <select class="form-control" (change)="callsection($event)" name="section" formControlName="section">
+                      <option selected>--Select--</option>
+                      <option *ngFor="let type of addsection" [value]="type.id">{{type.section}}</option>
+                    </select>
+                    <span style="color:red; " *ngIf="displayMessage.section">
+                      {{displayMessage.section}}
+                    </span>
+                  </div>
+                  <div class="col-lg-1 pull-right ">
+                    <button style="margin-top:22px;" class="btn btn-green btn-square pull-right">Submit</button>
+                  </div>
+                  <!-- <div class="col-lg-6 ">
+                  </div>
+                  <div class="col-lg-6 pull-right ">
+                    <button style="margin-top:22px;" class="btn btn-green btn-square pull-right">Submit</button>
+                  </div> -->
+                </div>
+                <hr>
+              </form>
+              <div class="row">
+                <div class="col-xs-offset-6 col-sm-offset-7 col-xs-2 col-sm-1">
+                  <label class="label-control search-label">Search</label>
+                </div>
+                <div class="col-xs-4" style="margin-top: -5px;">
+                  <input class="form-control input-sm" [(ngModel)]="filterQuery" />
+                </div>
+              </div>
+              <br>
+              <table class="table table-striped table-bordered table-hover table-green" [mfData]="details | dataFilter : filterQuery" #mf="mfDataTable"
+                [mfRowsOnPage]="rowsOnPage" [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>
+                      <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="university_reg_number">Reg No</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="dob">Date of birth</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="email_id">Email</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="mobile_number">Mobile No</mfDefaultSorter>
+                    </th>
+                    <th>
+                      <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                    </th>
+                    <th style="width: 127px;">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of mf.data; let i=index;">
+                    <td>{{details.indexOf(item) + 1}}</td>
+                    <td>{{item.first_name}}</td>
+                    <td>{{item.university_reg_number}}</td>
+                    <td>{{item.dob}}</td>
+                    <td>{{item.email_id}}</td>
+                    <td>{{item.mobile_number}}</td>
+                    <td class="text-center">{{item.backlogs}}</td>
+                    <td>
+                      <span *ngIf="item.c_status==1">
+                        <button (click)="approvedatabyid(eid=item)" class="btn btn-xs btn-purple btn-square ">Approved</button>
+                      </span>
+                      <span *ngIf="item.c_status==0 ">
+                        <button (click)="checkdatabyid(eid=item)" class="btn btn-xs btn-blue btn-square ">Check Details</button>
+                      </span>
+                      <i class="fa fa-edit fa-lg " style="cursor:pointer;" (click)="openeditform(eid=item) "></i>
+                    </td>
+                  </tr>
+                </tbody>
+                <tbody>
+                  <tr *ngIf="details.length==0 ">
+                    <td colspan="8" class="text-center ">
+                      No Data Found
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="8">
+                      <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
+        </div>
+      </div>
+
+      <!--add form end-->
+    </div>
+    <!-- /.page-content -->
+  </div>
+  <!-- /#page-wrapper -->
+  <!-- end MAIN PAGE CONTENT -->
+
+
+  <!-- <div id="reject" class="modal modal-lg fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Image Name :</h4>
+        </div>
+        <iframe [src]='sanitizer.bypassSecurityTrustResourceUrl(pdf_url)' style="width:500px; height:400px;" frameborder="0" *ngIf="pdf_url"></iframe>
+      </div>
+    </div>
+  </div> -->
+</div>
+<modal #reject modalClass="modal-dailog modal-flex modal-lg">
+  <modal-header>
+    <h4 class="modal-title ">PDF Dispaly</h4>
+  </modal-header>
+  <modal-content>
+    <iframe [src]='sanitizer.bypassSecurityTrustResourceUrl(pdf_url)' style="width:870px; height:425px;" frameborder="0" *ngIf="pdf_url"></iframe>
+
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-square btn-danger " (click)="reject.close() ">close</button>
+  </modal-footer>
+</modal>
+<modal #deletedata modalClass="modal-dailog modal-flex modal-lg ">
+  <modal-header>
+    <h4 class="modal-title ">Alert!!</h4>
+  </modal-header>
+  <modal-content>
+    <h4 *ngIf="did != {}">Do you want to delete {{did.certificate_name}} file?</h4>
+    <h4 *ngIf="did == {}">Do you want to delete {{did}}?</h4>
+  </modal-content>
+  <modal-footer>
+    <button class="btn btn-square btn-success " (click)="deletepic(did);deletedata.close()">Yes</button>
+    <button class="btn btn-square btn-danger " (click)="deletedata.close() ">close</button>
+  </modal-footer>
+</modal>

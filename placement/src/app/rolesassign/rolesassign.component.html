@@ -1,0 +1,164 @@
+<div id="wrapper">
+  <!-- begin TOP NAVIGATION -->
+  <app-header></app-header>
+  <!-- end TOP NAVIGATION -->
+
+  <!-- begin SIDE NAVIGATION -->
+  <app-sidemenu [page]="_apiService.page"></app-sidemenu>
+  <!-- end SIDE NAVIGATION -->
+
+  <!-- begin MAIN PAGE CONTENT -->
+  <div id="page-wrapper">
+
+    <div class="spl-content">
+
+      <!-- begin PAGE TITLE ROW -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-title">
+            <h1>
+              Placement Portal
+              <small>Dashboard</small>
+            </h1>
+            <ol class="breadcrumb">
+              <li>
+                <i class="fa fa-dashboard"></i>
+                <a [routerLink]="['/dashboard']">Dashboard</a>
+              </li>
+              <li class="active">Assigining roles</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <!-- /.row -->
+      <!-- end PAGE TITLE ROW -->
+      <div class="row" *ngIf="addFormStatus">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-users"></i> Add Member</h4>
+              </div>
+              <div class="portlet-widgets">
+                <a (click)="hideAddForm()" style="cursor: pointer !important">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <form class="form-horizontal" novalidate [formGroup]="systemForm" (ngSubmit)="addrole()" role="form">
+                <div class="form-group">
+                  <div class="col-md-3">
+                    <label>Employee Registeration No</label>
+                    <input type="text" class="form-control" name="reg_no" formControlName="reg_no" (change)="getdataofstf($event)" required>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name="name" formControlName="name" required readonly>
+                  </div>
+                  <div class="col-md-3">
+                    <label>College</label>
+                    <input type="text" class="form-control" name="college" formControlName="college" value="{{clg_fullname}}" required readonly>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Department</label>
+                    <input type="text" class="form-control" name="department" formControlName="department" value="{{dept_fullname}}" required
+                      readonly>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-3">
+                    <label>Email</label>
+                    <input type="text" class="form-control" name="email" formControlName="email" required readonly>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Contact No</label>
+                    <input type="text" class="form-control" name="mobile" formControlName="mobile" required readonly>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Role</label>
+                    <select formControlName="role" name="role" class="form-control">
+                      <option value="">--Select--</option>
+                      <option value="placement_officier">Placement Officier</option>
+                      <option value="hod">Head Of Department</option>
+                      <option value="asst_hod">Assistant H.O.D </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <button type="submit" [disabled]=" !this.systemForm.valid || buttonClicked" class="btn btn-square btn-green pull-right">
+                      Submit</button>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"> </i> Assiging Roles</h4>
+              </div>
+              <button (click)="showAddForm()" style="margin-top:8px;" class="btn btn-green btn-xs btn-square pull-right">
+                <i class="fa fa-user-plus"></i> Add Member</button>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover table-green">
+                  <thead>
+                    <tr class="uppercase">
+                      <th>#</th>
+                      <th>Registeration No</th>
+                      <th>Name</th>
+                      <th>College</th>
+                      <th>Department</th>
+                      <th>Role</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let data of details;let i=index">
+                      <td>{{i+1}}</td>
+                      <td>{{data.reg_no}}</td>
+                      <td>{{data.name}}</td>
+                      <td>{{data.clg_fullname}}</td>
+                      <td>{{data.department_name}}</td>
+                      <td *ngIf="data.role == 'placement_officier' ">Placement Officier</td>
+                      <td *ngIf="data.role == 'hod' ">Head Of Department</td>
+                      <td *ngIf="data.role == 'asst_hod' ">Assistant H.O.D</td>
+                      <td>
+                        <button *ngIf="data.status == '0' " type="submit" (click)="enable(data)" class="btn btn-xs btn-square btn-green">
+                          Enable</button>
+                        <button *ngIf="data.status == '1' " type="submit" (click)="disable(data)" class="btn btn-xs btn-square btn-red">Disable</button>
+                        <abbr *ngIf="data.status == '0' " style="border-bottom:none;text-decoration:none; " title="Delete">
+                          <i (click)="delete(data)" class="fa fa-trash-o fa-lg" style="cursor:pointer;"></i>
+                        </abbr>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.page-content -->
+
+  </div>
+  <!-- /#page-wrapper -->
+  <!-- end MAIN PAGE CONTENT -->
+
+</div>
