@@ -80,6 +80,10 @@ export class AppSettings {
 //ap[i updtae by meher]
      public static SETTERSMS_API:string="http://192.168.0.109/placement_server/api/checkterms";
      public static GETTERSMS_API:string="http://192.168.0.109/placement_server/api/getterms";
+     public static GETATTENDEDLIST_API:string="http://192.168.0.109/placement_server/api/getattendedlist";
+     public static GETCOMPANINESLIST_API:string ="http://192.168.0.109/placement_server/api/getcompanineslist";
+     public static SENDCONFROM_API:string ="http://192.168.0.109/placement_server/api/sendconfrom";
+     public static CHECKSTATUS_API: string ="http://192.168.0.109/placement_server/api/checkstatus";
 
 
 

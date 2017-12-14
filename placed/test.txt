@@ -1,0 +1,100 @@
+   function getcompanineslist($params)
+    {
+        $reg_no = $params['reg_no'];
+        $branch_id = $params['branch_id'];
+        $college_id = $params['college_id'];
+        $percentage1 = $params['percentage'];
+        $gender = $params['gender'];
+        $backlogs = $params['backlogs'];
+
+
+        $branchdata = $this->db->query("SELECT * FROM `company` where FIND_IN_SET('".$gender."',gender) ORDER BY `company`.`c_date` DESC ")->result();
+        $bdataid = [];
+        for ($i=0; $i < sizeof($branchdata); $i++) {
+            $branchdataarr =explode(",",$branchdata[$i]->branchid);
+            for ($k=0; $k < sizeof($branchdataarr) ; $k++) {
+                if($branchdataarr[$k] == $branch_id && $branchdata[$i]->percentage  <= $percentage1 &&   $backlogs <= $branchdata[$i]->backlogs ){
+                     $branchdata[$i]->stat = 0;
+                    array_push($bdataid, $branchdata[$i]);
+                }
+                if($branchdataarr[$k] == $branch_id && $branchdata[$i]->percentage  > $percentage1){
+                    $branchdata[$i]->stat = 1; //stat add temprarly  
+                    array_push($bdataid, $branchdata[$i]);
+                }
+                // $bdata[$i] = "'".$branchdataarr[$i]."'";
+            }
+            //$branchdataarr = implode(",",$bdata);
+        } 
+        // $data = $this->db->query("select * FROM `company`  where FIND_IN_SET('".$branch_id."', branchid) and clgid = '".$college_id."'")->result();
+          $data1 = $this->db->query("select  * FROM `confirmation_table` where reg_no = '".$reg_no."'")->result();
+
+        $return['success'] = true;
+        $return['data'] =$bdataid;
+        $return['check'] = $data1;
+        return $return;
+    } 
+
+     public function sendconfrom($params)
+     {
+        $reg_no = $params['reg_no'];
+        $branch_id = $params['branch_id'];
+        $college_id = $params['college_id'];
+        $c_id = $params['company_id'];
+        $token = $params['reg_no'].'-'.$params['company_id'];
+        $this->db->query("INSERT INTO `confirmation_table`(`token`, `reg_no`, `company_id`, `status`) VALUES ('$token','$reg_no','$c_id','1') ");
+     }
+     public function checkstatus($params)
+     {
+        $reg_no = $params['reg_no'];
+        $data = $this->db->query("SELECT * FROM `confirmation_table` where reg_no = '$reg_no'")->result();
+
+        $return['data'] = $data;
+         return $return; 
+     }
+
+
+
+
+///api 
+case 'checkterms' :$result = $this->api_model->checkterms($params);break;
+						case 'getterms' :$result = $this->api_model->getterms($params);break;
+						case 'getattendedlist' :$result = $this->api_model->getattendedlist($params);break;
+						case 'getcompanineslist' :$result = $this->api_model->getcompanineslist($params);
+						break;
+						case 'sendconfrom' :$result = $this->api_model->sendconfrom($params);
+						break;
+						case 'checkstatus': $result = $this->api_model->checkstatus($params);
+						break;
+
+
+
+
+
+public function getcompanineslist_post()
+    {
+    	$data['reg_no'] = $this->post('reg_no');
+        $data['branch_id'] = $this->post('branch_id');
+        $data['college_id'] = $this->post('college_id');
+        $p =$this->db->query("select backlogs,btech_percentage,gender from raghuerp_placement.registration")->row();
+        $data['backlogs'] = $p->backlogs;
+        $data['percentage'] = $p->btech_percentage;
+        $data['gender'] = $p->gender;
+        $this->getData('getcompanineslist', $data);
+    } 
+
+
+    public function sendconfrom_post()
+    {
+    	$data['reg_no'] = $this->post('reg_no');
+        $data['branch_id'] = $this->post('branch_id');
+        $data['college_id'] = $this->post('college_id');
+        $data['company_id'] = $this->post('company_id');
+        $this->getData('sendconfrom',$data);
+
+    }
+    public function checkstatus_post()
+    {
+    	$data['reg_no'] = $this->post('reg_no');
+    	$this->getData('checkstatus',$data);
+
+    }

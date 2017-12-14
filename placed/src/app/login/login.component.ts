@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
   checkLogin() {
     this.authenticationService.login(this.model.username, this.model.password).subscribe(data => {
       this.router.navigate(['/studentdash']);
+      // this.router.navigate(['/dashboard']);
     }, error => {
       this.error = true;
       this.error_message = 'Invalid Credentials..!';

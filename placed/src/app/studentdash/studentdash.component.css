@@ -1,0 +1,5 @@
+.number {
+    display: inline-block;
+    z-index: 2;
+    line-height: 110px
+}

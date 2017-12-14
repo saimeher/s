@@ -379,6 +379,27 @@ export class ApiService {
  {
    return this.callApi(AppSettings.GETTERSMS_API,'post',body);
  }
+ get(body)
+ {
+   return this.callApi(AppSettings.GETTERSMS_API,'post',body);
+ }
+ getattendedlist(body)
+ {
+   return this.callApi(AppSettings.GETATTENDEDLIST_API,'post',body);
+ }
+ getcompanineslist(body)
+ {
+   return this.callApi(AppSettings.GETCOMPANINESLIST_API,'post',body);
+ }
+ sendconfromation(body)
+ {
+   return this.callApi(AppSettings.SENDCONFROM_API,'post',body);
+ }
+ checkstatus(body)
+ {
+   return this.callApi(AppSettings.CHECKSTATUS_API,'post',body);
+ }
+
 
   /************************************************************************** */
 
