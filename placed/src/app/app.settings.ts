@@ -84,6 +84,11 @@ export class AppSettings {
      public static GETCOMPANINESLIST_API:string ="http://192.168.0.109/placement_server/api/getcompanineslist";
      public static SENDCONFROM_API:string ="http://192.168.0.109/placement_server/api/sendconfrom";
      public static CHECKSTATUS_API: string ="http://192.168.0.109/placement_server/api/checkstatus";
+     public static NOCONFORMATION_API: string ="http://192.168.0.109/placement_server/api/noconfromation";
+     public static CONFORMDATA_API:string ="http://192.168.0.109/placement_server/api/getconfromdata";
+     public static NOTATTENDED_API:string ="http://192.168.0.109/placement_server/api/notattended";
+     public static GETPLANNEDCOMPANYLIST_API: string ="http://192.168.0.109/placement_server/api/getplannedcompanylist";
+     public static PLANNED_API: string ="http://192.168.0.109/placement_server/api/plannedyes";
 
 
 

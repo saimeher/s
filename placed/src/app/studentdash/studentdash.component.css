@@ -3,3 +3,49 @@
     z-index: 2;
     line-height: 110px
 }
+
+
+
+
+.empty_td{
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #fff;
+    background-color: #fff !important;
+    width: 1px;
+}
+
+.hover-btn:hover{
+    background-color:#006e96!important;
+}
+
+.hover-btn{
+    width:100%;
+}
+
+.return-btn{
+    background-color: #bd081c!important;
+}
+
+.bg-return
+{
+    background-color:#eccfa3!important;
+    /* color: #333; */
+}
+.notselected
+{
+    background-color:#eb9494!important;
+    /* color: #333; */
+}
+
+.list-filter {
+    color: #ccc;
+}
+.list-filter .ul .c-token{
+    background: #38d574 !important;
+}
+.list-filter .ul .pure-checkbox label::before {
+    border-color: #38d574 !important;
+}
+.list-filter.ul .pure-checkbox input[type="checkbox"]:checked + label[_ngcontent-c1]:before {
+    background: #38d574 !important;
+}

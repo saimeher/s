@@ -1173,6 +1173,10 @@
                                 <a style="cursor:pointer;" (click)="openshortlist(a, emaildata = a)">
                                   <i class="fa fa-user"></i> Eligible Students</a>
                               </li>
+                              <li>
+                                <a style="cursor:pointer;" (click)="confromlist(a)">
+                                  <i class="fa fa-user"></i> Confromed lists</a>
+                              </li>
                               <!-- <li>
                                 <a *ngIf="date1 < a.c_date" style="cursor:pointer;" (click)="opensenemailbox(a)">
                                   <i class="fa fa-envelope"></i> Send Email</a>
@@ -1213,6 +1217,124 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+       <!-- confromList -->
+      <div class="row" *ngIf="viewconfrom == true">
+        <div class="col-lg-12">
+          <div class="portlet portlet-default">
+            <div class="portlet-heading">
+              <div class="portlet-title">
+                <h4>
+                  <i class="fa fa-user"></i> {{company_name}} Round Progress
+                </h4>
+              </div>
+              <div class="portlet-widgets">
+                <a (click)="closerconformlist()" style="cursor:pointer;">
+                  <i class="fa fa-times"></i>
+                </a>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="portlet-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <table class="table table-striped table-bordered table-hover table-green">
+                    <thead>
+                      <tr>
+                        <!-- <th class="text-center">Eligible</th> -->
+                        <th class="text-center">Confrom</th>
+                        <th class="text-center">Not</th>
+                        <!-- <th *ngFor="let item3 of roundsprogress" class="text-center">
+                          <span>{{item3.rounds}} ({{item3.descripition}})</span>
+                        </th> -->
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <!-- <td class="text-center">
+                            <button class="btn btn-square btn-purple btn-xs" (click)="confromlist()">{{elgiblecount}}</button></td> -->
+                        
+                        <td *ngFor="let item3 of confrom" class="text-center">
+                          <button class="btn btn-square btn-purple btn-xs" (click)="dispalybyattended(item3)">{{item3.list.split(',').length}}</button>
+                        </td>
+                        <td *ngFor="let ite1 of notconfrom" class="text-center">
+                            <button class="btn btn-square btn-purple btn-xs" (click)="dispalybyattended(ite1)">{{ite1.list.split(',').length}}</button>
+                          </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <form class="form-horizontal" #form="ngForm">
+                    <table class="table table-striped table-bordered table-hover table-green" [mfData]="details" #mf="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                      [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>
+                            <mfDefaultSorter by="university_reg_number">Registered No</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="college_name">College</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="branch">Dept</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="first_name">Student Name</mfDefaultSorter>
+                          </th>
+                          <th>
+                            <mfDefaultSorter by="email_id">Email Id</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="btech_percentage">BTech(%)</mfDefaultSorter>
+                          </th>
+                          <th class="text-center">
+                            <mfDefaultSorter by="backlogs">Backlogs</mfDefaultSorter>
+                          </th>
+                          <th width="90px">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of mf.data; let i = index">
+                          <td>{{details.indexOf(item) + 1}}</td>
+                          <td>{{item.university_reg_number}}</td>
+                          <td>{{item.clg_fullname}}</td>
+                          <td>{{item.branch_fullname}}</td>
+                          <td>{{item.first_name}}</td>
+                          <td>{{item.email_id}}</td>
+                          <td class="text-center">{{item.btech_percentage}}</td>
+                          <td class="text-center">{{item.backlogs}}</td>
+                          <td>
+                            <button (click)="studetails.open(id=item)" class="btn btn-xs btn-blue btn-square">More Details</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tbody>
+                        <tr *ngIf="mf.data.length == 0">
+                          <td colspan="9" class="text-center">
+                            No Data Found
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="9">
+                            <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75,100]"></mfBootstrapPaginator>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- /.portlet-body -->
+          </div>
+          <!-- /.portlet -->
         </div>
       </div>
 

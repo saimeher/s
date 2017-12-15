@@ -399,7 +399,29 @@ export class ApiService {
  {
    return this.callApi(AppSettings.CHECKSTATUS_API,'post',body);
  }
+ noconformation(body)
+ {
+  return this.callApi(AppSettings.NOCONFORMATION_API,'post',body); 
+ }
+ confromlist(body)
+ {
+   return this.callApi(AppSettings.CONFORMDATA_API,'post',body);
+ }
+ notattended(body)
+ {
+  return this.callApi(AppSettings.NOTATTENDED_API,'post',body);
+ }
+ getplannedcompanylist(body)
+ {
 
+  return this.callApi(AppSettings.GETPLANNEDCOMPANYLIST_API,'post',body);
+ }
+
+
+ planned(body)
+ {
+   return this.callApi(AppSettings.PLANNED_API,'post',body);
+ }
 
   /************************************************************************** */
 

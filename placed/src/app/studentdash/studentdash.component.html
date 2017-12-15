@@ -302,12 +302,12 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-6">
+          <div (click)="confrombutnot()" class="col-lg-3 col-sm-6">
             <div class="tile red dash-demo-tile">
               <h4>
                 <i class="fa fa-arrow-circle-down fa-fw"></i>Conformed but not attended</h4>
               <div id="easy-pie-3" class="easy-pie-chart" data-percent="27">
-                <span class="percent">27</span>
+                <h3 class="number">{{notattendedcount}}</h3>
                 <canvas height="175" width="175"></canvas>
               </div>
             </div>
@@ -317,11 +317,12 @@
 
         <modal #company modalClass="modal-dialog1 modal-flex modal-lg">
           <modal-header>
-            <h4 *ngIf="companyselected == false" class="modal-title">List of Placement Drives Attended </h4>
+            <h4 *ngIf="companyattended == true" class="modal-title">List of Placement Drives Attended </h4>
             <h4 *ngIf="companyselected == true" class="modal-title">List of Selected in Placement Drives</h4>
+            <h4 *ngIf="companynotattended == true" class="modal-title">List of Placement Drives Confromed but not Attended</h4>
           </modal-header>
           <modal-content>
-            <div class="row" *ngIf="companyselected == false">
+            <div class="row" *ngIf="companyattended == true">
               <div class="col-lg-12">
                 <div class="portlet-body">
                   <div class="table-responsive dashboard-demo-table">
@@ -343,8 +344,8 @@
                           <td>{{data.package}}</td>
                           <td>{{data.rounds}}</td>
                           <td>{{data.inserted_at | date:'dd-MMM-yyyy'}}</td>
-                          <td *ngIf="data.rounds.indexOf('Placed') == -1">better luck next time</td>
-                          <td *ngIf="data.rounds.indexOf('Placed') != -1">Placed</td>
+                          <td class="notselected" *ngIf="data.rounds.indexOf('Placed') == -1">better luck next time</td>
+                          <td class="bg-return" *ngIf="data.rounds.indexOf('Placed') != -1">Placed</td>
                       </tbody>
                     </table>
                   </div>
@@ -353,7 +354,6 @@
             </div>
             <div class="row" *ngIf="companyselected">
               <div class="col-lg-12">
-
                 <div class="portlet-body">
                   <div class="table-responsive dashboard-demo-table">
                     <table class="table table-striped table-bordered table-hover table-green dataTable">
@@ -370,9 +370,36 @@
                         <tr *ngFor="let data of placed; let i =index">
                           <td>{{i+1}}</td>
                           <td>{{data.company}}</td>
-                          <td>{{data.package}}</td>
                           <td>{{data.inserted_at | date:'dd-MMM-yyyy'}}</td>
+                          <td>{{data.package}}</td>
                           <td>Placed</td>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="companynotattended == true">
+              <div class="col-lg-12">
+                <div class="portlet-body">
+                  <div class="table-responsive dashboard-demo-table">
+                    <table class="table table-striped table-bordered table-hover table-green dataTable">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Drive Name</th>
+                          <th>Drive Date</th>
+                          <th>Package</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let data of notattended; let i =index">
+                          <td>{{i+1}}</td>
+                          <td>{{data.company}}</td>
+                          <td>{{data.inserted_at | date:'dd-MMM-yyyy'}}</td>
+                          <td>{{data.package}}</td>
+                          <td>Not Attended</td>
                       </tbody>
                     </table>
                   </div>
@@ -398,23 +425,24 @@
               <div class="portlet-body" style="overflow-x: scroll;">
                 <div class="row" style="margin-bottom: 9px;">
                   <div class="col-lg-2">
-                    <div style="width: 16px;height: 16px; border: 1px solid #ecd0a3; background-color: #ecd0a3;margin-left: 40px;">
-                    </div>
+                    Scheduled Companines
+                    <!-- <div style="width: 16px;height: 16px; border: 1px solid #ecd0a3; background-color: #ecd0a3;margin-left: 40px;">
+                    </div> -->
                   </div>
-                  <!-- <a (click)="getupcomingcmp(detail.upcomingcompanies,'greater')">
-                    <div class="col-lg-4" style="margin-top: -3px;margin-left: -48px;">{{detail.upcomingcompanies}} Upcoming Companies scheduled
-                    </div>
-                  </a> -->
+                  <!-- <a (click)="getupcomingcmp(detail.upcomingcompanies,'greater')"> -->
+                  <!-- <div class="col-lg-4" style="margin-top: -3px;">Scheduled Companines
+                    </div> -->
+                  <!-- </a> -->
                   <div class="col-lg-2">
-                    <div style="width: 16px;height: 16px; border: 1px solid #8ad66b; background-color: #8ad66b;">
-                    </div>
+                    <!-- <div style="width: 16px;height: 16px; border: 1px solid #8ad66b; background-color: #8ad66b;">
+                    </div> -->
                   </div>
                   <!-- <a (click)="getupcomingcmp(detail.vistedcompanies,'lesser')">
                     <div class="col-lg-3" style="margin-top: -3px;margin-left: -85px;">{{detail.vistedcompanies}} Companies Planned
                     </div>
                   </a> -->
                 </div>
-                <table class="table table-striped table-bordered table-hover table-green" [mfData]="dtaa" #mf1="mfDataTable" [mfRowsOnPage]="rowsOnPage"
+                <table class="table table-striped table-bordered table-hover table-green" [mfData]="all1" #mf1="mfDataTable" [mfRowsOnPage]="rowsOnPage"
                   [(mfSortBy)]="sortBy" [(mfSortOrder)]="sortOrder">
                   <thead>
                     <tr>
@@ -425,6 +453,90 @@
                       </th>
                       <th>
                         <mfDefaultSorter by="location">Location
+                        </mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="c_date">Drive Date
+                        </mfDefaultSorter>
+                      </th>
+
+                      <th class="text-center">
+                        <mfDefaultSorter by="package">Package
+                          <i class="fa fa-inr"></i> L
+                        </mfDefaultSorter>
+                      </th>
+                      <th class="text-center">
+                        <mfDefaultSorter by="backlogs">Backlogs
+                        </mfDefaultSorter>
+                      </th>
+                      <th class="text-center">
+                        <mfDefaultSorter by="percentage">B.Tech(%)
+                        </mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="stat">Action
+                        </mfDefaultSorter>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody *ngFor="let a of mf1.data; let i = index" [ngClass]="{'bg-visited' : a.c_date <= date1 , 'bg-notvisited':  a.c_date > date1 }">
+                    <tr *ngIf="a.c_date >= date1">
+                      <td>{{all1.indexOf(a) + 1}}</td>
+                      <td>{{a.company}}</td>
+                      <td>{{a.location}}</td>
+                      <td>{{a.c_date | date:'dd-MMM-yyyy'}}</td>
+                      <td class="text-center">{{a.package}}</td>
+                      <td class="text-center">{{a.backlogs}}</td>
+                      <td class="text-center">{{a.percentage}}</td>
+                      <td *ngIf="a.stat == '0' && a.status == 0 ">
+                        <button type="button" class="btn-default" (click)="closeroundprogress.open(id=a);">yes</button>
+                        <button type="button" class="btn-danger" (click)="closeround.open(id=a);">No</button>
+                      </td>
+                      <td *ngIf="a.stat == '0' && a.status == 1">You are conformed</td>
+                      <td *ngIf="a.stat == '0' && a.status == 2">You are not Conformed</td>
+                      <td *ngIf="a.stat == 1">
+                        you are not eligible
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr *ngIf="mf1.data.length == 0">
+                      <td colspan="10" class="text-center">
+                        No Data Found
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="10">
+                        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25,50,75]"></mfBootstrapPaginator>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <div class="portlet-body" style="overflow-x: scroll;">
+                <div class="row" style="margin-bottom: 9px;">
+                  <div class="col-lg-2">
+                    Planned Companines
+                  </div>
+                </div>
+                <table class="table table-striped table-bordered table-hover table-green" [mfData]="plannedcompany" #mf2="mfDataTable" [mfRowsOnPage]="rowsOnPage1"
+                  [(mfSortBy)]="sortBy1" [(mfSortOrder)]="sortOrder1">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>
+                        <mfDefaultSorter by="company">Company Name
+                        </mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="location">Location
+                        </mfDefaultSorter>
+                      </th>
+                      <th>
+                        <mfDefaultSorter by="planned_date">Approx Date
                         </mfDefaultSorter>
                       </th>
                       <th class="text-center">
@@ -447,24 +559,27 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let a of mf1.data; let i = index" [ngClass]="{'bg-visited' : a.c_date <= date1 , 'bg-notvisited':  a.c_date > date1 }">
-                      <td>{{dtaa.indexOf(a) + 1}}</td>
-                      <td>{{a.company}}</td>
-                      <td>{{a.location}}</td>
-                      <td class="text-center">{{a.package}}</td>
-                      <td class="text-center">{{a.backlogs}}</td>
-                      <td class="text-center">{{a.percentage}}</td>
-                      <td *ngIf="a.stat == '0'">
-                        <button type="button" class="btn btn-default" (click)="closeroundprogress.open(id=a);">yes</button>
-                        <button type="button" class="btn btn-danger" (click)="close();">No</button>
+                    <tr *ngFor="let item of mf2.data; let i = index">
+                      <td>{{plannedcompany.indexOf(item) + 1}}</td>
+                      <td>{{item.company}}</td>
+                      <td>{{item.location}}</td>
+                      <th class="text-center">{{item.c_date | date: 'dd-MMM-yyyy' }}</th>
+                      <td class="text-center">{{item.package}}</td>
+                      <td class="text-center">{{item.backlogs}}</td>
+                      <td class="text-center">{{item.percentage}}</td>
+                      <td *ngIf="item.stat == '0' && item.status == 0 ">
+                        <button type="button" class="btn-default" (click)="plannedcompanyyes.open(item1=item);">yes</button>
+                        <button type="button" class="btn-danger" (click)="plannedcompanyno.open(item1=item);">No</button>
                       </td>
-                      <td *ngIf="a.stat == 1">
-                        no need to apply
+                      <td *ngIf="item.stat == '0' && item.status == 1">You are conformed</td>
+                      <td *ngIf="item.stat == '0' && item.status == 2">You are not conformed</td>
+                      <td *ngIf="item.stat == 1">
+                        you are not eligible
                       </td>
-                  </tr>
+                    </tr>
                   </tbody>
                   <tbody>
-                    <tr *ngIf="mf1.data.length == 0">
+                    <tr *ngIf="mf2.data.length == 0">
                       <td colspan="10" class="text-center">
                         No Data Found
                       </td>
@@ -479,6 +594,7 @@
                   </tfoot>
                 </table>
               </div>
+
             </div>
           </div>
         </div>
@@ -489,7 +605,7 @@
             <h4 class="modal-title">Alert !!!</h4>
           </modal-header>
           <modal-content>
-            <h4 *ngIf="id">Are you sure, You want to confirm this {{id.company}} Rounds Progress List?</h4>
+            <h4 *ngIf="id">Are you sure, You want to confirm this {{id.company}} Placement Drive</h4>
             <div class="clearfix"></div>
           </modal-content>
           <modal-footer>
@@ -499,7 +615,53 @@
             </div>
           </modal-footer>
         </modal>
+        <modal #closeround modalClass="modal-dialog1 modal-flex modal-lg">
+          <modal-header>
+            <h4 class="modal-title">Alert !!!</h4>
+          </modal-header>
+          <modal-content>
+            <h4 *ngIf="id">Are you sure, You don't want to confirm this {{id.company}} Placement Drive</h4>
+            <div class="clearfix"></div>
+          </modal-content>
+          <modal-footer>
+            <div class="pull-right">
+              <button class="btn btn-square btn-success" (click)="close(id);closeround.close()">Yes</button>
+              <button class="btn btn-square btn-danger" (click)="closeround.close()">No</button>
+            </div>
+          </modal-footer>
+        </modal>
 
+        <modal #plannedcompanyyes modalClass="modal-dialog1 modal-flex modal-lg">
+          <modal-header>
+            <h4 class="modal-title">Alert !!!</h4>
+          </modal-header>
+          <modal-content>
+            <h4 *ngIf="">Are you sure, You are willing to participate in this {{item1.company}} Placement Drive</h4>
+            <div class="clearfix"></div>
+          </modal-content>
+          <modal-footer>
+            <div class="pull-right">
+              <button class="btn btn-square btn-success" (click)="planned(item1);plannedcompanyyes.close()">Yes</button>
+              <button class="btn btn-square btn-danger" (click)="plannedcompanyyes.close()">No</button>
+            </div>
+          </modal-footer>
+        </modal>
+
+        <modal #plannedcompanyno modalClass="modal-dialog1 modal-flex modal-lg">
+          <modal-header>
+            <h4 class="modal-title">Alert !!!</h4>
+          </modal-header>
+          <modal-content>
+            <h4 *ngIf="item1">Are you sure, You are not willing to participate in this {{item1.company}} Placement Drive</h4>
+            <div class="clearfix"></div>
+          </modal-content>
+          <modal-footer>
+            <div class="pull-right">
+              <button class="btn btn-square btn-success" (click)="plannedno(item1);plannedcompanyno.close()">Yes</button>
+              <button class="btn btn-square btn-danger" (click)="plannedcompanyno.close()">No</button>
+            </div>
+          </modal-footer>
+        </modal>
 
 
 

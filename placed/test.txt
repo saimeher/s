@@ -1,6 +1,6 @@
-   function getcompanineslist($params)
+public function  getplannedcompanylist($params)
     {
-        $reg_no = $params['reg_no'];
+         $reg_no = $params['reg_no'];
         $branch_id = $params['branch_id'];
         $college_id = $params['college_id'];
         $percentage1 = $params['percentage'];
@@ -8,7 +8,7 @@
         $backlogs = $params['backlogs'];
 
 
-        $branchdata = $this->db->query("SELECT * FROM `company` where FIND_IN_SET('".$gender."',gender) ORDER BY `company`.`c_date` DESC ")->result();
+        $branchdata = $this->db->query("SELECT * FROM `planned_company` where FIND_IN_SET('".$gender."',gender) ORDER BY `planned_date` DESC ")->result();
         $bdataid = [];
         for ($i=0; $i < sizeof($branchdata); $i++) {
             $branchdataarr =explode(",",$branchdata[$i]->branchid);
@@ -26,75 +26,84 @@
             //$branchdataarr = implode(",",$bdata);
         } 
         // $data = $this->db->query("select * FROM `company`  where FIND_IN_SET('".$branch_id."', branchid) and clgid = '".$college_id."'")->result();
-          $data1 = $this->db->query("select  * FROM `confirmation_table` where reg_no = '".$reg_no."'")->result();
+          $data1 = $this->db->query("select  * FROM `willing_table` where reg_no = '".$reg_no."'")->result();
 
         $return['success'] = true;
         $return['data'] =$bdataid;
-        $return['check'] = $data1;
+        $return['uncheck'] = $data1;
         return $return;
-    } 
-
-     public function sendconfrom($params)
+    }
+     public function plannedyes($params)
      {
         $reg_no = $params['reg_no'];
         $branch_id = $params['branch_id'];
         $college_id = $params['college_id'];
         $c_id = $params['company_id'];
-        $token = $params['reg_no'].'-'.$params['company_id'];
-        $this->db->query("INSERT INTO `confirmation_table`(`token`, `reg_no`, `company_id`, `status`) VALUES ('$token','$reg_no','$c_id','1') ");
+        $plannedyes = $params['condition'];
+        if($plannedyes == 'yes')
+        {
+        $data1 = $this->db->query("INSERT INTO `willing_table`(`reg_no`, `plannedcompany_id`, `status`) VALUES ('$reg_no','$c_id','1') ");    
+        }
+         if($plannedyes == 'no')
+        {
+        $data1 = $this->db->query("INSERT INTO `willing_table`(`reg_no`, `plannedcompany_id`, `status`) VALUES ('$reg_no','$c_id','0') ");    
+        }
+        return $data1;
+        
      }
-     public function checkstatus($params)
-     {
-        $reg_no = $params['reg_no'];
-        $data = $this->db->query("SELECT * FROM `confirmation_table` where reg_no = '$reg_no'")->result();
-
-        $return['data'] = $data;
-         return $return; 
-     }
-
-
-
-
-///api 
-case 'checkterms' :$result = $this->api_model->checkterms($params);break;
-						case 'getterms' :$result = $this->api_model->getterms($params);break;
-						case 'getattendedlist' :$result = $this->api_model->getattendedlist($params);break;
-						case 'getcompanineslist' :$result = $this->api_model->getcompanineslist($params);
-						break;
-						case 'sendconfrom' :$result = $this->api_model->sendconfrom($params);
-						break;
-						case 'checkstatus': $result = $this->api_model->checkstatus($params);
-						break;
 
 
 
 
 
-public function getcompanineslist_post()
-    {
-    	$data['reg_no'] = $this->post('reg_no');
+
+
+
+
+public function getplannedcompanylist_post()
+	{
+		$data['reg_no'] = $this->post('reg_no');
         $data['branch_id'] = $this->post('branch_id');
         $data['college_id'] = $this->post('college_id');
         $p =$this->db->query("select backlogs,btech_percentage,gender from raghuerp_placement.registration")->row();
         $data['backlogs'] = $p->backlogs;
         $data['percentage'] = $p->btech_percentage;
         $data['gender'] = $p->gender;
-        $this->getData('getcompanineslist', $data);
-    } 
-
-
-    public function sendconfrom_post()
-    {
-    	$data['reg_no'] = $this->post('reg_no');
+        $this->getData('getplannedcompanylist', $data);
+	}
+	public function plannedyes_post()
+	{
+		$data['reg_no'] = $this->post('reg_no');
         $data['branch_id'] = $this->post('branch_id');
         $data['college_id'] = $this->post('college_id');
         $data['company_id'] = $this->post('company_id');
-        $this->getData('sendconfrom',$data);
+        $data['condition'] = $this->post('condition');
+        $this->getData('plannedyes',$data);
 
-    }
-    public function checkstatus_post()
-    {
-    	$data['reg_no'] = $this->post('reg_no');
-    	$this->getData('checkstatus',$data);
+	}
+  public function getconfromdata_post(){
+    $data['company_id'] =$this->post('fid');
+		$this->getData('getconfromdata',$data);
+	}
+	public function notattended_post()
+	{
+		$data['reg_no'] = $this->post('reg_no');
+    	$this->getData('notattended',$data);
+	}
 
-    }
+
+ public function notattended($params)
+     {
+        $reg_no = $params['reg_no'];
+        $data =$this->db->query("SELECT c.reg_no,r.*,s.inserted_at FROM  company r inner join  confirmation_table c  on c.company_id = r.fid 
+inner join  rounds s on  c.company_id = s.company_id and c.reg_no  IN (find_in_set('$reg_no',s.reg_no)) where c.status = '1' and s.rounds ='R1' and  c.reg_no='$reg_no'")->result();
+        $return['dtaa']=$data;
+        return $return;
+             } public function notattended($params)
+     {
+        $reg_no = $params['reg_no'];
+        $data =$this->db->query("SELECT c.reg_no,r.*,s.inserted_at FROM  company r inner join  confirmation_table c  on c.company_id = r.fid 
+inner join  rounds s on  c.company_id = s.company_id and c.reg_no  IN (find_in_set('$reg_no',s.reg_no)) where c.status = '1' and s.rounds ='R1' and  c.reg_no='$reg_no'")->result();
+        $return['dtaa']=$data;
+        return $return;
+             }

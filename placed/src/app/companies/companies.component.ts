@@ -20,6 +20,7 @@ export class CompaniesComponent implements OnInit {
   check_all: boolean = false;
   check_all_attendance: boolean;
   viewroundprogresss: boolean;
+  viewconfrom: boolean;
   emailcheck: boolean;
   sub_button: any;
   submit: any = [];
@@ -1444,6 +1445,59 @@ export class CompaniesComponent implements OnInit {
       console.log(this.placementdetailsbyid, 'testing plcaement details by id');
       // this.modal1.open();
     })
+  }
+
+
+
+
+
+
+  confrom;
+  confromround;
+  notconfrom;
+  confromlist(td) {
+     this.viewconfrom = true;
+    this.viewroundprogresss = false;
+    this.sendemailbox = false;
+    this.tableopen = false;
+    this.loading = false;
+    this.loading1 = false;
+    this.openshorteddata = false;
+    this.opendrivedetails = false;
+    this.roundsdata = false;
+    this.company_name = td.company;
+    this.company_dispname = td.drive_dispname;
+    this.company_package = td.package;
+    this.drivedate = td.c_date;
+    this.c_location = td.location;
+    console.log(td, 'selected list');
+    // this._apiService.getshortedlist(td).subscribe(data => {
+    //   this.details = data.data.data;
+    //   console.log(this.details);
+    //   this.elgiblecount = this.details.length;
+    // });
+
+    this.confrom = [];
+    this.confromround = [];
+
+    this._apiService.confromlist(td).subscribe(data => {
+      this.confrom = data.data.confrom;
+      this.notconfrom = data.data.notconfrom;
+      console.log(this.confrom, 'companies shorting list');
+    });
+  }
+  closerconformlist(){
+    this.viewconfrom =false;
+  }
+  dispalybyattended(dataa) {
+    this.finalrounddata = [];
+    console.log(dataa);
+    const body = {};
+    body['reg_no'] = dataa.list;
+    this._apiService.getStddatabyregno(body).subscribe(data => {
+      console.log(data);
+      this.details = data.data.data;
+    });
   }
 
 }
